@@ -1,0 +1,8 @@
+const electron = require('electron')
+,	remote = electron.remote
+,	ipcRenderer = electron.ipcRenderer
+,	Icon = { max : '&#128470;', min : '&#128471;'}
+,	$btn = { min : document.getElementById('min-btn'), max : document.getElementById('max-btn'), close : document.getElementById('close-btn')}
+,	$aLink = document.querySelectorAll('aside a')
+,	$h1	= document.querySelector('h1>span')
+,	$MainContent = document.getElementById('maincontent')

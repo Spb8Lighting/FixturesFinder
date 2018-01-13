@@ -1,22 +1,39 @@
 {
-  "name": "showcockpit.fixtures.finder",
+  "name": "fixturesfinder",
   "version": "0.0.2",
   "description": "Fixtures Finder for Show Cockpit",
-  "main": "./src/main.js",
+  "main": "main.js",
   "author": "Spb8Lighting",
   "license": "CC0-1.0",
   "scripts": {
-    "start": "electron src/main.js",
+    "start": "electron main.js",
     "watch": "gulp watch",
-    "build": "electron-packager . FixturesFinder --asar --overwrite --platform=win32 --arch=x64 --icon=src/dist/img/favicon.ico --out=Build --build-version=0.0.2 --prune=true --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Fixtures Finder\""
+    "clean": "rm -rf ./dist",
+    "clean:win": "rm -rf ./dist/win",
+    "pack": "npm run clean && gulp css && gulp img && gulp font && npm run pack:win",
+    "pack:win": "npm run clean:win && gulp css && gulp img && gulp font && electron-packager . \"FixturesFinder\" --out=dist/win --platform=win32 --arch=x64 --asar --overwrite   --icon=public/img/favicon.ico --build-version=0.0.2 --prune=true --version-string.CompanyName=\"Spb8 Lighting\" --version-string.FileDescription=\"Fixtures Finder Beta\" --version-string.ProductName=\"Fixtures Finder\" --ignore=.bowerrc --ignore=.gitattributes --ignore=.gitignore --ignore=bower.json --ignore=bower_components --ignore=private --ignore=node_modules --ignore=dist --ignore=.vscode --ignore=.git",
+    "build": "npm run build:win",
+    "build:win": "npm run pack:win && electron-builder --win --x64"
   },
-  "Dependencies": {
-    "ejs": "^2.5.7",
-    "ejs-electron": "^2.0.1"
+  "build": {
+    "appId": "showcockpit.fixtures.finder",
+    "win": {
+      "target": "msi",
+      "asar": true,
+      "sign": null,
+      "icon": "public/img/favicon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "directories": {
+      "output": "dist/win",
+      "buildResources": "dist/win/FixturesFinder-win32-x64"
+    }
   },
   "devDependencies": {
     "electron": "~1.7.8",
+    "electron-builder": "^19.52.1",
     "electron-packager": "^10.1.1",
+    "electron-packager-languages": "^0.1.0",
     "electron-winstaller": "^2.6.3",
     "electron-wix-msi": "^1.2.3",
     "gulp": "^3.9.1",
@@ -31,6 +48,7 @@
     "gulp-uglifyes": "^0.1.2"
   },
   "dependencies": {
-    "ejs": "^2.5.7"
+    "ejs": "^2.5.7",
+    "ejs-electron": "^2.0.1"
   }
 }
