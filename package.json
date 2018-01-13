@@ -1,0 +1,36 @@
+{
+  "name": "showcockpit.fixtures.finder",
+  "version": "0.0.2",
+  "description": "Fixtures Finder for Show Cockpit",
+  "main": "./src/main.js",
+  "author": "Spb8Lighting",
+  "license": "CC0-1.0",
+  "scripts": {
+    "start": "electron src/main.js",
+    "watch": "gulp watch",
+    "build": "electron-packager . FixturesFinder --asar --overwrite --platform=win32 --arch=x64 --icon=src/dist/img/favicon.ico --out=Build --build-version=0.0.2 --prune=true --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Fixtures Finder\""
+  },
+  "Dependencies": {
+    "ejs": "^2.5.7",
+    "ejs-electron": "^2.0.1"
+  },
+  "devDependencies": {
+    "electron": "~1.7.8",
+    "electron-packager": "^10.1.1",
+    "electron-winstaller": "^2.6.3",
+    "electron-wix-msi": "^1.2.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^4.1.0",
+    "gulp-clean-css": "^3.9.2",
+    "gulp-concat-util": "^0.5.5",
+    "gulp-filter": "^5.1.0",
+    "gulp-image": "^4.2.0",
+    "gulp-load-plugins": "^1.5.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglifyes": "^0.1.2"
+  },
+  "dependencies": {
+    "ejs": "^2.5.7"
+  }
+}

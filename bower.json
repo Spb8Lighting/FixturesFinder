@@ -1,0 +1,6 @@
+{
+  "name": "fixturesfindernodejs",
+  "dependencies": {
+    "knacss": "latest"
+  }
+}

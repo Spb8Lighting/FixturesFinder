@@ -1,0 +1,175 @@
+@import "_variables";
+@import '../../bower_components/KNACSS/sass/knacss';
+/* Body */
+	$Body_backgroundcolor: #111;
+	$Body_color: #E6E6E6;
+	$Body_topcolor: #F37735;
+
+/* Button */
+	$Button_backgroundcolor: #222;
+	$Button_color: #CCC;
+	$Button_bordercolor: #444;
+
+	$Button_hover_backgroundcolor: #EEE;
+	$Button_hover_color: $Body_backgroundcolor;
+	$Button_hover_bordercolor: $Button_hover_backgroundcolor;
+
+/* Links */
+	$A_color_hover : #FFA500;
+
+/* Nav */
+	$LinearBackground : linear-gradient(to right, $gray-showcockpit, $Body_backgroundcolor);
+	$LinearBackground_hover : linear-gradient(to right, $orange-showcockpit, $Body_backgroundcolor);
+
+/* Header */
+	$Header_backgroundcolor: #121212;
+	$Header_BorderHeight: 1.7px;
+	$Header_BorderStyle: solid;
+	$Header_BorderColor: #434343;
+
+/* Content */
+	$Even_backgroundcolor: #323232;
+	$Odd_backgroundcolor: #232323;
+	$border_color: $black;
+
+/*---------------------------------*/
+
+/* Body */
+	body {
+		user-select: none;
+		background-color: $Body_backgroundcolor;
+		color: $Body_color;
+		border-top: 5px solid $Body_topcolor;
+		overflow: hidden;
+		/* Header */
+		&>h1 {
+			-webkit-app-region: drag;
+			font-size: 150%;
+			font-weight: lighter;
+			font-family: inherit;
+			margin: 1rem;
+			margin-right: 8rem;
+			height: 5rem;
+			line-height: 3.8rem;
+			&>img {
+				height: 32px;
+				width: 32px;
+			}
+		}
+	}
+
+/* Application Window Control */
+	#ApplicationWindowControl {
+		position: absolute;
+		right: 1rem;
+		top: 5px;
+		font-size: 1.2rem;
+		&>a {
+			-webkit-app-region: no-drag;
+			padding: .5rem;
+			&:hover,
+			&:focus {
+				color: inherit;
+				background-color: $Button_backgroundcolor;
+			}
+			&:active {
+				color: $Body_backgroundcolor;
+				background-color: $Body_topcolor;
+			}
+		}
+}
+
+/* Button */
+
+.btn:active, .btn:focus, .btn:hover, .button:active, .button:focus, .button:hover {
+	background-color: $Button_hover_backgroundcolor;
+	color: $Button_hover_color ;
+	box-shadow: 0 0 0 1px $Button_hover_bordercolor inset;
+}
+
+[type="color"], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="submit"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], select, textarea {
+	padding: .6rem 1rem;
+}
+
+.btn, .btn--danger, .btn--ghost, .btn--info, .btn--inverse, .btn--primary, .btn--success, .btn--warning, .button, .button--danger, .button--ghost, .button--info, .button--inverse, .button--primary, .button--success, .button--warning, [type="button"], button {
+	padding: 1.2rem 2rem;
+	font-size: 1.2rem;
+}
+
+/* Menu left */
+	aside li {
+		margin-bottom: 8px;
+		&>a {
+			display: block;
+			height: 73px;
+			line-height: 73px;
+			padding-left: 50px;
+			background-repeat: no-repeat, no-repeat;
+			background-position: 5px center, left center;
+			border-left: 5px solid $gray-showcockpit;
+			transition-duration: .25s;
+			transition-property: transform;
+			&:hover,
+			&:active,
+			&:focus {
+				border-color: $orange-showcockpit;
+				transform: perspective(20em) rotateY(5deg);
+			}
+			&.active {
+				border-color: $orange-showcockpit;
+			}
+			&.finder {
+				background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground;
+				&:hover,
+				&:active,
+				&:focus {
+					background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground_hover;
+				}
+			}
+			&.options {
+				background-image: url(../img/icons8-options-32.png), $LinearBackground;
+				&:hover,
+				&:active,
+				&:focus {
+					background-image: url(../img/icons8-options-32.png), $LinearBackground_hover;
+				}
+			}
+			&.admin {
+				background-image: url(../img/icons8-admin-32.png), $LinearBackground;
+				&:hover,
+				&:active,
+				&:focus {
+					background-image: url(../img/icons8-admin-32.png), $LinearBackground_hover;
+				}
+			}
+		}
+	}
+/* Main Block */
+.btn-bar-action {
+	margin-top: 1rem;
+	position: absolute;
+	top: 70px;
+}
+.bordered {
+	margin-top: 7rem;
+	margin-right: .5rem;
+	border: 2px solid $border-color-showcockpit;
+	overflow-y: scroll;
+	height: 420px;
+	min-width: 214px;
+}
+
+/* ScrollBar */
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: $scroll-off-showcockpit;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: $scroll-on-showcockpit;
+		border-top: 1px solid black;
+		border-bottom: 1px solid black;
+}
