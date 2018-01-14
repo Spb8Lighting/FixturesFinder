@@ -1,4 +1,6 @@
 module.exports = {
+	// Tool
+		Version : 						'0.0.3',
 	//Client Parameter
 		HttpPort :						'8080',
 	//Client Form Parameter

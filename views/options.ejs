@@ -1,1 +1,42 @@
-<p>Options Page</p>
+<form id="OptionsForm" method="post" action="#">
+	<div class="btn-bar-action">
+        <button class="btn" name="submit" id="submit" type="submit">Save</button>
+        <button class="btn" name="reset" id="reset" type="reset">Reset</button>
+    </div>
+    <div class="bordered">
+		<fieldset>
+            <legend>Search Settings</legend>
+            <label class="label" for="SearchMode">Mode
+			<select data-default="Exact" autocomplete="off" name="SearchMode" id="SearchMode">
+                <optgroup label="Ordered (with channel order)">
+                    <option value="exact" selected="selected">Exact</option>
+                    <option value="startwith">StartWith</option>
+                </optgroup>
+                <optgroup label="Unordered (without channel order)">
+                    <option value="live exact">Live Exact</option>
+                    <option value="live">Live</option>
+                </optgroup>
+            </select>
+
+            <label class="label" for="DisplayMode">Display
+            <select data-default="0" autocomplete="off" name="DisplayMode" id="DisplayMode">
+                <optgroup label="Full view with DMX Charts">
+                    <option value="0" selected="selected">Detailed</option>
+                </optgroup>
+                <optgroup label="DMX Charts hidden">
+                    <option value="1">Simpler</option>
+                </optgroup>
+            </select>
+
+            <label class="label" for="FullParam">Parameter
+            <select data-default="0" autocomplete="off" name="FullParam" id="FullParam">
+                <optgroup label="Most common Channel Type">
+                    <option value="0" selected="selected">Restricted</option>
+                </optgroup>
+                <optgroup label="Full list of Channel Type">
+                    <option value="1">Full</option>
+                </optgroup>
+            </select>
+        </fieldset>
+    </div>
+</form>

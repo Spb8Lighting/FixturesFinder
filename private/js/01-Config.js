@@ -1,4 +1,5 @@
 const electron = require('electron')
+,   config = require('../config')
 ,	remote = electron.remote
 ,	ipcRenderer = electron.ipcRenderer
 ,	Icon = { max : '&#128470;', min : '&#128471;'}

@@ -12,5 +12,5 @@ $aLink.forEach(elem => {
 
 ipcRenderer.on('pageChange', (e, data) => {
     $MainContent.innerHTML = data.page
-    $h1.innerHTML = `Fixtures Finder/${data.PageName} - v0.0.2`
+    $h1.innerHTML = `Fixtures Finder/${data.PageName} - v${config.Version}`
 })

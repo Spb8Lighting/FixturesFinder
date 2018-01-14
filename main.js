@@ -1,4 +1,5 @@
 const electron = require('electron')
+, sqlite3 = require('sqlite3')
 , ipcMain = electron.ipcMain
 , app = electron.app
 , BrowserWindow = electron.BrowserWindow
@@ -8,7 +9,7 @@ const electron = require('electron')
 
 let mainWindow
 
-ejse.data({'Page' : 'search', 'PageTitle' : 'Fixtures Finder/Search - v0.0.2', 'config' : config}).options('debug', false)
+ejse.data({'Page' : 'search', 'PageTitle' : `Fixtures Finder/Search - v${config.Version}`, 'config' : config}).options('debug', false)
 
 function createWindow () {
   mainWindow = new BrowserWindow({
