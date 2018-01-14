@@ -46,6 +46,7 @@ gulp.task('img', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
+	gulp.watch(SourceJS, ['js'])
 	gulp.watch('private/scss/*.scss', ['css'])
 	gulp.watch(SourceIMG, ['img'])
 })
