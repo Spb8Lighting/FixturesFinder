@@ -1,0 +1,42 @@
+@import "partials/_windowscontrol";
+@import "partials/_asidemenu";
+@import "partials/_scrollbar";
+
+/* Body */
+body {
+    user-select: none;
+    background-color: $Body_backgroundcolor;
+    color: $Body_color;
+    border-top: 5px solid $Body_topcolor;
+    overflow: hidden;
+    /* Header */
+    &>h1 {
+        -webkit-app-region: drag;
+        font-size: 150%;
+        font-weight: lighter;
+        font-family: inherit;
+        margin: 1rem;
+        margin-right: 8rem;
+        height: 5rem;
+        line-height: 3.8rem;
+        &>img {
+            height: 32px;
+            width: 32px;
+        }
+    }
+}
+
+/* Main Block */
+.btn-bar-action {
+	margin-top: 1rem;
+	position: absolute;
+	top: 70px;
+}
+.bordered {
+	margin-top: 7rem;
+	margin-right: .5rem;
+	border: 2px solid $border-color-showcockpit;
+	overflow-y: scroll;
+	height: 420px;
+	min-width: 214px;
+}

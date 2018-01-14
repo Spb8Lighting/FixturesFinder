@@ -17,7 +17,7 @@ function createWindow () {
 		minWidth				: 800,
 		Height					: 600,
 		minHeight				: 600,
-		frame						: false,
+		frame						: true,
 		maximized				: false,
     center					: true,
 		title						:	'Fixtures Finder',
@@ -28,7 +28,7 @@ function createWindow () {
   mainWindow.loadURL(`file://${__dirname}/views/index.ejs`)
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     mainWindow = null

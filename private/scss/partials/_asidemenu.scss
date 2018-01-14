@@ -1,0 +1,48 @@
+/* Menu left */
+aside li {
+    margin-bottom: 8px;
+    &>a {
+        display: block;
+        height: 73px;
+        line-height: 73px;
+        padding-left: 50px;
+        background-repeat: no-repeat, no-repeat;
+        background-position: 5px center, left center;
+        border-left: 5px solid $gray-showcockpit;
+        transition-duration: .25s;
+        transition-property: transform;
+        &:hover,
+        &:active,
+        &:focus {
+            border-color: $orange-showcockpit;
+            transform: perspective(20em) rotateY(5deg);
+        }
+        &.active {
+            border-color: $orange-showcockpit;
+        }
+        &.finder {
+            background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground;
+            &:hover,
+            &:active,
+            &:focus {
+                background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground_hover;
+            }
+        }
+        &.options {
+            background-image: url(../img/icons8-options-32.png), $LinearBackground;
+            &:hover,
+            &:active,
+            &:focus {
+                background-image: url(../img/icons8-options-32.png), $LinearBackground_hover;
+            }
+        }
+        &.admin {
+            background-image: url(../img/icons8-admin-32.png), $LinearBackground;
+            &:hover,
+            &:active,
+            &:focus {
+                background-image: url(../img/icons8-admin-32.png), $LinearBackground_hover;
+            }
+        }
+    }
+}

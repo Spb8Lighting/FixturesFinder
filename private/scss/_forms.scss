@@ -1,0 +1,61 @@
+/* Button */
+
+.btn:active, .btn:focus, .btn:hover, .button:active, .button:focus, .button:hover {
+	background-color: $Button_hover_backgroundcolor;
+	color: $Button_hover_color ;
+	box-shadow: 0 0 0 1px $Button_hover_bordercolor inset;
+}
+
+[type="color"], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="submit"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], select, textarea {
+    padding: .6rem 1rem;
+}
+
+select, input {
+    width: 100%;
+    margin: 0 auto;
+    background-color: $black-showcockpit;
+    -webkit-tap-highlight-color: $orange-showcockpit;
+    font-weight: lighter;
+    color: $legend-color-showcockpit;
+    font-size: 1.35rem;
+}
+select {
+    background-image: url($Select_Arrow);
+    & option:hover {
+        box-shadow: 0 0 10px 100px #fff inset;
+    }
+    & option {
+        background-color: $gray-showcockpit;
+    }
+}
+input {
+    user-select: text;
+}
+
+.btn, .btn--danger, .btn--ghost, .btn--info, .btn--inverse, .btn--primary, .btn--success, .btn--warning, .button, .button--danger, .button--ghost, .button--info, .button--inverse, .button--primary, .button--success, .button--warning, [type="button"], button {
+	padding: 1.2rem 2rem;
+	font-size: 1.2rem;
+}
+
+fieldset {
+    padding: 1rem;
+    p {
+        font-size: 1.1rem;
+    }
+}
+/* Remove Label style when it is under a list*/
+    :not(li)>label,
+    fieldset legend {
+        padding: 0;
+        padding-top: 1rem;
+        font-size: 1.7rem;
+        color: $legend-color-showcockpit;
+        font-weight: bolder;
+    }
+    :not(li)>label {
+        display: block;
+        border-top: 0.5px solid $border-color-showcockpit;
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+        font-weight: bold;
+    }

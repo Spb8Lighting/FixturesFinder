@@ -1,13 +1,16 @@
 <form id="OptionsForm" method="post" action="#">
 	<div class="btn-bar-action">
         <button class="btn" name="submit" id="submit" type="submit">Save</button>
-        <button class="btn" name="reset" id="reset" type="reset">Reset</button>
+        <button class="btn" name="reset" id="reset" type="submit">Reset</button>
     </div>
     <div class="bordered">
 		<fieldset>
             <legend>Search Settings</legend>
-            <label class="label" for="SearchMode">Mode
-			<select data-default="Exact" autocomplete="off" name="SearchMode" id="SearchMode">
+
+            <p>By settings search options, the result will differ</p>
+
+            <label class="label" for="SearchMode">Mode</label>
+            <select data-default="Exact" autocomplete="off" name="SearchMode" id="SearchMode">
                 <optgroup label="Ordered (with channel order)">
                     <option value="exact" selected="selected">Exact</option>
                     <option value="startwith">StartWith</option>
@@ -18,7 +21,7 @@
                 </optgroup>
             </select>
 
-            <label class="label" for="DisplayMode">Display
+            <label class="label" for="DisplayMode">Display</label>
             <select data-default="0" autocomplete="off" name="DisplayMode" id="DisplayMode">
                 <optgroup label="Full view with DMX Charts">
                     <option value="0" selected="selected">Detailed</option>
@@ -28,7 +31,7 @@
                 </optgroup>
             </select>
 
-            <label class="label" for="FullParam">Parameter
+            <label class="label" for="FullParam">Parameter</label>
             <select data-default="0" autocomplete="off" name="FullParam" id="FullParam">
                 <optgroup label="Most common Channel Type">
                     <option value="0" selected="selected">Restricted</option>

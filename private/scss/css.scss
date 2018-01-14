@@ -1,5 +1,7 @@
+/* Knacss Configuration & template */
 @import "_variables";
 @import '../../bower_components/KNACSS/sass/knacss';
+
 /* Body */
 	$Body_backgroundcolor: #111;
 	$Body_color: #E6E6E6;
@@ -32,144 +34,10 @@
 	$Odd_backgroundcolor: #232323;
 	$border_color: $black;
 
+/* SELECT Arrow Shape */
+	$Select_Arrow : "data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20standalone%3D%22no%22%3F%3E%0A%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20style%3D%22isolation%3Aisolate%22%20viewBox%3D%220%200%2020%2020%22%20width%3D%2220%22%20height%3D%2220%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%200%205%20L%2010%2015%20L%2020%205%20Z%22%20fill%3D%22%23222%22%2F%3E%0A%3C%2Fsvg%3E";
+
 /*---------------------------------*/
 
-/* Body */
-	body {
-		user-select: none;
-		background-color: $Body_backgroundcolor;
-		color: $Body_color;
-		border-top: 5px solid $Body_topcolor;
-		overflow: hidden;
-		/* Header */
-		&>h1 {
-			-webkit-app-region: drag;
-			font-size: 150%;
-			font-weight: lighter;
-			font-family: inherit;
-			margin: 1rem;
-			margin-right: 8rem;
-			height: 5rem;
-			line-height: 3.8rem;
-			&>img {
-				height: 32px;
-				width: 32px;
-			}
-		}
-	}
-
-/* Application Window Control */
-	#ApplicationWindowControl {
-		position: absolute;
-		right: 1rem;
-		top: 5px;
-		font-size: 1.2rem;
-		&>a {
-			-webkit-app-region: no-drag;
-			padding: .5rem;
-			&:hover,
-			&:focus {
-				color: inherit;
-				background-color: $Button_backgroundcolor;
-			}
-			&:active {
-				color: $Body_backgroundcolor;
-				background-color: $Body_topcolor;
-			}
-		}
-}
-
-/* Button */
-
-.btn:active, .btn:focus, .btn:hover, .button:active, .button:focus, .button:hover {
-	background-color: $Button_hover_backgroundcolor;
-	color: $Button_hover_color ;
-	box-shadow: 0 0 0 1px $Button_hover_bordercolor inset;
-}
-
-[type="color"], [type="date"], [type="datetime-local"], [type="email"], [type="month"], [type="number"], [type="password"], [type="search"], [type="submit"], [type="tel"], [type="text"], [type="time"], [type="url"], [type="week"], select, textarea {
-	padding: .6rem 1rem;
-}
-
-.btn, .btn--danger, .btn--ghost, .btn--info, .btn--inverse, .btn--primary, .btn--success, .btn--warning, .button, .button--danger, .button--ghost, .button--info, .button--inverse, .button--primary, .button--success, .button--warning, [type="button"], button {
-	padding: 1.2rem 2rem;
-	font-size: 1.2rem;
-}
-
-/* Menu left */
-	aside li {
-		margin-bottom: 8px;
-		&>a {
-			display: block;
-			height: 73px;
-			line-height: 73px;
-			padding-left: 50px;
-			background-repeat: no-repeat, no-repeat;
-			background-position: 5px center, left center;
-			border-left: 5px solid $gray-showcockpit;
-			transition-duration: .25s;
-			transition-property: transform;
-			&:hover,
-			&:active,
-			&:focus {
-				border-color: $orange-showcockpit;
-				transform: perspective(20em) rotateY(5deg);
-			}
-			&.active {
-				border-color: $orange-showcockpit;
-			}
-			&.finder {
-				background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground;
-				&:hover,
-				&:active,
-				&:focus {
-					background-image: url(../img/icons8-search-fixture-32.png), $LinearBackground_hover;
-				}
-			}
-			&.options {
-				background-image: url(../img/icons8-options-32.png), $LinearBackground;
-				&:hover,
-				&:active,
-				&:focus {
-					background-image: url(../img/icons8-options-32.png), $LinearBackground_hover;
-				}
-			}
-			&.admin {
-				background-image: url(../img/icons8-admin-32.png), $LinearBackground;
-				&:hover,
-				&:active,
-				&:focus {
-					background-image: url(../img/icons8-admin-32.png), $LinearBackground_hover;
-				}
-			}
-		}
-	}
-/* Main Block */
-.btn-bar-action {
-	margin-top: 1rem;
-	position: absolute;
-	top: 70px;
-}
-.bordered {
-	margin-top: 7rem;
-	margin-right: .5rem;
-	border: 2px solid $border-color-showcockpit;
-	overflow-y: scroll;
-	height: 420px;
-	min-width: 214px;
-}
-
-/* ScrollBar */
-::-webkit-scrollbar {
-    width: 20px;
-}
-
-::-webkit-scrollbar-track {
-    background-color: $scroll-off-showcockpit;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: $scroll-on-showcockpit;
-		border-top: 1px solid black;
-		border-bottom: 1px solid black;
-}
+@import "_generalinterface";
+@import "_forms";

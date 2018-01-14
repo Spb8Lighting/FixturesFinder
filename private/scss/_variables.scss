@@ -132,13 +132,15 @@ $green-500  : #5CB85C !default;
 $orange-500 : #F0AD4E !default;
 $red-500    : #D9534F !default;
 
-$black-showcockpit				: #111 !default;
-$orange-showcockpit				: #F37735 !default;
-$gray-showcockpit 				: #222 !default;
-$text-color-showcockpit 	: #E6E6E6 !default;
-$border-color-showcockpit	: #444 !default;
-$scroll-on-showcockpit		: $gray-800;
-$scroll-off-showcockpit		: #262626 !default;
+$black-showcockpit				        : #111 !default;
+$orange-showcockpit				        : #F37735 !default;
+$gray-showcockpit 				        : #222 !default;
+$text-color-showcockpit 	        : #E6E6E6 !default;
+$legend-color-showcockpit         : #AAA !default;
+$legend-border-color-showcockpit  : #1E1E1E !default;
+$border-color-showcockpit	        : #444 !default;
+$scroll-on-showcockpit		        : $gray-800;
+$scroll-off-showcockpit		        : #262626 !default;
 
 // Semantic colors
 $color-brand    : $orange-showcockpit;
@@ -173,7 +175,7 @@ $border-radius: 0 !default;
 $quote-color     : $gray-200;
 
 // Component: arrows
-$arrow-color     : $black;
+$arrow-color     : $white;
 
 // Components: checkboxes, radios, switches
 $checkbox-color         : $gray-800;
