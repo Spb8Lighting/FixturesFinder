@@ -1,1 +1,1 @@
-# Fixtures Finder - Show Cockpit Add-on
+# Fixtures Finder - Show Cockpit Add-on [![dependencies Status](https://david-dm.org/Spb8Lighting/FixturesFinder/status.svg)](https://david-dm.org/Spb8Lighting/FixturesFinder)
