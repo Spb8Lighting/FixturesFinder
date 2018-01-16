@@ -39,5 +39,10 @@
 
 /*---------------------------------*/
 
+@font-face {
+    font-family: 'Digital 7';
+    src: url('../digital-7.ttf') format('truetype');
+}
+
 @import "_generalinterface";
 @import "_forms";

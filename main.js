@@ -13,8 +13,8 @@ ejse.data({'Page' : 'search', 'PageTitle' : `Fixtures Finder/Search - v${config.
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-		width						: 800,
-		minWidth				: 800,
+		width						: 900,
+		minWidth				: 900,
 		Height					: 600,
 		minHeight				: 600,
 		frame						: true,

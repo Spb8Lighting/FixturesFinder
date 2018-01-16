@@ -16,7 +16,7 @@ select, input {
     background-color: $black-showcockpit;
     -webkit-tap-highlight-color: $orange-showcockpit;
     font-weight: lighter;
-    color: $legend-color-showcockpit;
+    color: $text-color-showcockpit;
     font-size: 1.35rem;
 }
 select {
@@ -44,18 +44,56 @@ fieldset {
     }
 }
 /* Remove Label style when it is under a list*/
-    :not(li)>label,
-    fieldset legend {
+:not(li)>label,
+fieldset legend {
+    padding: 0;
+    padding-top: 1rem;
+    font-size: 1.7rem;
+    color: $legend-color-showcockpit;
+    font-weight: bolder;
+}
+:not(li)>label {
+    display: block;
+    border-top: 0.5px solid $border-color-showcockpit;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    font-weight: bold;
+}
+$digital-size-rem : 4rem;
+.digital, .digitbutton {
+    font-family: 'Digital 7';
+    font-size: $digital-size-rem;
+    height: $digital-size-rem;
+    padding: 0;
+    min-width: $digital-size-rem;
+    text-align: center;
+}
+.digital {
+    width: calc(100% - 2 * #{$digital-size-rem});
+}
+.channelfield {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 0.5px solid $border-color-showcockpit;
+    &>select {
+        width: 82%;
+        margin: 0%;
+    }
+    &>label {
+        margin: 0;
         padding: 0;
-        padding-top: 1rem;
-        font-size: 1.7rem;
-        color: $legend-color-showcockpit;
-        font-weight: bolder;
+        width: 18%;
+        border: none;
     }
-    :not(li)>label {
-        display: block;
-        border-top: 0.5px solid $border-color-showcockpit;
-        font-size: 1.5rem;
-        margin-top: 1.5rem;
-        font-weight: bold;
+    &.wheelfield {
+        &>select {
+        width: 62%;
+        }
+        &>.digital {
+            font-size: 2.1rem;
+            height: auto;
+            width: 20%;
+            min-width: auto;
+        }
     }
+}
