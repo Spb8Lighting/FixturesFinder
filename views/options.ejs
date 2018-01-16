@@ -1,43 +1,44 @@
-<form id="OptionsForm" method="post" action="#">
-	<div class="btn-bar-action">
-        <button class="btn" name="submit" id="submit" type="submit">Save</button>
-        <button class="btn" name="reset" id="reset" type="submit">Reset</button>
-    </div>
+<!-- Form control -->
+<div class="btn-bar-action">
+    <button class="btn" name="submit" id="submit" type="submit">Save</button>
+    <button class="btn" name="reset" id="reset" type="submit">Reset</button>
+</div>
+<form class="flex-container" id="OptionsForm" method="post" action="#">
     <div class="bordered">
 		<fieldset>
             <legend>Search Settings</legend>
 
             <p>By settings search options, the result will differ</p>
 
-            <label class="label" for="SearchMode">Mode</label>
-            <select data-default="Exact" autocomplete="off" name="SearchMode" id="SearchMode">
+            <label class="label" for="<%= config.OptionForm.SearchMode %>">Mode</label>
+            <select data-default="<%= config.OptionForm.SearchMode_OrderExact %>" autocomplete="off" name="<%= config.OptionForm.SearchMode %>" id="<%= config.OptionForm.SearchMode %>">
                 <optgroup label="Ordered (with channel order)">
-                    <option value="exact" selected="selected">Exact</option>
-                    <option value="startwith">StartWith</option>
+                    <option value="<%= config.OptionForm.SearchMode_OrderExact %>" selected="selected">Exact</option>
+                    <option value="<%= config.OptionForm.SearchMode_OrderStart %>">StartWith</option>
                 </optgroup>
                 <optgroup label="Unordered (without channel order)">
-                    <option value="live exact">Live Exact</option>
-                    <option value="live">Live</option>
+                    <option value="<%= config.OptionForm.SearchMode_UnOrderExact %>">Live Exact</option>
+                    <option value="<%= config.OptionForm.SearchMode_UnOrderContain %>">Live</option>
                 </optgroup>
             </select>
 
-            <label class="label" for="DisplayMode">Display</label>
-            <select data-default="0" autocomplete="off" name="DisplayMode" id="DisplayMode">
+            <label class="label" for="<%= config.OptionForm.DisplayMode %>">Display</label>
+            <select data-default="<%= config.OptionForm.DisplayMode_Full %>" autocomplete="off" name="<%= config.OptionForm.DisplayMode %>" id="<%= config.OptionForm.DisplayMode %>">
                 <optgroup label="Full view with DMX Charts">
-                    <option value="0" selected="selected">Detailed</option>
+                    <option value="<%= config.OptionForm.DisplayMode_Full %>" selected="selected">Detailed</option>
                 </optgroup>
                 <optgroup label="DMX Charts hidden">
-                    <option value="1">Simpler</option>
+                    <option value="<%= config.OptionForm.DisplayMode_Simple %>">Simpler</option>
                 </optgroup>
             </select>
 
-            <label class="label" for="FullParam">Parameter</label>
-            <select data-default="0" autocomplete="off" name="FullParam" id="FullParam">
+            <label class="label" for="<%= config.OptionForm.ParameterList %>">Parameter</label>
+            <select data-default="<%= config.OptionForm.ParameterList_Common %>" autocomplete="off" name="<%= config.OptionForm.ParameterList %>" id="<%= config.OptionForm.ParameterList %>">
                 <optgroup label="Most common Channel Type">
-                    <option value="0" selected="selected">Restricted</option>
+                    <option value="<%= config.OptionForm.ParameterList_Common %>" selected="selected">Restricted</option>
                 </optgroup>
                 <optgroup label="Full list of Channel Type">
-                    <option value="1">Full</option>
+                    <option value="<%= config.OptionForm.ParameterList_Full %>">Full</option>
                 </optgroup>
             </select>
         </fieldset>
