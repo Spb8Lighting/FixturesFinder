@@ -9,6 +9,9 @@
 
 ::-webkit-scrollbar-thumb {
     background-color: $scroll-on-showcockpit;
-		border-top: 1px solid black;
-		border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    &:hover {
+        background-color: $text-color-showcockpit;  
+    }
 }
