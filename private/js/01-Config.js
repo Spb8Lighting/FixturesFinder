@@ -12,7 +12,11 @@ const electron = require('electron')
     <rect x="1" y="9" width="4.5" height="2" />
 </svg>`
 }
-,	$btn = { min : document.getElementById('min-btn'), max : document.getElementById('max-btn'), close : document.getElementById('close-btn')}
+,	$btn = {
+        min : document.getElementById('min-btn'),
+        max : document.getElementById('max-btn'),
+        close : document.getElementById('close-btn')
+    }
 ,	$aLink = document.querySelectorAll('aside a')
 ,	$h1	= document.querySelector('h1>span')
 ,	$MainContent = document.getElementById('maincontent')

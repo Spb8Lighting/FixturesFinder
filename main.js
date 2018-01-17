@@ -1,3 +1,5 @@
+require('require-rebuild')()
+
 const electron = require('electron')
 , sqlite3 = require('sqlite3')
 , ipcMain = electron.ipcMain
@@ -17,7 +19,7 @@ function createWindow () {
 		minWidth				: 900,
 		Height					: 600,
 		minHeight				: 600,
-		frame						: true,
+		frame						: false,
 		maximized				: false,
     center					: true,
 		title						:	'Fixtures Finder',
@@ -50,7 +52,12 @@ app.on('activate', function () {
 
 ipcMain.on('pageChange', (e, data) => {
   let PageName = data.page
-  ejs.renderFile(`${__dirname}/views/${data.page.toLowerCase()}.ejs`, {'config' : config},  (err, data) => {
+  ejs.renderFile(`${__dirname}/views/${data.page.toLowerCase()}.ejs`, { config : config },  (err, data) => {
     e.sender.send('pageChange', { PageName : PageName, page : data })
+  })
+})
+ipcMain.on('ChannelTemplate', (e, data) => {
+  ejs.renderFile(`${__dirname}/views/template/search_channel.ejs`, { config : config, Channel : data.Channel, ChannelType : data.ChannelType},  (err, data) => {
+    e.sender.send('ChannelTemplate', { template : data })
   })
 })
