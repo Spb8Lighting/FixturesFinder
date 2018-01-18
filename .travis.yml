@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "iojs"
+  - "8"
+os:
+  - windows
+env:
+  - TARGET_ARCH=x64
+
+branches:
+  only:
+    - master
+
