@@ -3,18 +3,13 @@ language: node_js
 node_js:
   - "iojs"
 
-sudo: false
+sudo: true
 
 install:
-  - npm install
-  - npm run rebuild
+  - sudo npm install --unsafe-perm=true --allow-root
+  - sudo npm run rebuild
 
 script:
   - npm run start
   - gulp
-
-os:
-  - windows
-env:
-  - TARGET_ARCH=x64
 
