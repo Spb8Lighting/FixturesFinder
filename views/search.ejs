@@ -13,20 +13,20 @@
 
             <label class="label" for="<%= config.SearchForm.DMXChannelCount %>">DMX Channel Count</label>
 
-            <div class="flex-container">
-                <button class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Btn_Rem %>">-</button>
-                <input class="digital" autocomplete="off" type="text" id="<%= config.SearchForm.DMXChannelCount %>" name="<%= config.SearchForm.DMXChannelCount %>" value="001">
-                <button class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Btn_Add %>">+</button>
+            <div class="sticky flex-container">
+                <button type="button" class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Btn_Rem %>">-</button>
+                <input class="digital" autocomplete="off" type="text" id="<%= config.SearchForm.DMXChannelCount %>" name="<%= config.SearchForm.DMXChannelCount %>" value="000" />
+                <button type="button" class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Btn_Add %>">+</button>
             </div>
 
-            <div class="channelfield flex-container">
+            <!--<div class="channelfield flex-container">
                 <label class="label" for="<%= config.SearchForm.BaseName_Channel %>1">#1</label>
                 <select data-default="<%= config.Default.Any %>" autocomplete="off" name="<%= config.SearchForm.BaseName_Channel %>1" id="<%= config.SearchForm.BaseName_Channel %>1">
                     <option value="<%= config.Default.Any %>" selected="selected"><%= config.Default.Any %></option>
                 </select>
             </div>
 
-            <!--<div class="channelfield wheelfield flex-container">
+            <div class="channelfield wheelfield flex-container">
                 <label class="label" for="<%= config.SearchForm.BaseName_Channel %>3">#3</label>
                 <select data-default="<%= config.Default.Any %>" autocomplete="off" name="<%= config.SearchForm.BaseName_Channel %>3" id="<%= config.SearchForm.BaseName_Channel %>3">
                     <option value="<%= config.Default.Any %>"><%= config.Default.Any %></option>
@@ -45,9 +45,9 @@
     
                 <label class="label" for="<%= config.SearchForm.DMXChannelCount_Max %>">Max DMX Channel</label>
                 <div class="flex-container">
-                    <button class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Max_Btn_Rem %>">-</button>
+                    <button type="button" class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Max_Btn_Rem %>">-</button>
                     <input class="digital" autocomplete="off" type="text" id="<%= config.SearchForm.DMXChannelCount_Max %>" name="<%= config.SearchForm.DMXChannelCount_Max %>" value="000">
-                    <button class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Max_Btn_Add %>">+</button>
+                    <button type="button" class="digitbutton btn" id="<%= config.SearchForm.DMXChannelCount_Max_Btn_Add %>">+</button>
                 </div>
     
                 <label class="label" for="<%= config.SearchForm.Manufacturer %>">Manufacturer</label>

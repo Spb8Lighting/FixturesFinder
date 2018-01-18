@@ -18,6 +18,9 @@ select, input {
     font-weight: lighter;
     color: $text-color-showcockpit;
     font-size: 1.35rem;
+    &::selection {
+        background-color: $black-showcockpit;
+    }
 }
 select {
     background-image: url($Select_Arrow);
@@ -30,6 +33,9 @@ select {
 }
 input {
     user-select: text;
+    &:focus {
+        color: $orange-showcockpit;
+    }
 }
 
 .btn, .btn--danger, .btn--ghost, .btn--info, .btn--inverse, .btn--primary, .btn--success, .btn--warning, .button, .button--danger, .button--ghost, .button--info, .button--inverse, .button--primary, .button--success, .button--warning, [type="button"], button {
