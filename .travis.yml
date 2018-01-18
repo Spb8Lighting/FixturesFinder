@@ -16,11 +16,9 @@ sudo:
 
 install:
   - npm install --unsafe-perm=true --allow-root
-  - npm install -g bower
-  - bower install
 
 script:
-  - gulp
+  - gulp js
 
 os: 
   - linux
