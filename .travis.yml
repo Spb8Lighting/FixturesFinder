@@ -1,9 +1,16 @@
 language: node_js
-
 node_js:
   - "iojs"
+cache:
+  npm:
+    - true
 
-sudo: true
+notifications:
+  email:
+    - false
+
+sudo:
+  - required
 
 install:
   - sudo npm install --unsafe-perm=true --allow-root
