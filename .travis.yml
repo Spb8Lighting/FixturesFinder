@@ -15,7 +15,7 @@ sudo:
   - required
 
 install:
-  - sudo npm install --unsafe-perm=true --allow-root
+  - sudo npm install
   - sudo npm run rebuild
 
 script:
