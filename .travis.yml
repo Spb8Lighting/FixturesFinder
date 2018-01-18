@@ -16,10 +16,10 @@ sudo:
 
 install:
   - npm install --unsafe-perm=true --allow-root
-  - npm run rebuild
+  - npm install -g bower
+  - bower install
 
 script:
-  - npm run start
   - gulp
 
 os: 
