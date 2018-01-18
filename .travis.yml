@@ -20,3 +20,9 @@ script:
   - npm run start
   - gulp
 
+- os: 
+  - linux
+
+dist:
+  - xenial
+
