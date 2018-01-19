@@ -53,6 +53,7 @@
   "dependencies": {
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
+    "require-rebuild": "^1.2.8",
     "sqlite3": "^3.1.13"
   }
 }
