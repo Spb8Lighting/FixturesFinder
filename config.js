@@ -3,6 +3,10 @@ module.exports = {
 		Version : 						'0.0.4',
 	//Client Parameter
 		HttpPort :						'8080',
+	//Database Name
+		Database : {
+			Options :					'Options'
+		},
 	//Client Form Parameter
 		Default : {
 			All : 						'All',
