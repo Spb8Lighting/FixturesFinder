@@ -8,7 +8,7 @@
   "license": "CC0-1.0",
   "scripts": {
     "start": "electron main.js",
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "watch": "gulp watch",
     "clean": "rm -rf ./dist/win",
@@ -37,6 +37,7 @@
     "electron-builder": "^19.54.0",
     "electron-packager": "^10.1.1",
     "electron-packager-languages": "^0.1.0",
+    "electron-rebuild": "^1.7.3",
     "electron-winstaller": "^2.6.3",
     "electron-wix-msi": "^1.2.3",
     "gulp": "^3.9.1",
@@ -52,6 +53,7 @@
   "dependencies": {
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
+    "require-rebuild": "^1.2.8",
     "sqlite3": "^3.1.13"
   }
 }

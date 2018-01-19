@@ -1,12 +1,28 @@
-language: node_js
+language: 
+  - node_js
 node_js:
-  - "iojs"
-os:
-  - windows
-env:
-  - TARGET_ARCH=x64
+  - "node"
 
-branches:
-  only:
-    - master
+cache:
+  directories:
+    - node_modules
+
+notifications:
+  email:
+    - false
+
+sudo:
+  - required
+
+install:
+  - npm install --unsafe-perm=true --allow-root
+
+script:
+  - gulp js
+
+os: 
+  - linux
+
+dist:
+  - trusty
 
