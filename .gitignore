@@ -3,5 +3,5 @@
 node_modules
 bower_components
 Build
-dist/win
+dist
 package-lock.json
