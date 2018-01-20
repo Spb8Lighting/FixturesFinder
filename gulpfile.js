@@ -1,5 +1,9 @@
 const gulp = 		require('gulp')
 ,	$ = 			require('gulp-load-plugins')()
+,	config =		require('./config')
+,	SourceFullEJS = 'views/**/*.ejs'
+,	SourceEJS = 	['views/template/*.ejs', 'views/index.ejs']
+,	FolderEJS = 	'public/html/*.html'
 ,	FolderCSS = 	'public/css/*.css'
 ,	FolderIMG = 	'public/img/**/*'
 ,	SourceFont = 	'private/*.ttf'
@@ -7,6 +11,12 @@ const gulp = 		require('gulp')
 ,	SourceJS = 		'private/js/*.js'
 ,	SourceIMG = 	'private/img/**/*'
 
+// Process IMG files to generate distribuable files
+gulp.task('html', () => {
+	return gulp.src(SourceEJS)
+		.pipe($.ejs({ PageTitle : `Fixtures Finder/Search - v${config.Version}`, config: config}, {}, { ext: '.html' }))
+    	.pipe(gulp.dest('public/html'))
+})
 // Process Other files to generate distribuable files
 gulp.task('font', () => {
 	return gulp.src(SourceFont)
@@ -46,10 +56,11 @@ gulp.task('img', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
+	gulp.watch(SourceFullEJS, ['html'])
 	gulp.watch(SourceJS, ['js'])
 	gulp.watch('private/scss/**/*', ['css'])
 	gulp.watch(SourceIMG, ['img'])
 })
 // Default task when gulp command launched
-gulp.task('default', ['font', 'css', 'js', 'img'], () => {
+gulp.task('default', ['html', 'font', 'css', 'js', 'img'], () => {
 })

@@ -7,6 +7,10 @@ module.exports = {
 		Database : {
 			Options :					'Options'
 		},
+	// Default Change
+		ChangeRegex : {
+			Channel :					'__CHANNEL__'
+		},
 	//Client Form Parameter
 		Default : {
 			All : 						'All',
