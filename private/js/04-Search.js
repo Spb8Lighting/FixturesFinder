@@ -9,20 +9,7 @@ let $Elem = {
     DMXChannelCount_Btn_Add :   document.getElementById(config.SearchForm.DMXChannelCount_Btn_Add),
     DMXChannelCount_Btn_Rem :   document.getElementById(config.SearchForm.DMXChannelCount_Btn_Rem),
     FieldSet :                  document.getElementById(config.SearchForm.DMXChannelCount).closest('fieldset'),
-     /**
-     * Reload the Selectors
-     * @returns {void}
-     */
-    Reload : () => {
-        this.Form =                     document.querySelector('form')
-        this.DMXChannelCount =          document.getElementById(config.SearchForm.DMXChannelCount)
-        this.DMXChannelCount_Btn_Add =  document.getElementById(config.SearchForm.DMXChannelCount_Btn_Add)
-        this.DMXChannelCount_Btn_Rem =  document.getElementById(config.SearchForm.DMXChannelCount_Btn_Rem)
-        this.FieldSet =                 document.getElementById(config.SearchForm.DMXChannelCount).closest('fieldset')
-    }
 }
-
-    console.log($Elem)
 
 let DMXChannelSearch = {
     DMXChannelCount : 0,
@@ -119,25 +106,25 @@ $Elem.Form.addEventListener('submit', e => {
 })
 
 /* DMX Channel Count */
-    $Elem.DMXChannelCount.addEventListener('click', () => {
-        $Elem.DMXChannelCount.select()
-    })
-    $Elem.DMXChannelCount.addEventListener('change', e => {
-        e.preventDefault()
-        DMXChannelSearch.AdjustChannelSearch()
-        $Elem.DMXChannelCount.blur()
-    })
+$Elem.DMXChannelCount.addEventListener('click', () => {
+    $Elem.DMXChannelCount.select()
+})
+$Elem.DMXChannelCount.addEventListener('change', e => {
+    e.preventDefault()
+    DMXChannelSearch.AdjustChannelSearch()
+    $Elem.DMXChannelCount.blur()
+})
 
-    // Button +
-    $Elem.DMXChannelCount_Btn_Add.addEventListener('click', e => {
-        e.preventDefault()
-        DMXChannelSearch.AddChannelSearch()
-    })
-    // Button -
-    $Elem.DMXChannelCount_Btn_Rem.addEventListener('click', e => {
-        e.preventDefault()
-        DMXChannelSearch.RemChannelSearch()
-    })
+// Button +
+$Elem.DMXChannelCount_Btn_Add.addEventListener('click', e => {
+    e.preventDefault()
+    DMXChannelSearch.AddChannelSearch()
+})
+// Button -
+$Elem.DMXChannelCount_Btn_Rem.addEventListener('click', e => {
+    e.preventDefault()
+    DMXChannelSearch.RemChannelSearch()
+})
 
 /* Setters */
 ipcRenderer.on('ChannelTemplate', (e, data) => {

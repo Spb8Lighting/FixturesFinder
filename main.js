@@ -1,17 +1,14 @@
 require('require-rebuild')()
 
-const electron = require('electron')
-, sqlite3 = require('sqlite3')
-, ipcMain = electron.ipcMain
-, app = electron.app
+const electron =  require('electron')
+, fs =            require('fs')
+, sqlite3 =       require('sqlite3')
+, ipcMain =       electron.ipcMain
+, app =           electron.app
 , BrowserWindow = electron.BrowserWindow
-, ejs = require('ejs')
-, ejse = require('ejs-electron')
-, config = require('./config')
+, config =        require('./config')
 
 let mainWindow
-
-ejse.data({'Page' : 'search', 'PageTitle' : `Fixtures Finder/Search - v${config.Version}`, 'config' : config}).options('debug', false)
 
 function createWindow () {
   mainWindow = new BrowserWindow({
@@ -27,7 +24,7 @@ function createWindow () {
 		titleBarStyle		: 'customButtonsOnHover'
 	})
 
-  mainWindow.loadURL(`file://${__dirname}/views/index.ejs`)
+  mainWindow.loadURL(`file://${__dirname}/public/html/index.html`)
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools()
@@ -50,14 +47,13 @@ app.on('activate', function () {
   }
 })
 
-ipcMain.on('pageChange', (e, data) => {
-  let PageName = data.page
-  ejs.renderFile(`${__dirname}/views/${data.page.toLowerCase()}.ejs`, { config : config },  (err, data) => {
-    e.sender.send('pageChange', { PageName : PageName, page : data })
-  })
-})
 ipcMain.on('ChannelTemplate', (e, data) => {
-  ejs.renderFile(`${__dirname}/views/template/search_channel.ejs`, { config : config, Channel : data.Channel, ChannelType : data.ChannelType},  (err, data) => {
-    e.sender.send('ChannelTemplate', { template : data })
+  fs.readFile(`${__dirname}/public/html/search_channel.html`, (err, HTML) => {
+    if (err) {
+      return console.error(err)
+    } else {
+      HTML = HTML.toString().replace(new RegExp(config.ChangeRegex.Channel, 'g'), data.Channel)
+      e.sender.send('ChannelTemplate', { template : HTML })
+    }
   })
 })

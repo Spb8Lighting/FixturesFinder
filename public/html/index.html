@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- views/partials/head.ejs -->
+	<meta charset="UTF-8">
+	<title>Fixtures Finder/Search - v0.0.5</title>
+	<link rel="shortcut icon" href="../img/favicon.ico" />
+	<link rel="icon" type="image/icon" href="../img/favicon.ico" />
+
+	<link type="text/css" rel="stylesheet" href="../css/css.min.css" />
+
+</head>
+<body>
+<div id="ApplicationWindowControl" class="grid-3">
+	<a id="min-btn" href="#minimise">
+		<svg viewBox="0 0 20 20">
+			<path d="M 4 19 H16 z" />
+		</svg>
+	<a id="max-btn" href="#maximise">
+		<svg viewBox="0 0 20 20">
+				<path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />
+		</svg>
+	</a>
+	<a id="close-btn" href="#close">
+		<svg viewBox="0 0 20 20">
+			<path d="M 1 1 L 19 19 M 1 19 L 19 1" />
+		</svg>
+	</a>
+</div>
+<h1>
+	<img title="Display Menu" src="../img/ShowCockpit.png" />&nbsp;<span>Fixtures Finder/Search - v0.0.5</span>
+</h1>
+<div class="flex-container">
+	<aside class="w150p">
+		<ul class="is-unstyled">
+			<li><a href="Search" class="finder active">Search</a></li>
+			<li><a href="Options" class="options">Options</a></li>
+			<li><a href="Admin" class="admin">Admin</a></li>
+		</ul>
+	</aside>
+	<div id="maincontent" class="flex-container">
+
+	<!-- Page Content -->
+<div id="Search">
+	<!-- Form control -->
+<div class="btn-bar-action">
+    <button class="btn" name="submit" id="submit" type="submit">Search</button>
+    <button class="btn" name="reset" id="reset" type="submit">Reset</button>
+</div>
+
+<form class="flex-container" id="SearchForm" method="post" action="#">
+    <div class="bordered w250p">
+        <fieldset>
+            <legend>Build the DMX Chart</legend>
+                
+            <p>Set your filter to display matching fixtures</p>
+
+            <label class="label" for="DMXChannelCount">DMX Channel Count</label>
+
+            <div class="sticky flex-container">
+                <button type="button" class="digitbutton btn" id="DMXChannelCount_Rem">-</button>
+                <input class="digital" autocomplete="off" type="text" id="DMXChannelCount" name="DMXChannelCount" value="000" />
+                <button type="button" class="digitbutton btn" id="DMXChannelCount_Add">+</button>
+            </div>
+
+            <!--<div class="channelfield flex-container">
+                <label class="label" for="ch1">#1</label>
+                <select data-default="Any" autocomplete="off" name="ch1" id="ch1">
+                    <option value="Any" selected="selected">Any</option>
+                </select>
+            </div>
+
+            <div class="channelfield wheelfield flex-container">
+                <label class="label" for="ch3">#3</label>
+                <select data-default="Any" autocomplete="off" name="ch3" id="ch3">
+                    <option value="Any">Any</option>
+                    <option value="color" selected="selected">Color</option>
+                </select>
+                <input class="digital" autocomplete="off" type="text" id="Color_Slot1" name="Color_Slot1" value="∞">
+            </div>-->
+
+        </fieldset>
+    </div>
+    <div class="bordered w250p">
+            <fieldset>
+                <legend>Other Criteria</legend>
+
+                <p>To refine your search</p>
+    
+                <label class="label" for="DMXChannelCount_Max">Max DMX Channel</label>
+                <div class="flex-container">
+                    <button type="button" class="digitbutton btn" id="DMXChannelCount_Max_Rem">-</button>
+                    <input class="digital" autocomplete="off" type="text" id="DMXChannelCount_Max" name="DMXChannelCount_Max" value="000">
+                    <button type="button" class="digitbutton btn" id="DMXChannelCount_Max_Add">+</button>
+                </div>
+    
+                <label class="label" for="Manufacturer">Manufacturer</label>
+                <select data-default="All" autocomplete="off" name="Manufacturer" id="Manufacturer">
+                    <optgroup label="A">
+                        <option value="All" selected="selected">All</option>
+                    </optgroup>
+                </select>
+    
+                <label class="label" for="FixtureName">Fixture Name</label>
+                <select data-default="All" autocomplete="off" name="FixtureName" id="FixtureName">
+                    <optgroup label="A">
+                        <option value="All" selected="selected">All</option>
+                    </optgroup>
+                </select>
+            </fieldset>
+        </div>
+    <div id="Results" class="bordered">
+    </div>
+</form>
+</div>
+<div class="hide" id="Options">
+	<!-- Form control -->
+<div class="btn-bar-action">
+    <button class="btn" name="submit" id="submit" type="submit">Save</button>
+    <button class="btn" name="reset" id="reset" type="submit">Reset</button>
+</div>
+<form class="flex-container" id="OptionsForm" method="post" action="#">
+    <div class="bordered">
+		<fieldset>
+            <legend>Search Settings</legend>
+
+            <p>By settings search options, the result will differ</p>
+
+            <label class="label" for="SearchMode">Mode</label>
+            <select data-default="SearchMode_Order_Exact" autocomplete="off" name="SearchMode" id="SearchMode">
+                <optgroup label="Ordered (with channel order)">
+                    <option value="SearchMode_Order_Exact" selected="selected">Exact</option>
+                    <option value="SearchMode_Order_Start">StartWith</option>
+                </optgroup>
+                <optgroup label="Unordered (without channel order)">
+                    <option value="SearchMode_UnOrder_Exact">Live Exact</option>
+                    <option value="SearchMode_UnOrder_Contain">Live</option>
+                </optgroup>
+            </select>
+
+            <label class="label" for="DisplayMode">Display</label>
+            <select data-default="DisplayMode_Full" autocomplete="off" name="DisplayMode" id="DisplayMode">
+                <optgroup label="Full view with DMX Charts">
+                    <option value="DisplayMode_Full" selected="selected">Detailed</option>
+                </optgroup>
+                <optgroup label="DMX Charts hidden">
+                    <option value="DisplayMode_Simple">Simpler</option>
+                </optgroup>
+            </select>
+
+            <label class="label" for="ParameterList">Parameter</label>
+            <select data-default="ParameterList_Common" autocomplete="off" name="ParameterList" id="ParameterList">
+                <optgroup label="Most common Channel Type">
+                    <option value="ParameterList_Common" selected="selected">Restricted</option>
+                </optgroup>
+                <optgroup label="Full list of Channel Type">
+                    <option value="ParameterList_Full">Full</option>
+                </optgroup>
+            </select>
+        </fieldset>
+    </div>
+</form>
+</div>
+<div class="hide" id="Admin">
+	<!-- Form control -->
+<div class="btn-bar-action">
+	<button class="btn" name="submit" id="submit" type="submit">Proceed</button>
+</div>
+
+<form class="flex-container" id="AdminForm" method="post" action="#">
+	<div class="bordered">
+		<fieldset>
+			<legend>Ingestions</legend>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="IngestAllLibraries" name="IngestAllLibraries">
+					<label class="label" for="IngestAllLibraries">Global Ingestion (on = All Releases)
+				</li>
+			</ul>
+			<ol> 
+				<li>
+					<input type="checkbox" class="checkbox" id="IngestAccessories" name="IngestAccessories">
+					<label class="label" for="IngestAccessories">Ingest Manufacturers Wheels</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="IngestFixture" name="IngestFixture">
+					<label class="label" for="IngestFixture">Ingest Fixtures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="UpdateFixtureAccessories" name="UpdateFixtureAccessories">
+					<label class="label" for="UpdateFixtureAccessories">Update Fixtures Profile with Pictures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="ComputeFixtureChangelog" name="ComputeFixtureChangelog">
+					<label class="label" for="ComputeFixtureChangelog">Compute Fixtures Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="ExtractFixtureParameters" name="ExtractFixtureParameters">
+					<label class="label" for="ExtractFixtureParameters">Extract Fixture Parameters</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="ComputeFFStats" name="ComputeFFStats">
+					<label class="label" for="ComputeFFStats">Compute FF@ Statistics</label>
+				</li>
+			</ol>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="IngestFixturePresets" name="IngestFixturePresets">
+					<label class="label" for="IngestFixturePresets">Ingest Fixture Preset only</label>
+				</li>
+			</ul>
+		</fieldset>
+		<fieldset>
+			<legend>Referencing</legend>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="RenewSitemap" name="RenewSitemap">
+					<label class="label" for="RenewSitemap">Renew the Sitemap</label>
+				</li>
+			</ul>
+		</fieldset>
+		<fieldset>
+			<legend>Cache Management</legend>
+			<ul class="is-unstyled">
+				<li>
+					<input type="checkbox" class="switch" id="CacheCleanAll" name="CacheCleanAll">
+					<label class="label" for="CacheCleanAll">Clean all caches</label>
+				</li>
+			</ul>
+			<ul>
+				<li>
+					<input type="checkbox" class="checkbox" id="CacheFFChangelog" name="CacheFFChangelog">
+					<label class="label" for="CacheFFChangelog">Clean FF@ Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="CacheLibraryChangelog" name="CacheLibraryChangelog">
+					<label class="label" for="CacheLibraryChangelog">Clean Library  Changelog</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="CacheFixtureList" name="CacheFixtureList">
+					<label class="label" for="CacheFixtureList">Clean Fixture List</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="CacheFixture" name="CacheFixture">
+					<label class="label" for="CacheFixture">Clean Fixtures</label>
+				</li>
+				<li>
+					<input type="checkbox" class="checkbox" id="CacheSearch" name="CacheSearch">
+					<label class="label" for="CacheSearch">Clean Fixtures</label>
+				</li>
+			</ul>
+		</fieldset>
+	</div>
+	<div id="Results" class="bordered">
+	</div>
+</form>
+
+</div>
+
+	</div>
+</div>
+
+<script>
+	require('../js/app.js')
+</script>
+
+</body>
+</html>
