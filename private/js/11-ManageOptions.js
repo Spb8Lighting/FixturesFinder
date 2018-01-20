@@ -10,7 +10,7 @@ let Table = {
         Initialize : () => {
             db.serialize(() => {
                 /* Create and fill the Database for Options */
-                db.run('CREATE TABLE `' + config.Database.Options + '` ( `' + config.OptionForm.SearchMode + '` TEXT, `' + config.OptionForm.DisplayMode + '` TEXT, `' + config.OptionForm.ParameterList + '` TEXT )')
+                db.run('CREATE TABLE IF NOT EXISTS `' + config.Database.Options + '` ( `' + config.OptionForm.SearchMode + '` TEXT, `' + config.OptionForm.DisplayMode + '` TEXT, `' + config.OptionForm.ParameterList + '` TEXT )')
                 db.run('INSERT INTO `' + config.Database.Options + '` ( `' + config.OptionForm.SearchMode + '`, `' + config.OptionForm.DisplayMode + '`, `' + config.OptionForm.ParameterList + '`) VALUES ($SearchMode, $DisplayMode, $ParameterList)', {
                     $SearchMode : config.OptionForm.SearchMode_OrderExact,
                     $DisplayMode : config.OptionForm.DisplayMode_Full,

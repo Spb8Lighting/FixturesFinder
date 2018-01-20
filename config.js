@@ -13,6 +13,11 @@ module.exports = {
 			Any :						'Any',
 			Infinity :					'∞'
 		},
+		Page : {
+			Search : 					'Search',
+			Options : 					'Options',
+			Admin : 					'Admin'
+		},
 		SearchForm : {
 			Manufacturer :					'Manufacturer',
 			FixtureName :					'FixtureName',

@@ -1,36 +1,66 @@
-const	$Elem = {
-    Form : document.querySelector('form'),
-    DMXChannelCount : document.getElementById(config.SearchForm.DMXChannelCount),
-    DMXChannelCount_Btn_Add : document.getElementById(config.SearchForm.DMXChannelCount_Btn_Add),
-    DMXChannelCount_Btn_Rem : document.getElementById(config.SearchForm.DMXChannelCount_Btn_Rem)
-}
-,   FieldSetChannelContent = $Elem.DMXChannelCount.closest('fieldset')
-,   SelectContent = {
+const	SelectContent = {
         Default : [{id:'any',text:'Any'},{id:'intensity',text:'Intensity'},{id:'intensity fine',text:'Intensity Fine'},{id:'strobe',text:'Strobe'},{id:'shutter',text:'Shutter'},{id:'pan',text:'Pan'},{id:'pan fine',text:'Pan Fine'},{id:'pan rot',text:'Pan Rot'},{id:'tilt',text:'Tilt'},{id:'tilt fine',text:'Tilt Fine'},{id:'tilt rot',text:'Tilt Rot'},{id:'pt speed',text:'PT Speed'},{id:'color',text:'Color'},{id:'color macro',text:'Color Macro'},{id:'red',text:'Red'},{id:'red fine',text:'Red Fine'},{id:'green',text:'Green'},{id:'green fine',text:'Green Fine'},{id:'blue',text:'Blue'},{id:'blue fine',text:'Blue Fine'},{id:'white',text:'White'},{id:'white fine',text:'White Fine'},{id:'amber',text:'Amber'},{id:'amber fine',text:'Amber Fine'},{id:'uv',text:'UV'},{id:'uv fine',text:'UV Fine'},{id:'cyan',text:'Cyan'},{id:'cyan fine',text:'Cyan Fine'},{id:'magenta',text:'Magenta'},{id:'magenta fine',text:'Magenta Fine'},{id:'yellow',text:'Yellow'},{id:'yellow fine',text:'Yellow Fine'},{id:'ctc',text:'CTC'},{id:'ctc fine',text:'CTC Fine'},{id:'cto',text:'CTO'},{id:'cto fine',text:'CTO Fine'},{id:'gobo',text:'Gobo'},{id:'gobo rot',text:'Gobo Rot'},{id:'prism',text:'Prism'},{id:'prism rot',text:'Prism Rot'},{id:'zoom',text:'Zoom'},{id:'focus',text:'Focus'},{id:'frost',text:'Frost'},{id:'iris',text:'Iris'},{id:'macro',text:'Macro'},{id:'chase',text:'Chase'},{id:'fx',text:'FX'},{id:'ctrl',text:'Ctrl'}],
         Actual : '',
         Full = [{id:'any',text:'Any'},{id:'access',text:'Access'},{id:'address',text:'Address'},{id:'adjust dn',text:'Adjust Dn'},{id:'adjust up',text:'Adjust Up'},{id:'adv blue high',text:'Adv Blue High'},{id:'adv blue low',text:'Adv Blue Low'},{id:'adv blue mid',text:'Adv Blue Mid'},{id:'adv green high',text:'Adv Green High'},{id:'adv green low',text:'Adv Green Low'},{id:'adv green mid',text:'Adv Green Mid'},{id:'adv red high',text:'Adv Red High'},{id:'adv red low',text:'Adv Red Low'},{id:'adv red mid',text:'Adv Red Mid'},{id:'advance col',text:'Advance Col'},{id:'age',text:'Age'},{id:'align ctrl',text:'Align Ctrl'},{id:'alpha',text:'Alpha'},{id:'amber',text:'Amber'},{id:'amber fine',text:'Amber Fine'},{id:'amberc',text:'AmberC'},{id:'ambience',text:'Ambience'},{id:'ambient',text:'Ambient'},{id:'anchor x',text:'Anchor X'},{id:'anchor y',text:'Anchor Y'},{id:'anchor z',text:'Anchor Z'},{id:'angle',text:'Angle'},{id:'anim',text:'Anim'},{id:'anim 1',text:'Anim 1'},{id:'anim 1 fnc',text:'Anim 1 Fnc'},{id:'anim 1 rot',text:'Anim 1 Rot'},{id:'anim 1 rot fine',text:'Anim 1 Rot Fine'},{id:'anim 2',text:'Anim 2'},{id:'anim 2 fnc',text:'Anim 2 Fnc'},{id:'anim 2 rot',text:'Anim 2 Rot'},{id:'anim 2 rot fine',text:'Anim 2 Rot Fine'},{id:'anim ctrl 1',text:'Anim Ctrl 1'},{id:'anim ctrl 2',text:'Anim Ctrl 2'},{id:'anim fine',text:'Anim Fine'},{id:'anim fnc',text:'Anim Fnc'},{id:'anim ind',text:'Anim Ind'},{id:'anim index',text:'Anim Index'},{id:'anim macro',text:'Anim Macro'},{id:'anim mode',text:'Anim Mode'},{id:'anim phase',text:'Anim Phase'},{id:'anim rot',text:'Anim Rot'},{id:'anim rot 1',text:'Anim Rot 1'},{id:'anim rot 2',text:'Anim Rot 2'},{id:'anim rot fine',text:'Anim Rot Fine'},{id:'anim speed',text:'Anim Speed'},{id:'animated star',text:'Animated Star'},{id:'animation',text:'Animation'},{id:'anti aliasing',text:'Anti Aliasing'},{id:'artnet in',text:'ArtNet In'},{id:'aspect',text:'Aspect'},{id:'aspect fine',text:'Aspect Fine'},{id:'aspect mode',text:'Aspect Mode'},{id:'aspect ratio',text:'Aspect Ratio'},{id:'aspect ratio fine',text:'Aspect Ratio Fine'},{id:'atmosphere',text:'Atmosphere'},{id:'audio',text:'Audio'},{id:'audio file',text:'Audio File'},{id:'audio fine',text:'Audio Fine'},{id:'audio fnc',text:'Audio Fnc'},{id:'audio gain',text:'Audio Gain'},{id:'audio in',text:'Audio In'},{id:'audio l',text:'Audio L'},{id:'audio library',text:'Audio Library'},{id:'audio out',text:'Audio Out'},{id:'audio pan',text:'Audio Pan'},{id:'audio pan fine',text:'Audio Pan Fine'},{id:'audio r',text:'Audio R'},{id:'audio sync',text:'Audio Sync'},{id:'audio volume',text:'Audio Volume'},{id:'audio wav',text:'Audio Wav'},{id:'auto',text:'Auto'},{id:'auto fade',text:'Auto Fade'},{id:'auto focus',text:'Auto Focus'},{id:'auto focus adj',text:'Auto Focus Adj'}]
     }
+let $Elem = {
+    Form :                      document.querySelector('form'),
+    DMXChannelCount :           document.getElementById(config.SearchForm.DMXChannelCount),
+    DMXChannelCount_Btn_Add :   document.getElementById(config.SearchForm.DMXChannelCount_Btn_Add),
+    DMXChannelCount_Btn_Rem :   document.getElementById(config.SearchForm.DMXChannelCount_Btn_Rem),
+    FieldSet :                  document.getElementById(config.SearchForm.DMXChannelCount).closest('fieldset'),
+     /**
+     * Reload the Selectors
+     * @returns {void}
+     */
+    Reload : () => {
+        this.Form =                     document.querySelector('form')
+        this.DMXChannelCount =          document.getElementById(config.SearchForm.DMXChannelCount)
+        this.DMXChannelCount_Btn_Add =  document.getElementById(config.SearchForm.DMXChannelCount_Btn_Add)
+        this.DMXChannelCount_Btn_Rem =  document.getElementById(config.SearchForm.DMXChannelCount_Btn_Rem)
+        this.FieldSet =                 document.getElementById(config.SearchForm.DMXChannelCount).closest('fieldset')
+    }
+}
+
+    console.log($Elem)
 
 let DMXChannelSearch = {
     DMXChannelCount : 0,
+    /**
+     * Reset the DMX Count value to 1
+     * @returns {void}
+     */
     Reset : () => {
         this.DMXChannelCount = 1
         $Elem.DMXChannelCount.value = '001'
         return this
     },
-    Format : int => ('000' + int).substr(-3),
-    // Set the DMXChannelCount
-    Set : str => {
-        str = parseInt(str)
+    /**
+     * Set value on 3 digits by adding 0 in front of the value
+     * @param {int} val
+     * @returns {string}
+     */
+    Format : val => ('000' + val).substr(-3),
+     /**
+     * Set DMX Channel Count Value
+     * @param {int|string} val
+     * @returns {void}
+     */
+    Set : val => {
+        val = parseInt(val)
         // If value set is inside the DMX range value (1-512)
-        if(str >= 1 && str <= 512) {
-            this.DMXChannelCount = str
-            $Elem.DMXChannelCount.value = DMXChannelSearch.Format(str)
+        if(val >= 1 && val <= 512) {
+            this.DMXChannelCount = val
+            $Elem.DMXChannelCount.value = DMXChannelSearch.Format(val)
         } else {
             $Elem.DMXChannelCount.value = DMXChannelSearch.Format(this.DMXChannelCount)
         }
         return this
     },
+     /**
+     * Adjust the number of DMX Select in the form
+     * @returns {void}
+     */
     AdjustChannelSearch : () => {
         let Result = parseInt($Elem.DMXChannelCount.value) - this.DMXChannelCount
         $Elem.DMXChannelCount.value = this.DMXChannelCount
@@ -46,7 +76,10 @@ let DMXChannelSearch = {
             return DMXChannelSearch.Set(this.DMXChannelCount)
         }
     },
-    // Add a channel select
+     /**
+     * Add 1 DMX Select in the form
+     * @returns {void}
+     */
     AddChannelSearch : () => {
         let str = parseInt($Elem.DMXChannelCount.value) + 1
         // If value set is inside the DMX range value (1-512)
@@ -57,7 +90,10 @@ let DMXChannelSearch = {
             return this
         }
     },
-    // Remove a channel select
+     /**
+     * Remove 1 DMX Select in the form
+     * @returns {void}
+     */
     RemChannelSearch : () => {
         let str = parseInt($Elem.DMXChannelCount.value) - 1
         // If value set is inside the DMX range value (1>512)
@@ -73,6 +109,9 @@ let DMXChannelSearch = {
         }
     }
 }
+
+/* Initialize */
+    DMXChannelSearch.AddChannelSearch()
 
 /* Getters */
 $Elem.Form.addEventListener('submit', e => {
@@ -100,10 +139,7 @@ $Elem.Form.addEventListener('submit', e => {
         DMXChannelSearch.RemChannelSearch()
     })
 
-/* Initialize */
-    DMXChannelSearch.AddChannelSearch()
-
 /* Setters */
 ipcRenderer.on('ChannelTemplate', (e, data) => {
-    FieldSetChannelContent.insertAdjacentHTML('beforeend', data.template)
+    $Elem.FieldSet.insertAdjacentHTML('beforeend', data.template)
 })
