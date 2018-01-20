@@ -52,7 +52,7 @@ let Table = {
     * @returns {void}
     */
     Close : () => {
-        db.Options.close(err => {
+        db.close(err => {
             if(err) {
                 return console.error(err.message)
             } else {
@@ -64,3 +64,4 @@ let Table = {
 }
 
 Table.Options.Initialize()
+Table.Close()
