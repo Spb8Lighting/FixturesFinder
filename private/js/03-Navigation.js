@@ -13,4 +13,9 @@ $aLink.forEach(elem => {
 ipcRenderer.on('pageChange', (e, data) => {
     $MainContent.innerHTML = data.page
     $h1.innerHTML = `Fixtures Finder/${data.PageName} - v${config.Version}`
+    // If the page is the search one, relaunch the first channel add
+    if(data.PageName == config.Page.Search) {
+        $Elem.Reload()
+        DMXChannelSearch.AddChannelSearch()
+    }
 })
