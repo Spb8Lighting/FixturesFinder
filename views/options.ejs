@@ -1,44 +1,43 @@
 <!-- Form control -->
 <div class="btn-bar-action">
-    <button class="btn" name="submit" id="submit" type="submit">Save</button>
-    <button class="btn" name="reset" id="reset" type="submit">Reset</button>
+    <button class="btn" name="reset" id="<%= config.Form.Option.Form %>reset" type="submit">Reset</button>
 </div>
-<form class="flex-container" id="OptionsForm" method="post" action="#">
+<form class="flex-container" id="<%= config.Form.Option.Form %>" method="post" action="#">
     <div class="bordered">
 		<fieldset>
             <legend>Search Settings</legend>
 
             <p>By settings search options, the result will differ</p>
 
-            <label class="label" for="<%= config.OptionForm.SearchMode %>">Mode</label>
-            <select data-default="<%= config.OptionForm.SearchMode_OrderExact %>" autocomplete="off" name="<%= config.OptionForm.SearchMode %>" id="<%= config.OptionForm.SearchMode %>">
+            <label class="label" for="<%= config.Form.Option.SearchMode %>">Mode</label>
+            <select data-default="<%= config.Form.Option.SearchMode_OrderExact %>" autocomplete="off" name="<%= config.Form.Option.SearchMode %>" id="<%= config.Form.Option.SearchMode %>">
                 <optgroup label="Ordered (with channel order)">
-                    <option value="<%= config.OptionForm.SearchMode_OrderExact %>" selected="selected">Exact</option>
-                    <option value="<%= config.OptionForm.SearchMode_OrderStart %>">StartWith</option>
+                    <option value="<%= config.Form.Option.SearchMode_OrderExact %>" selected="selected">Exact</option>
+                    <option value="<%= config.Form.Option.SearchMode_OrderStart %>">StartWith</option>
                 </optgroup>
                 <optgroup label="Unordered (without channel order)">
-                    <option value="<%= config.OptionForm.SearchMode_UnOrderExact %>">Live Exact</option>
-                    <option value="<%= config.OptionForm.SearchMode_UnOrderContain %>">Live</option>
+                    <option value="<%= config.Form.Option.SearchMode_UnOrderExact %>">Live Exact</option>
+                    <option value="<%= config.Form.Option.SearchMode_UnOrderContain %>">Live</option>
                 </optgroup>
             </select>
 
-            <label class="label" for="<%= config.OptionForm.DisplayMode %>">Display</label>
-            <select data-default="<%= config.OptionForm.DisplayMode_Full %>" autocomplete="off" name="<%= config.OptionForm.DisplayMode %>" id="<%= config.OptionForm.DisplayMode %>">
+            <label class="label" for="<%= config.Form.Option.DisplayMode %>">Display</label>
+            <select data-default="<%= config.Form.Option.DisplayMode_Full %>" autocomplete="off" name="<%= config.Form.Option.DisplayMode %>" id="<%= config.Form.Option.DisplayMode %>">
                 <optgroup label="Full view with DMX Charts">
-                    <option value="<%= config.OptionForm.DisplayMode_Full %>" selected="selected">Detailed</option>
+                    <option value="<%= config.Form.Option.DisplayMode_Full %>" selected="selected">Detailed</option>
                 </optgroup>
                 <optgroup label="DMX Charts hidden">
-                    <option value="<%= config.OptionForm.DisplayMode_Simple %>">Simpler</option>
+                    <option value="<%= config.Form.Option.DisplayMode_Simple %>">Simpler</option>
                 </optgroup>
             </select>
 
-            <label class="label" for="<%= config.OptionForm.ParameterList %>">Parameter</label>
-            <select data-default="<%= config.OptionForm.ParameterList_Common %>" autocomplete="off" name="<%= config.OptionForm.ParameterList %>" id="<%= config.OptionForm.ParameterList %>">
+            <label class="label" for="<%= config.Form.Option.ParameterList %>">Parameter</label>
+            <select data-default="<%= config.Form.Option.ParameterList_Common %>" autocomplete="off" name="<%= config.Form.Option.ParameterList %>" id="<%= config.Form.Option.ParameterList %>">
                 <optgroup label="Most common Channel Type">
-                    <option value="<%= config.OptionForm.ParameterList_Common %>" selected="selected">Restricted</option>
+                    <option value="<%= config.Form.Option.ParameterList_Common %>" selected="selected">Restricted</option>
                 </optgroup>
                 <optgroup label="Full list of Channel Type">
-                    <option value="<%= config.OptionForm.ParameterList_Full %>">Full</option>
+                    <option value="<%= config.Form.Option.ParameterList_Full %>">Full</option>
                 </optgroup>
             </select>
         </fieldset>
