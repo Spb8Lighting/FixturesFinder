@@ -1,4 +1,7 @@
-let Table = {
+let DBSearch
+, DBOption
+, DBAdmin
+, Table = {
     /**
     * "Options" Table getters and setters
     */
@@ -11,9 +14,10 @@ let Table = {
             db.serialize(() => {
                 /* Create and fill the Database for Options */
                 Table.Options.Create()
-                db.get('SELECT COUNT(*) AS `count` FROM `' + config.Database.Options + '`', (err, row) => {
+                let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.Options}\``
+                db.get(sql, (err, row) => {
                     if (err) {
-                        return console.error(err.message);
+                        return console.error(err.message)
                     } else {
                         if(row.count > 1) {
                             console.log('Empty and Fill')
@@ -26,6 +30,7 @@ let Table = {
                         }
                     }
                 })
+                Table.Options.Get()
             })
             return this
         },
@@ -34,7 +39,8 @@ let Table = {
         * @returns {void}
         */
         Create : () => {
-            db.run('CREATE TABLE IF NOT EXISTS `' + config.Database.Options + '` ( `' + config.Form.Option.SearchMode + '` TEXT, `' + config.Form.Option.DisplayMode + '` TEXT, `' + config.Form.Option.ParameterList + '` TEXT )')
+            let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\` TEXT, \`${config.Form.Option.DisplayMode}\` TEXT, \`${config.Form.Option.ParameterList}\` TEXT )`
+            db.run(sql)
             return this
         },
          /**
@@ -42,7 +48,8 @@ let Table = {
         * @returns {void}
         */
         Delete : () => {
-            db.run('DROP TABLE `' + config.Database.Options + '`')
+            let sql = `DROP TABLE \`${config.Database.Options}\``
+            db.run(sql)
             return this
         },
         /**
@@ -60,13 +67,32 @@ let Table = {
         * @returns {void}
         */
         Fill : () => {
-            db.serialize(() => {
-                /* Reset the options to its default */
-                db.run('INSERT INTO `' + config.Database.Options + '` ( `' + config.Form.Option.SearchMode + '`, `' + config.Form.Option.DisplayMode + '`, `' + config.Form.Option.ParameterList + '`) VALUES ($SearchMode, $DisplayMode, $ParameterList)', {
-                    $SearchMode : config.Form.Option.SearchMode_OrderExact,
-                    $DisplayMode : config.Form.Option.DisplayMode_Full,
-                    $ParameterList : config.Form.Option.ParameterList_Common
-                })
+            /* Reset the options to its default */
+            let sql = `INSERT INTO \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\`) VALUES ($SearchMode, $DisplayMode, $ParameterList)`
+            , param = {
+                $SearchMode : config.Form.Option.SearchMode_OrderExact,
+                $DisplayMode : config.Form.Option.DisplayMode_Full,
+                $ParameterList : config.Form.Option.ParameterList_Common
+            }
+
+            db.run(sql, param)
+            return this
+        },
+        /**
+        * Get options from "Options Table"
+        * @returns {void}
+        */
+        Get : () => {
+            let sql = `SELECT \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\` FROM \`${config.Database.Options}\``
+
+            db.get(sql, (err, data) => {
+                if (err) {
+                    return console.error(err.message)
+                } else {
+                    DBOption = data
+                    DMXChannelMax.CheckDisplay()
+                    RunOption.Reselect()
+                }
             })
             return this
         },
@@ -75,17 +101,23 @@ let Table = {
         * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} data
         * @returns {void}
         */
-        Update : (data) => {
-            db.serialize(() => {
-                /* Reset the options to its default */
-                db.Options.run('UPDATE `' + config.Database.Options + '` SET `' + config.Form.Option.SearchMode + '` = $SearchMode, `' + config.Form.Option.DisplayMode + '` = $DisplayMode, `' + config.Form.Option.ParameterList + '` = $ParameterList', {
-                    $SearchMode : data.SearchMode,
-                    $DisplayMode : data.DisplayMode,
-                    $ParameterList : data.ParameterList
-                })
+        Update : data => {
+            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
+            , param = {
+                $SearchMode : data.SearchMode,
+                $DisplayMode : data.DisplayMode,
+                $ParameterList : data.ParameterList
+            }
+
+            db.run(sql, param, err => {
+                if(err) {
+                    return console.error(err.message)
+                } else {
+                    Table.Options.Get()
+                }
             })
             return this
-        },
+        }
     },
     /**
     * Close Database

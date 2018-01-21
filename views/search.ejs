@@ -1,10 +1,10 @@
 <!-- Form control -->
 <div class="btn-bar-action">
-    <button class="btn" name="submit" id="submit" type="submit">Search</button>
-    <button class="btn" name="reset" id="reset" type="submit">Reset</button>
+    <button class="btn" name="submit" id="<%= config.Form.Search.Form %>submit" type="submit">Search</button>
+    <button class="btn" name="reset" id="<%= config.Form.Search.Form %>reset" type="submit">Reset</button>
 </div>
 
-<form class="flex-container" id="SearchForm" method="post" action="#">
+<form class="flex-container" id="<%= config.Form.Search.Form %>" method="post" action="#">
     <div class="bordered w250p">
         <fieldset>
             <legend>Build the DMX Chart</legend>

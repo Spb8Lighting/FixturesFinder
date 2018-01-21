@@ -9,9 +9,10 @@ let $SearchSel = {
     DMXChannelCount_Btn_Add :   document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),
     DMXChannelCount_Btn_Rem :   document.getElementById(config.Form.Search.DMXChannelCount_Btn_Rem),
     FieldSet :                  document.getElementById(config.Form.Search.DMXChannelCount).closest('fieldset'),
-}
-
-let DMXChannelSearch = {
+    DMXChannelCount_Max :       document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
+    DMXChannelCount_Max_Label : document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]')
+},
+DMXChannelSearch = {
     DMXChannelCount : 0,
     /**
      * Reset the DMX Count value to 1
@@ -94,6 +95,38 @@ let DMXChannelSearch = {
         } else {
             return this
         }
+    }
+},
+DMXChannelMax = {
+     /**
+     * Following the DBOption status, will adjust the display status "Max DMX Channel"
+     * @returns {void}
+     */
+    CheckDisplay : () => {
+        console.log('Check Display Fired', DBOption)
+        if(DBOption[config.Form.Option.SearchMode] == config.Form.Option.SearchMode_OrderExact || DBOption[config.Form.Option.SearchMode] == config.Form.Option.SearchMode_UnOrderExact) {
+            DMXChannelMax.Hide()
+        } else {
+            DMXChannelMax.Show()
+        }
+    },
+     /**
+     * Show the "Max DMX Channel"
+     * @returns {void}
+     */
+    Show : () => {
+        $SearchSel.DMXChannelCount_Max_Label.classList.remove('hide')
+        $SearchSel.DMXChannelCount_Max.classList.remove('hide')
+        return this
+    },
+     /**
+     * Hide the "Max DMX Channel"
+     * @returns {void}
+     */
+    Hide : () => {
+        $SearchSel.DMXChannelCount_Max_Label.classList.add('hide')
+        $SearchSel.DMXChannelCount_Max.classList.add('hide')
+        return this
     }
 }
 

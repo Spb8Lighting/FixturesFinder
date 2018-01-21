@@ -23,6 +23,10 @@ module.exports = {
 			Admin : 					'Admin'
 		},
 		Form : {
+			Button : {
+				Reset :					'reset',
+				Submit :				'submit'
+			},
 			Search : {
 				Form :							'SearchForm',
 				Manufacturer :					'Manufacturer',
