@@ -19,5 +19,6 @@ $btn.max.addEventListener('click', e => {
 $btn.close.addEventListener('click', e => {
     e.preventDefault()
     let window = remote.getCurrentWindow()
+    Table.Close()
     window.close()
 })
