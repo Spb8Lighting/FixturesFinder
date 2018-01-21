@@ -1,7 +1,7 @@
 {
   "name": "fixturesfinder",
   "productName": "Fixtures Finder",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Fixtures Finder for Show Cockpit",
   "main": "main.js",
   "author": "Spb8Lighting",
@@ -14,7 +14,7 @@
     "clean": "rm -rf ./dist/win",
     "clean:win": "rm -rf ./dist/win",
     "pack": "npm run clean && gulp css && gulp img && gulp font && npm run pack:win",
-    "pack:win": "npm run clean:win && gulp css && gulp img && gulp font && electron-packager . \"FixturesFinder\" --build-version=0.0.5 --out=dist/win --platform=win32 --arch=x64 --asar --overwrite   --icon=public/img/favicon.ico --prune --version-string.CompanyName=\"Spb8 Lighting\" --version-string.FileDescription=\"Fixtures Finder Beta\" --version-string.ProductName=\"Fixtures Finder\" --ignore=.bowerrc --ignore=.gitattributes --ignore=.gitignore --ignore=bower.json --ignore=bower_components --ignore=private --ignore=node_modules --ignore=dist --ignore=.vscode --ignore=.git",
+    "pack:win": "npm run clean:win && gulp css && gulp img && gulp font && electron-packager . \"FixturesFinder\" --build-version=0.0.6 --out=dist/win --platform=win32 --arch=x64 --asar --overwrite   --icon=public/img/favicon.ico --prune --version-string.CompanyName=\"Spb8 Lighting\" --version-string.FileDescription=\"Fixtures Finder Beta\" --version-string.ProductName=\"Fixtures Finder\" --ignore=.bowerrc --ignore=.gitattributes --ignore=.gitignore --ignore=bower.json --ignore=bower_components --ignore=private --ignore=node_modules --ignore=dist --ignore=.vscode --ignore=.git",
     "build": "npm run build:win",
     "build:win": "npm run pack:win && electron-builder --win --x64"
   },
