@@ -10,7 +10,7 @@ let DBSearch
         * Create the "Options" Table and insert default values
         * @returns {void}
         */
-        Initialize : () => {
+        Initialize : (callback = false) => {
             db.serialize(() => {
                 /* Create and fill the Database for Options */
                 Table.Options.Create()
@@ -20,17 +20,16 @@ let DBSearch
                         return console.error(err.message)
                     } else {
                         if(row.count > 1) {
-                            console.log('Empty and Fill')
                             Table.Options.Delete()
                             Table.Options.Create()
                             Table.Options.Fill()
                         } else if(row.count == 0) {
-                            console.log('Fill')
                             Table.Options.Fill()
                         }
                     }
                 })
-                Table.Options.Get()
+                /* After check of Database, initialize interface */
+                Table.Options.Get(callback)
             })
             return this
         },
@@ -82,7 +81,7 @@ let DBSearch
         * Get options from "Options Table"
         * @returns {void}
         */
-        Get : () => {
+        Get : (callback = false) => {
             let sql = `SELECT \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\` FROM \`${config.Database.Options}\``
 
             db.get(sql, (err, data) => {
@@ -91,7 +90,11 @@ let DBSearch
                 } else {
                     DBOption = data
                     DMXChannelMax.CheckDisplay()
+                    SelectOptions.CheckOptions()
                     RunOption.Reselect()
+                    if(typeof callback === 'function') {
+                        callback()
+                    }
                 }
             })
             return this
@@ -128,11 +131,9 @@ let DBSearch
             if(err) {
                 return console.error(err.message)
             } else {
-                console.info('Database connection closed')
+                //console.info('Database connection closed')
             }
         })
         return this
     }
 }
-
-Table.Options.Initialize()
