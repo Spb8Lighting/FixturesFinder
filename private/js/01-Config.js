@@ -20,3 +20,13 @@ const electron = require('electron')
 ,	$aLink = document.querySelectorAll('aside a')
 ,	$h1	= document.querySelector('h1>span')
 ,	$MainContent = document.getElementById('maincontent')
+
+/**
+ * Update Select data-option and blur it
+ * @param {Object} Selector 
+ */
+let SelectListener = Selector => {
+    Selector = Selector.target
+    Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+    Selector.blur()
+}

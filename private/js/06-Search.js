@@ -42,7 +42,9 @@ $SearchSel = {
     DMXChannelCount_Btn_Rem :   document.getElementById(config.Form.Search.DMXChannelCount_Btn_Rem),
     FieldSet :                  document.getElementById(config.Form.Search.DMXChannelCount).closest('fieldset'),
     DMXChannelCount_Max :       document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
-    DMXChannelCount_Max_Label : document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]')
+    DMXChannelCount_Max_Label : document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]'),
+    Manufacturer :              document.getElementById(config.Form.Search.Manufacturer),
+    FixtureName :               document.getElementById(config.Form.Search.FixtureName)
 },
 DMXChannelSearch = {
     DMXChannelCount : 0,
@@ -79,18 +81,23 @@ DMXChannelSearch = {
     },
      /**
      * Adjust the number of DMX Select in the form
+     * @param {Object} [event=false]
      * @returns {void}
      */
-    AdjustChannelSearch : () => {
+    AdjustChannelSearch : (event = false) => {
+        if(event) {
+            event.preventDefault()
+            $SearchSel.DMXChannelCount.blur()
+        }
         let Result = parseInt($SearchSel.DMXChannelCount.value) - this.DMXChannelCount
         $SearchSel.DMXChannelCount.value = this.DMXChannelCount
         if(Result != 0 && Result > 0) {             // Positive Result
             for(let i = 0 ; i < Result ; i++) {
-                DMXChannelSearch.AddChannelSearch()
+                DMXChannelSearch.AddChannelSearch(event)
             }
         } else if(Result != 0 && Result < 0) {      // Negative Result
             for(let i = Result ; i < 0 ; i++) {
-                DMXChannelSearch.RemChannelSearch()
+                DMXChannelSearch.RemChannelSearch(event)
             }
         } else {
             return DMXChannelSearch.Set(this.DMXChannelCount)
@@ -98,10 +105,14 @@ DMXChannelSearch = {
     },
      /**
      * Add 1 DMX Select in the form
+     * @param {Object} [event=false]
      * @returns {void}
      */
-    AddChannelSearch : () => {
-        console.log('add channel', SelectOptions.Options)
+    AddChannelSearch : (event = false) => {
+        if(event) {
+            event.preventDefault()
+            $SearchSel.DMXChannelCount_Btn_Add.blur()
+        }
         let ChannelNumber = parseInt($SearchSel.DMXChannelCount.value) + 1
         // If value set is inside the DMX range value (1-512)
         if(ChannelNumber >= 1 && ChannelNumber <= 512) {
@@ -111,11 +122,16 @@ DMXChannelSearch = {
             return this
         }
     },
-     /**
+    /**
      * Remove 1 DMX Select in the form
+     * @param {Object} [event=false]
      * @returns {void}
      */
-    RemChannelSearch : () => {
+    RemChannelSearch : (event = false) => {
+        if(event) {
+            event.preventDefault()
+            $SearchSel.DMXChannelCount_Btn_Rem.blur()
+        }
         let str = parseInt($SearchSel.DMXChannelCount.value) - 1
         // If value set is inside the DMX range value (1>512)
         if(str >= 1 && str <= 512) {
@@ -128,6 +144,14 @@ DMXChannelSearch = {
         } else {
             return this
         }
+    },
+    /**
+     * Attach a listener for CSS coloring on new Select
+     * @param {Object} Selector
+     * @returns {void}
+     */
+    AddSelectListener : Selector => {
+        Selector.addEventListener('change', SelectListener)
     }
 },
 DMXChannelMax = {
@@ -172,29 +196,24 @@ $SearchSel.Form.addEventListener('submit change', e => {
 })
 
 /* DMX Channel Count */
-$SearchSel.DMXChannelCount.addEventListener('click', () => {
-    $SearchSel.DMXChannelCount.select()
-})
-$SearchSel.DMXChannelCount.addEventListener('change', e => {
-    e.preventDefault()
-    DMXChannelSearch.AdjustChannelSearch()
-    $SearchSel.DMXChannelCount.blur()
-})
+$SearchSel.DMXChannelCount.addEventListener('click', $SearchSel.DMXChannelCount.select)
+$SearchSel.DMXChannelCount.addEventListener('change', DMXChannelSearch.AdjustChannelSearch)
 
 // Button +
-$SearchSel.DMXChannelCount_Btn_Add.addEventListener('click', e => {
-    e.preventDefault()
-    DMXChannelSearch.AddChannelSearch()
-    $SearchSel.DMXChannelCount_Btn_Add.blur()
-})
+$SearchSel.DMXChannelCount_Btn_Add.addEventListener('click', DMXChannelSearch.AddChannelSearch)
 // Button -
-$SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', e => {
-    e.preventDefault()
-    DMXChannelSearch.RemChannelSearch()
-    $SearchSel.DMXChannelCount_Btn_Rem.blur()
-})
+$SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', DMXChannelSearch.RemChannelSearch)
+
+/* Other Criteria */
+
+// Manufacturer
+DMXChannelSearch.AddSelectListener($SearchSel.Manufacturer)
+
+//Fixture Name
+DMXChannelSearch.AddSelectListener($SearchSel.FixtureName)
 
 /* Setters */
+// Add a new DMX Channel Search
 ipcRenderer.on('ChannelTemplate', (e, data) => {
     $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
     let Select = document.getElementById(data.selector)
@@ -204,4 +223,5 @@ ipcRenderer.on('ChannelTemplate', (e, data) => {
         option.text =   SelectOptions.Options[i].text
         Select.add(option)
     }
+    DMXChannelSearch.AddSelectListener(Select)
 })
