@@ -40,7 +40,7 @@ let RunOption = {
     }
 }
 
-$OptionsSel.Form.addEventListener('change', e => {
+$OptionsSel.Form.addEventListener('submit change', e => {
     e.preventDefault()
     RunOption.Update()
 })

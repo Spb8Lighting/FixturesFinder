@@ -3,6 +3,6 @@ const sqlite3 = require('sqlite3').verbose()
     if(err) {
         return console.error(err.message)
     } else {
-        console.info('Database Option connection alive')
+        //console.info('Database Option connection alive')
     }
 })
