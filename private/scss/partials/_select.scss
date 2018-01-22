@@ -47,7 +47,7 @@
 }
 select {
     text-align-last: center;
-    &:not([data-option=any], [data-option=All], [data-option=""]) {
+    &:not([data-option=any]):not([data-option=All]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
         background: linear-gradient(to right, #6b1816, #6b1816, #511210);
         font-weight: bold;
