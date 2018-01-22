@@ -22,6 +22,13 @@ const electron = require('electron')
 ,	$MainContent = document.getElementById('maincontent')
 
 /**
+ * Attach a listener for CSS coloring on new Select
+ * @param {Object} Selector
+ */
+let AddSelectListener = Selector => {
+    Selector.addEventListener('change', SelectListener)
+}
+/**
  * Update Select data-option and blur it
  * @param {Object} Selector 
  */

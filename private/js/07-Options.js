@@ -10,7 +10,8 @@ let RunOption = {
      * Reset the DMX Count value to 1
      * @returns {void}
      */
-    Reset : () => {
+    Reset : event => {
+        event.preventDefault()
         Table.Options.Reset()
         $OptionsSel.ResetButton.blur()
         return this
@@ -19,7 +20,9 @@ let RunOption = {
      * Set value on 3 digits by adding 0 in front of the value
      * @returns {void}
      */
-    Update : () => {
+    UpdateAll : event => {
+        console.log('update')
+        event.preventDefault()
         let data = {
             SearchMode : $OptionsSel.SearchMode.value,
             DisplayMode : $OptionsSel.DisplayMode.value,
@@ -36,15 +39,24 @@ let RunOption = {
         $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
         $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true
         $OptionsSel.ParameterList.querySelector('option[value="' + DBOption.ParameterList + '"]').selected = true
+        let event = new Event('change')
+        $OptionsSel.SearchMode.dispatchEvent(event)
+        $OptionsSel.DisplayMode.dispatchEvent(event)
+        $OptionsSel.ParameterList.dispatchEvent(event)
         return this
     }
 }
 
-$OptionsSel.Form.addEventListener('submit change', e => {
-    e.preventDefault()
-    RunOption.Update()
-})
-$OptionsSel.ResetButton.addEventListener('click', e => {
-    e.preventDefault()
-    RunOption.Reset()
-})
+$OptionsSel.Form.addEventListener('submit change', RunOption.UpdateAll)
+$OptionsSel.ResetButton.addEventListener('click', RunOption.Reset)
+
+/* Other Criteria */
+
+// Search Mode
+AddSelectListener($OptionsSel.SearchMode)
+
+// Display Mode
+AddSelectListener($OptionsSel.DisplayMode)
+
+// Parameter List
+AddSelectListener($OptionsSel.ParameterList)

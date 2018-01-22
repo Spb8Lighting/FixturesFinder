@@ -144,14 +144,6 @@ DMXChannelSearch = {
         } else {
             return this
         }
-    },
-    /**
-     * Attach a listener for CSS coloring on new Select
-     * @param {Object} Selector
-     * @returns {void}
-     */
-    AddSelectListener : Selector => {
-        Selector.addEventListener('change', SelectListener)
     }
 },
 DMXChannelMax = {
@@ -207,10 +199,10 @@ $SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', DMXChannelSearch.Re
 /* Other Criteria */
 
 // Manufacturer
-DMXChannelSearch.AddSelectListener($SearchSel.Manufacturer)
+AddSelectListener($SearchSel.Manufacturer)
 
 //Fixture Name
-DMXChannelSearch.AddSelectListener($SearchSel.FixtureName)
+AddSelectListener($SearchSel.FixtureName)
 
 /* Setters */
 // Add a new DMX Channel Search
@@ -223,5 +215,5 @@ ipcRenderer.on('ChannelTemplate', (e, data) => {
         option.text =   SelectOptions.Options[i].text
         Select.add(option)
     }
-    DMXChannelSearch.AddSelectListener(Select)
+    AddSelectListener(Select)
 })
