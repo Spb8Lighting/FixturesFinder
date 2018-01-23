@@ -55,7 +55,7 @@ let DBSearch
         * Restore defaults Options in "Options" Table
         */
         Reset : () => {
-            Table.Options.Update({
+            Table.Options.Update.All({
                 SearchMode : config.Form.Option.SearchMode_OrderExact,
                 DisplayMode : config.Form.Option.DisplayMode_Full,
                 ParameterList : config.Form.Option.ParameterList_Common
@@ -99,27 +99,79 @@ let DBSearch
             })
             return this
         },
-        /**
-        * Update "Options Table"
-        * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} data
-        * @returns {void}
-        */
-        Update : data => {
-            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
-            , param = {
-                $SearchMode : data.SearchMode,
-                $DisplayMode : data.DisplayMode,
-                $ParameterList : data.ParameterList
-            }
-
-            db.run(sql, param, err => {
-                if(err) {
-                    return console.error(err.message)
-                } else {
-                    Table.Options.Get()
+        Update : {
+             /**
+            * Run Update SQL in "Options Table"
+            * @param {string} sql
+            * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} param
+            * @returns {void}
+            */
+            Run : (sql, param) => {
+                db.run(sql, param, err => {
+                    if(err) {
+                        return console.error(err.message)
+                    } else {
+                        console.info(sql, param, DBOption)
+                        Table.Options.Get()
+                        console.info(DBOption)
+                    }
+                })
+                return this
+            },
+             /**
+            * Update All in "Options Table"
+            * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} data
+            * @returns {void}
+            */
+            All : data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                , param = {
+                    $SearchMode : data.SearchMode,
+                    $DisplayMode : data.DisplayMode,
+                    $ParameterList : data.ParameterList
                 }
-            })
-            return this
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update SearchMode in "Options Table"
+            * @param {{ SearchMode: String }} data
+            * @returns {void}
+            */
+            SearchMode : data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode`
+                , param = {
+                    $SearchMode : data.SearchMode,
+                }
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update DisplayMode in "Options Table"
+            * @param {{ DisplayMode: String }} data
+            * @returns {void}
+            */
+            DisplayMode : data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.DisplayMode}\` = $DisplayMode`
+                , param = {
+                    $DisplayMode : data.DisplayMode,
+                }
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update ParameterList in "Options Table"
+            * @param {{ ParameterList: String }} data
+            * @returns {void}
+            */
+            ParameterList : data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                , param = {
+                    $ParameterList : data.ParameterList,
+                }
+                Table.Options.Update.Run(sql, param)
+                return this
+            }
         }
     },
     /**

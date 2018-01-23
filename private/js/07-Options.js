@@ -16,20 +16,49 @@ let RunOption = {
         $OptionsSel.ResetButton.blur()
         return this
     },
-    /**
-     * Set value on 3 digits by adding 0 in front of the value
-     * @returns {void}
-     */
-    UpdateAll : event => {
-        console.log('update')
-        event.preventDefault()
-        let data = {
-            SearchMode : $OptionsSel.SearchMode.value,
-            DisplayMode : $OptionsSel.DisplayMode.value,
-            ParameterList : $OptionsSel.ParameterList.value
+    Update : {
+        /**
+         * Prepare data for a "Options Table" Update All
+         * @returns {void}
+         */
+        All : event => {
+            console.info('update All')
+            event.preventDefault()
+            let data = {
+                SearchMode : $OptionsSel.SearchMode.value,
+                DisplayMode : $OptionsSel.DisplayMode.value,
+                ParameterList : $OptionsSel.ParameterList.value
+            }
+            Table.Options.Update.All(data)
+            return this
+        },
+        /**
+         * Prepare data to update SearchMode in "Options Table"
+         * @returns {void}
+         */
+        SearchMode : () => {
+            console.info('update SearchMode')
+            Table.Options.Update.SearchMode({SearchMode : $OptionsSel.SearchMode.value})
+            return this
+        },
+        /**
+         * Prepare data to update DisplayMode in "Options Table"
+         * @returns {void}
+         */
+        DisplayMode : () => {
+            console.info('update DisplayMode')
+            Table.Options.Update.DisplayMode({DisplayMode : $OptionsSel.DisplayMode.value})
+            return this
+        },
+        /**
+        * Prepare data to update ParameterList in "Options Table"
+        * @returns {void}
+        */
+        ParameterList : () => {
+            console.info('update ParameterList')
+            Table.Options.Update.ParameterList({ParameterList : $OptionsSel.ParameterList.value})
+            return this
         }
-        Table.Options.Update(data)
-        return this
     },
     /**
      * Select the options based on DB Content
@@ -39,24 +68,20 @@ let RunOption = {
         $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
         $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true
         $OptionsSel.ParameterList.querySelector('option[value="' + DBOption.ParameterList + '"]').selected = true
-        let event = new Event('change')
-        $OptionsSel.SearchMode.dispatchEvent(event)
-        $OptionsSel.DisplayMode.dispatchEvent(event)
-        $OptionsSel.ParameterList.dispatchEvent(event)
         return this
     }
 }
 
-$OptionsSel.Form.addEventListener('submit change', RunOption.UpdateAll)
+$OptionsSel.Form.addEventListener('submit change', RunOption.Update.All)
 $OptionsSel.ResetButton.addEventListener('click', RunOption.Reset)
 
 /* Other Criteria */
 
 // Search Mode
-AddSelectListener($OptionsSel.SearchMode)
+AddSelectListener($OptionsSel.SearchMode, RunOption.Update.SearchMode)
 
 // Display Mode
-AddSelectListener($OptionsSel.DisplayMode)
+AddSelectListener($OptionsSel.DisplayMode, RunOption.Update.DisplayMode)
 
 // Parameter List
-AddSelectListener($OptionsSel.ParameterList)
+AddSelectListener($OptionsSel.ParameterList, RunOption.Update.ParameterList)

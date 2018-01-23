@@ -25,15 +25,12 @@ const electron = require('electron')
  * Attach a listener for CSS coloring on new Select
  * @param {Object} Selector
  */
-let AddSelectListener = Selector => {
-    Selector.addEventListener('change', SelectListener)
-}
-/**
- * Update Select data-option and blur it
- * @param {Object} Selector 
- */
-let SelectListener = Selector => {
-    Selector = Selector.target
-    Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
-    Selector.blur()
+let AddSelectListener = (Selector, callback = false) => {
+    Selector.addEventListener('change', () => {
+        Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+        Selector.blur()
+        if(typeof callback === 'function') {
+            callback()
+        }
+    })
 }
