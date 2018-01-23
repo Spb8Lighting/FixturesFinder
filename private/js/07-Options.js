@@ -66,8 +66,11 @@ let RunOption = {
      */
     Reselect : () => {
         $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
+        $OptionsSel.SearchMode.setAttribute('data-option', DBOption.SearchMode)
         $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true
+        $OptionsSel.DisplayMode.setAttribute('data-option', DBOption.DisplayMode)
         $OptionsSel.ParameterList.querySelector('option[value="' + DBOption.ParameterList + '"]').selected = true
+        $OptionsSel.ParameterList.setAttribute('data-option', DBOption.ParameterList)
         return this
     }
 }
