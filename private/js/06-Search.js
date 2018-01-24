@@ -44,7 +44,11 @@ $SearchSel = {
     DMXChannelCount_Max :       document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
     DMXChannelCount_Max_Label : document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]'),
     Manufacturer :              document.getElementById(config.Form.Search.Manufacturer),
-    FixtureName :               document.getElementById(config.Form.Search.FixtureName)
+    FixtureName :               document.getElementById(config.Form.Search.FixtureName),
+    Button : {
+        Reset :                 document.getElementById(config.Form.Search.Form + config.Form.Button.Reset),
+        QuickSearch :           document.getElementById(config.Form.Search.Form + config.Form.Button.Submit)
+    }
 },
 DMXChannelSearch = {
     DMXChannelCount : 0,
@@ -53,9 +57,17 @@ DMXChannelSearch = {
      * @returns {void}
      */
     Reset : () => {
-        this.DMXChannelCount = 1
+        let event = new Event('change')
+        ,   select = document.getElementById(`${config.Form.Search.BaseName_Channel}1`)
+        // Set the First Channel to "any"
+        select.value = config.Default.Any.toLowerCase()
+        // Reset to 1 the number of channels
         $SearchSel.DMXChannelCount.value = '001'
-        return this
+
+        //Fire change event on both element
+        select.dispatchEvent(event)
+        $SearchSel.DMXChannelCount.dispatchEvent(event)
+        $SearchSel.Button.Reset.blur()
     },
     /**
      * Set value on 3 digits by adding 0 in front of the value
@@ -186,6 +198,10 @@ DMXChannelMax = {
 $SearchSel.Form.addEventListener('submit change', e => {
     e.preventDefault()
 })
+
+/* Buttons */
+// Reset
+$SearchSel.Button.Reset.addEventListener('click', DMXChannelSearch.Reset)
 
 /* DMX Channel Count */
 $SearchSel.DMXChannelCount.addEventListener('click', $SearchSel.DMXChannelCount.select)
