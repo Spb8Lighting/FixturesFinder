@@ -41,59 +41,56 @@
         background: linear-gradient(to right, #A25800, #A25800, #612D06);
     }
 }*/
+$AlphaBack : .9;
 @mixin SelectDataOption($list, $angle: 'to right') {
-    background: linear-gradient(#{$angle}, #{to-string($list, ',')})!important;
-    text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black, 2px -2px 1rem $black, -2px 2px 1rem $black;
+    @if (type-of($list) == 'list') {
+        background: linear-gradient(#{$angle}, #{to-string($list, ',')})!important;
+    } @else {
+        background: linear-gradient(#{$angle}, $list, $list, darken($list, 15%))!important;
+    }
+    text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black;
 }
 select {
+    transition: background .5s;
     text-align-last: center;
     &:not([data-option=any]):not([data-option=All]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
-        background: linear-gradient(to right, #6b1816, #6b1816, #511210);
+        background: linear-gradient(to right, rgba($orange-showcockpit, $AlphaBack), rgba($orange-showcockpit, $AlphaBack), rgba(darken($orange-showcockpit, 15%), $AlphaBack));
         font-weight: bold;
         & optgroup {
             font-weight: lighter;
         }
     }
     &[data-option^=red] {
-        $list : red, darkred, red;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#ff0000, $AlphaBack));
     }
     &[data-option^=green] {
-        $list : green, darkgreen, green;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#008000, $AlphaBack));
     }
     &[data-option^=blue] {
-        $list : blue, darkblue, blue;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#0000ff, $AlphaBack));
     }
     &[data-option^=white] {
-        $list : white, GhostWhite, white;
-        @include SelectDataOption($list);
+        @include SelectDataOption(#ffffff);
     }
     &[data-option^=amber] {
-        $list : Gold, GoldenRod , Gold;
-        @include SelectDataOption($list);
+        @include SelectDataOption(#ffd700);
     }
     &[data-option^=uv] {
-        $list : Navy, MidnightBlue , Navy;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#191970, $AlphaBack));
     }
     &[data-option^=cyan] {
-        $list : cyan, darkcyan, cyan;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#00ffff, $AlphaBack));
     }
     &[data-option^=magenta] {
-        $list : magenta, darkmagenta, magenta;
-        @include SelectDataOption($list);
+        @include SelectDataOption(rgba(#ff00ff, $AlphaBack));
     }
     &[data-option^=yellow] {
-        $list : yellow, #cccc00, yellow;
-        @include SelectDataOption($list);
+        @include SelectDataOption(#ffff00);
     }
     &[data-option^=color] {
         $list : red,orange,yellow,green,blue,cyan,indigo,violet;
-        @include SelectDataOption($list, 'to left');
+        @include SelectDataOption($list, 'to right');
     }
     &[data-option^=intensity] {
         $list : 'black 0%','black 50%','white 50%','white 100%';
@@ -101,7 +98,6 @@ select {
     }
     &[data-option^=jem],
     &[data-option^=martin] {
-        $list : #A25800, #A25800, #612D06;
-        @include SelectDataOption($list);
+        @include SelectDataOption(#cf7c00);
     }
 }
