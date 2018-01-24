@@ -22,7 +22,6 @@ let RunOption = {
          * @returns {void}
          */
         All : event => {
-            console.info('update All')
             event.preventDefault()
             let data = {
                 SearchMode : $OptionsSel.SearchMode.value,
@@ -37,7 +36,6 @@ let RunOption = {
          * @returns {void}
          */
         SearchMode : () => {
-            console.info('update SearchMode')
             Table.Options.Update.SearchMode({SearchMode : $OptionsSel.SearchMode.value})
             return this
         },
@@ -46,7 +44,6 @@ let RunOption = {
          * @returns {void}
          */
         DisplayMode : () => {
-            console.info('update DisplayMode')
             Table.Options.Update.DisplayMode({DisplayMode : $OptionsSel.DisplayMode.value})
             return this
         },
@@ -55,7 +52,6 @@ let RunOption = {
         * @returns {void}
         */
         ParameterList : () => {
-            console.info('update ParameterList')
             Table.Options.Update.ParameterList({ParameterList : $OptionsSel.ParameterList.value})
             return this
         }
