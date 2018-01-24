@@ -20,7 +20,6 @@
   "build": {
     "appId": "showcockpit.fixtures.finder",
     "win": {
-      "target": "msi",
       "asar": true,
       "icon": "public/img/favicon.ico"
     },
