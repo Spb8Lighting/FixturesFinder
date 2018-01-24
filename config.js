@@ -1,6 +1,6 @@
 module.exports = {
 	// Tool
-		Version : 						'0.0.6',
+		Version : 						'0.0.7',
 	//Client Parameter
 		HttpPort :						'8080',
 	//Database Name
