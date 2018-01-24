@@ -2,10 +2,27 @@
 @import "_variables";
 @import '../../bower_components/KNACSS/sass/knacss';
 
+/* Function */
+
+@function to-string($list, $glue: '', $is-nested: false) {
+	$result: null;
+	@for $i from 1 through length($list) {
+		$e: nth($list, $i);
+		@if type-of($e) == list {
+			$result: $result#{to-string($e, $glue, true)};
+		}
+		@else {
+			$result: if($i != length($list) or $is-nested, $result#{$e}#{$glue}, $result#{$e});
+		}
+	}
+
+@return $result;
+}
+
 /* Body */
 	$Body_backgroundcolor: #111;
 	$Body_color: #E6E6E6;
-	$Body_topcolor: #F37735;
+	$Body_topcolor: $orange-showcockpit;
 
 /* Button */
 	$Button_backgroundcolor: #222;

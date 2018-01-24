@@ -1,20 +1,19 @@
 {
   "name": "fixturesfinder",
   "productName": "Fixtures Finder",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Fixtures Finder for Show Cockpit",
   "main": "main.js",
   "author": "Spb8Lighting",
   "license": "CC0-1.0",
   "scripts": {
     "start": "electron main.js",
-    "postinstall": "electron-builder install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "watch": "gulp watch",
     "clean": "rm -rf ./dist/win",
     "clean:win": "rm -rf ./dist/win",
-    "pack": "npm run clean && gulp css && gulp img && gulp font && npm run pack:win",
-    "pack:win": "npm run clean:win && gulp css && gulp img && gulp font && electron-packager . \"FixturesFinder\" --build-version=0.0.6 --out=dist/win --platform=win32 --arch=x64 --asar --overwrite   --icon=public/img/favicon.ico --prune --version-string.CompanyName=\"Spb8 Lighting\" --version-string.FileDescription=\"Fixtures Finder Beta\" --version-string.ProductName=\"Fixtures Finder\" --ignore=.bowerrc --ignore=.gitattributes --ignore=.gitignore --ignore=bower.json --ignore=bower_components --ignore=private --ignore=node_modules --ignore=dist --ignore=.vscode --ignore=.git",
+    "pack": "npm run clean && npm run pack:win",
+    "pack:win": "npm run clean:win && electron-packager . \"FixturesFinder\" --build-version=0.0.7 --out=dist/win --platform=win32 --arch=x64 --asar --overwrite   --icon=public/img/favicon.ico --prune --version-string.CompanyName=\"Spb8 Lighting\" --version-string.FileDescription=\"Fixtures Finder Beta\" --version-string.ProductName=\"Fixtures Finder\" --ignore=.bowerrc --ignore=.gitattributes --ignore=.gitignore --ignore=bower.json --ignore=bower_components --ignore=private --ignore=node_modules --ignore=dist --ignore=.vscode --ignore=.git",
     "build": "npm run build:win",
     "build:win": "npm run pack:win && electron-builder --win --x64"
   },
@@ -23,18 +22,17 @@
     "win": {
       "target": "msi",
       "asar": true,
-      "sign": null,
-      "icon": "public/img/favicon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "icon": "public/img/favicon.ico"
     },
     "directories": {
-      "output": "dist/win",
+      "output": "dist/",
       "buildResources": "dist/win/FixturesFinder-win32-x64"
     }
   },
   "devDependencies": {
-    "electron": "~1.7.8",
-    "electron-builder": "^19.55.1",
+    "ejs-electron": "^2.0.1",
+    "electron": "^1.7.11",
+    "electron-builder": "^19.55.2",
     "electron-packager": "^10.1.1",
     "electron-packager-languages": "^0.1.0",
     "electron-rebuild": "^1.7.3",
@@ -49,8 +47,7 @@
     "gulp-load-plugins": "^1.5.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
-    "gulp-uglifyes": "^0.1.3",
-    "ejs-electron": "^2.0.1"
+    "gulp-uglifyes": "^0.1.3"
   },
   "dependencies": {
     "require-rebuild": "^1.2.8",

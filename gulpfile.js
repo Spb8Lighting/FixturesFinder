@@ -39,9 +39,7 @@ gulp.task('css', () => {
 		.pipe($.sass({
 			onError: console.error.bind(console, 'SASS Error')
 		}))
-		.pipe($.autoprefixer({
-			browsers: ['last 2 versions']
-		}))
+		.pipe($.autoprefixer())
 		.pipe($.cleanCss())
 		.pipe($.rename(path => {
 			path.basename += '.min'

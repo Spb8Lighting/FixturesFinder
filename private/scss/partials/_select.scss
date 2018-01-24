@@ -1,0 +1,103 @@
+/*select {
+    &:has(option:checked) {
+	    background: linear-gradient(to right, #6b1816, #6b1816, #511210);
+        font-weight: bolder;
+    }
+    &:has(option[value^=red]:checked) {
+        background: linear-gradient(to right, red, darkred, red);
+    }
+    &:has(option[value^=green]:checked) {
+        background: linear-gradient(to right, green, darkgreen, green);
+    }
+    &:has(option[value^=blue]:checked) {
+        background: linear-gradient(to right, blue, darkblue, blue);
+    }
+    &:has(option[value^=white]:checked) {
+        background: linear-gradient(to right, white, GhostWhite, white);
+    }
+    &:has(option[value^=amber]:checked) {
+        background: linear-gradient(to right, Gold, GoldenRod , Gold);
+    }
+    &:has(option[value^=uv]:checked) {
+        background: linear-gradient(to right, Navy, MidnightBlue , Navy);
+    }
+    &:has(option[value^=cyan]:checked) {
+        background: linear-gradient(to right, cyan, darkcyan, cyan);
+    }
+    &:has(option[value^=magenta]:checked) {
+        background: linear-gradient(to right, magenta, darkmagenta, magenta);
+    }
+    &:has(option[value^=yellow]:checked) {
+        background: linear-gradient(to right, yellow, #cccc00, yellow);
+    }
+    &:has(option[value^=color]:checked) {
+        background: linear-gradient(to left,red,orange,yellow,green,blue,cyan,indigo,violet);
+    }
+    &:has(option[value^=intensity]:checked) {
+        background: linear-gradient(175deg, black 0%,black 50%,white 50%,white 100%);
+    }
+    &:has(option[value^=jem]:checked),
+    &:has(option[value^=martin]:checked) {
+        background: linear-gradient(to right, #A25800, #A25800, #612D06);
+    }
+}*/
+$AlphaBack : .9;
+@mixin SelectDataOption($list, $angle: 'to right') {
+    @if (type-of($list) == 'list') {
+        background: linear-gradient(#{$angle}, #{to-string($list, ',')})!important;
+    } @else {
+        background: linear-gradient(#{$angle}, $list, $list, darken($list, 15%))!important;
+    }
+    text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black;
+}
+select {
+    transition: background .5s;
+    text-align-last: center;
+    &:not([data-option=any]):not([data-option=All]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
+        text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
+        background: linear-gradient(to right, rgba($orange-showcockpit, $AlphaBack), rgba($orange-showcockpit, $AlphaBack), rgba(darken($orange-showcockpit, 15%), $AlphaBack));
+        font-weight: bold;
+        & optgroup {
+            font-weight: lighter;
+        }
+    }
+    &[data-option^=red] {
+        @include SelectDataOption(rgba(#ff0000, $AlphaBack));
+    }
+    &[data-option^=green] {
+        @include SelectDataOption(rgba(#008000, $AlphaBack));
+    }
+    &[data-option^=blue] {
+        @include SelectDataOption(rgba(#0000ff, $AlphaBack));
+    }
+    &[data-option^=white] {
+        @include SelectDataOption(#ffffff);
+    }
+    &[data-option^=amber] {
+        @include SelectDataOption(#ffd700);
+    }
+    &[data-option^=uv] {
+        @include SelectDataOption(rgba(#191970, $AlphaBack));
+    }
+    &[data-option^=cyan] {
+        @include SelectDataOption(rgba(#00ffff, $AlphaBack));
+    }
+    &[data-option^=magenta] {
+        @include SelectDataOption(rgba(#ff00ff, $AlphaBack));
+    }
+    &[data-option^=yellow] {
+        @include SelectDataOption(#ffff00);
+    }
+    &[data-option^=color] {
+        $list : red,orange,yellow,green,blue,cyan,indigo,violet;
+        @include SelectDataOption($list, 'to right');
+    }
+    &[data-option^=intensity] {
+        $list : 'black 0%','black 50%','white 50%','white 100%';
+        @include SelectDataOption($list, '175deg');
+    }
+    &[data-option^=jem],
+    &[data-option^=martin] {
+        @include SelectDataOption(#cf7c00);
+    }
+}

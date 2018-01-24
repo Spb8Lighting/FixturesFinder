@@ -7,7 +7,7 @@ body {
     user-select: none;
     background-color: $Body_backgroundcolor;
     color: $Body_color;
-    border-top: 5px solid $Body_topcolor;
+    border-top: 5px solid $orange-showcockpit;
     overflow: hidden;
     /* Header */
     &>h1 {

@@ -10,23 +10,51 @@ let RunOption = {
      * Reset the DMX Count value to 1
      * @returns {void}
      */
-    Reset : () => {
+    Reset : event => {
+        event.preventDefault()
         Table.Options.Reset()
         $OptionsSel.ResetButton.blur()
         return this
     },
-    /**
-     * Set value on 3 digits by adding 0 in front of the value
-     * @returns {void}
-     */
-    Update : () => {
-        let data = {
-            SearchMode : $OptionsSel.SearchMode.value,
-            DisplayMode : $OptionsSel.DisplayMode.value,
-            ParameterList : $OptionsSel.ParameterList.value
+    Update : {
+        /**
+         * Prepare data for a "Options Table" Update All
+         * @returns {void}
+         */
+        All : event => {
+            event.preventDefault()
+            let data = {
+                SearchMode : $OptionsSel.SearchMode.value,
+                DisplayMode : $OptionsSel.DisplayMode.value,
+                ParameterList : $OptionsSel.ParameterList.value
+            }
+            Table.Options.Update.All(data)
+            return this
+        },
+        /**
+         * Prepare data to update SearchMode in "Options Table"
+         * @returns {void}
+         */
+        SearchMode : () => {
+            Table.Options.Update.SearchMode({SearchMode : $OptionsSel.SearchMode.value})
+            return this
+        },
+        /**
+         * Prepare data to update DisplayMode in "Options Table"
+         * @returns {void}
+         */
+        DisplayMode : () => {
+            Table.Options.Update.DisplayMode({DisplayMode : $OptionsSel.DisplayMode.value})
+            return this
+        },
+        /**
+        * Prepare data to update ParameterList in "Options Table"
+        * @returns {void}
+        */
+        ParameterList : () => {
+            Table.Options.Update.ParameterList({ParameterList : $OptionsSel.ParameterList.value})
+            return this
         }
-        Table.Options.Update(data)
-        return this
     },
     /**
      * Select the options based on DB Content
@@ -34,17 +62,25 @@ let RunOption = {
      */
     Reselect : () => {
         $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
+        $OptionsSel.SearchMode.setAttribute('data-option', DBOption.SearchMode)
         $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true
+        $OptionsSel.DisplayMode.setAttribute('data-option', DBOption.DisplayMode)
         $OptionsSel.ParameterList.querySelector('option[value="' + DBOption.ParameterList + '"]').selected = true
+        $OptionsSel.ParameterList.setAttribute('data-option', DBOption.ParameterList)
         return this
     }
 }
 
-$OptionsSel.Form.addEventListener('change', e => {
-    e.preventDefault()
-    RunOption.Update()
-})
-$OptionsSel.ResetButton.addEventListener('click', e => {
-    e.preventDefault()
-    RunOption.Reset()
-})
+$OptionsSel.Form.addEventListener('submit change', RunOption.Update.All)
+$OptionsSel.ResetButton.addEventListener('click', RunOption.Reset)
+
+/* Other Criteria */
+
+// Search Mode
+AddSelectListener($OptionsSel.SearchMode, RunOption.Update.SearchMode)
+
+// Display Mode
+AddSelectListener($OptionsSel.DisplayMode, RunOption.Update.DisplayMode)
+
+// Parameter List
+AddSelectListener($OptionsSel.ParameterList, RunOption.Update.ParameterList)

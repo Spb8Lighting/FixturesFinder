@@ -53,7 +53,10 @@ ipcMain.on('ChannelTemplate', (e, data) => {
       return console.error(err)
     } else {
       HTML = HTML.toString().replace(new RegExp(config.ChangeRegex.Channel, 'g'), data.Channel)
-      e.sender.send('ChannelTemplate', { template : HTML })
+      e.sender.send('ChannelTemplate', {
+        selector : config.Form.Search.BaseName_Channel + data.Channel,
+        template : HTML
+      })
     }
   })
 })
