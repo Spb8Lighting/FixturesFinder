@@ -1,6 +1,7 @@
 module.exports = {
 	// Tool
 		Version : 						'0.0.7',
+		productName : 					'Fixtures Finder',
 	//Client Parameter
 		HttpPort :						'8080',
 	//Database Name
@@ -9,7 +10,8 @@ module.exports = {
 		},
 	// Default Change
 		ChangeRegex : {
-			Channel :					'__CHANNEL__'
+			Channel :					'__CHANNEL__',
+			Modal :						'__MODAL__'
 		},
 	//Client Form Parameter
 		Default : {
