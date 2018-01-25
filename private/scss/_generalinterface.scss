@@ -44,6 +44,26 @@ body {
     position: sticky;
     top: 0;
 }
+.modal {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    background-color: rgba($black, .8);
+    &>div {
+        $ModalFixedHeight : 150px;
+        position: relative;
+        height: $ModalFixedHeight;
+        background-color: $border-color-showcockpit;
+        line-height: $ModalFixedHeight;
+        top: calc((100% - #{$ModalFixedHeight}) / 2 );
+        color: $white;
+        &>div {
+            vertical-align: middle;
+            line-height: 2rem;
+            display: inline-block;
+        }
+    }
+}
 
 /* Other */
 .hide {

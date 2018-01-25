@@ -2,6 +2,7 @@ const electron = require('electron')
 ,   config = require('../../config')
 ,	remote = electron.remote
 ,	ipcRenderer = electron.ipcRenderer
+,   RunMode = (process.env.NODE_ENV !== undefined) ? false : true
 ,	Icon = {
     max : `<svg viewBox="0 0 20 20">
     <path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />
@@ -34,3 +35,7 @@ let AddSelectListener = (Selector, callback = false) => {
         }
     })
 }
+
+ipcRenderer.on('ModalTemplate', (e, data) => {
+    document.body.insertAdjacentHTML('beforeend', data.template)
+})
