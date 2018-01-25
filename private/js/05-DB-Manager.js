@@ -25,11 +25,12 @@ let DBSearch
                             Table.Options.Fill()
                         } else if(row.count == 0) {
                             Table.Options.Fill()
+                            //ipcRenderer.send('ModalTemplate', { Reboot : true, Modal : `${config.productName} needs to be reloaded, please wait ...` })
                         }
+                        /* After check of Database, initialize interface */
+                        Table.Options.Get(callback)
                     }
                 })
-                /* After check of Database, initialize interface */
-                Table.Options.Get(callback)
             })
             return this
         },
@@ -73,7 +74,6 @@ let DBSearch
                 $DisplayMode : config.Form.Option.DisplayMode_Full,
                 $ParameterList : config.Form.Option.ParameterList_Common
             }
-
             db.run(sql, param)
             return this
         },
@@ -111,9 +111,7 @@ let DBSearch
                     if(err) {
                         return console.error(err.message)
                     } else {
-                        console.info(sql, param, DBOption)
                         Table.Options.Get()
-                        console.info(DBOption)
                     }
                 })
                 return this

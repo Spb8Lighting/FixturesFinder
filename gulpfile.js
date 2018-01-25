@@ -1,5 +1,6 @@
 const gulp = 		require('gulp')
 ,	$ = 			require('gulp-load-plugins')()
+,	electron = 		require('electron-connect').server.create()
 ,	config =		require('./config')
 ,	SourceFullEJS = 'views/**/*.ejs'
 ,	SourceEJS = 	['views/template/*.ejs', 'views/index.ejs']
@@ -54,10 +55,10 @@ gulp.task('img', () => {
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {
-	gulp.watch(SourceFullEJS, ['html'])
-	gulp.watch(SourceJS, ['js'])
-	gulp.watch('private/scss/**/*', ['css'])
-	gulp.watch(SourceIMG, ['img'])
+	gulp.watch(SourceFullEJS, ['html'], electron.reload)
+	gulp.watch(SourceJS, ['js'], electron.reload)
+	gulp.watch('private/scss/**/*', ['css'], electron.reload)
+	gulp.watch(SourceIMG, ['img'], electron.reload)
 })
 // Default task when gulp command launched
 gulp.task('default', ['html', 'font', 'css', 'js', 'img'], () => {
