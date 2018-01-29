@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<%- include partials/head %>
-</head>
-<body>
-<%- include partials/header %>
-	<!-- Page Content -->
-<div id="<%= config.Page.Search %>">
-	<%- include search %>
-</div>
-<div class="hide" id="<%= config.Page.Options %>">
-	<%- include options %>
-</div>
-<div class="hide" id="<%= config.Page.Admin %>">
-	<%- include admin %>
-</div>
 
-<%- include partials/footer %>
+<head>
+	<%- include partials/head %>
+</head>
+
+<body>
+	<%- include partials/header %>
+		<!-- Page Content -->
+		<div id="<%= config.Page.Search %>">
+			<%- include search %>
+		</div>
+		<div class="hide" id="<%= config.Page.Options %>">
+			<%- include options %>
+		</div>
+		<div class="hide" id="<%= config.Page.Admin %>">
+			<%- include admin %>
+		</div>
+
+		<%- include partials/footer %>
 </body>
+
 </html>

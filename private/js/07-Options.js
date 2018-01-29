@@ -1,32 +1,32 @@
 let $OptionsSel = {
-    ResetButton :     document.getElementById(config.Form.Option.Form + config.Form.Button.Reset),
-    Form :            document.getElementById(config.Form.Option.Form),
-    SearchMode :      document.getElementById(config.Form.Option.SearchMode),
-    DisplayMode :     document.getElementById(config.Form.Option.DisplayMode),
-    ParameterList :   document.getElementById(config.Form.Option.ParameterList)
+    ResetButton: document.getElementById(config.Form.Option.Form + config.Form.Button.Reset),
+    Form: document.getElementById(config.Form.Option.Form),
+    SearchMode: document.getElementById(config.Form.Option.SearchMode),
+    DisplayMode: document.getElementById(config.Form.Option.DisplayMode),
+    ParameterList: document.getElementById(config.Form.Option.ParameterList)
 }
 let RunOption = {
     /**
      * Reset the DMX Count value to 1
      * @returns {void}
      */
-    Reset : event => {
+    Reset: event => {
         event.preventDefault()
         Table.Options.Reset()
         $OptionsSel.ResetButton.blur()
         return this
     },
-    Update : {
+    Update: {
         /**
          * Prepare data for a "Options Table" Update All
          * @returns {void}
          */
-        All : event => {
+        All: event => {
             event.preventDefault()
             let data = {
-                SearchMode : $OptionsSel.SearchMode.value,
-                DisplayMode : $OptionsSel.DisplayMode.value,
-                ParameterList : $OptionsSel.ParameterList.value
+                SearchMode: $OptionsSel.SearchMode.value,
+                DisplayMode: $OptionsSel.DisplayMode.value,
+                ParameterList: $OptionsSel.ParameterList.value
             }
             Table.Options.Update.All(data)
             return this
@@ -35,24 +35,24 @@ let RunOption = {
          * Prepare data to update SearchMode in "Options Table"
          * @returns {void}
          */
-        SearchMode : () => {
-            Table.Options.Update.SearchMode({SearchMode : $OptionsSel.SearchMode.value})
+        SearchMode: () => {
+            Table.Options.Update.SearchMode({ SearchMode: $OptionsSel.SearchMode.value })
             return this
         },
         /**
          * Prepare data to update DisplayMode in "Options Table"
          * @returns {void}
          */
-        DisplayMode : () => {
-            Table.Options.Update.DisplayMode({DisplayMode : $OptionsSel.DisplayMode.value})
+        DisplayMode: () => {
+            Table.Options.Update.DisplayMode({ DisplayMode: $OptionsSel.DisplayMode.value })
             return this
         },
         /**
         * Prepare data to update ParameterList in "Options Table"
         * @returns {void}
         */
-        ParameterList : () => {
-            Table.Options.Update.ParameterList({ParameterList : $OptionsSel.ParameterList.value})
+        ParameterList: () => {
+            Table.Options.Update.ParameterList({ ParameterList: $OptionsSel.ParameterList.value })
             return this
         }
     },
@@ -60,7 +60,7 @@ let RunOption = {
      * Select the options based on DB Content
      * @returns {void}
      */
-    Reselect : () => {
+    Reselect: () => {
         $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
         $OptionsSel.SearchMode.setAttribute('data-option', DBOption.SearchMode)
         $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true

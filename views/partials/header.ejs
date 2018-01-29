@@ -3,26 +3,41 @@
 		<svg viewBox="0 0 20 20">
 			<path d="M 4 19 H16 z" />
 		</svg>
-	<a id="max-btn" href="#maximise">
-		<svg viewBox="0 0 20 20">
+		<a id="max-btn" href="#maximise">
+			<svg viewBox="0 0 20 20">
 				<path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />
-		</svg>
-	</a>
-	<a id="close-btn" href="#close">
-		<svg viewBox="0 0 20 20">
-			<path d="M 1 1 L 19 19 M 1 19 L 19 1" />
-		</svg>
-	</a>
+			</svg>
+		</a>
+		<a id="close-btn" href="#close">
+			<svg viewBox="0 0 20 20">
+				<path d="M 1 1 L 19 19 M 1 19 L 19 1" />
+			</svg>
+		</a>
 </div>
 <h1>
-	<img title="Display Menu" src="../img/ShowCockpit.png" />&nbsp;<span><%= PageTitle %></span>
+	<img title="Display Menu" src="../img/ShowCockpit.png" />&nbsp;
+	<span>
+		<%= PageTitle %>
+	</span>
 </h1>
 <div class="flex-container">
 	<aside class="w150p">
 		<ul class="is-unstyled">
-			<li><a href="<%= config.Page.Search %>" class="finder active"><%= config.Page.Search %></a></li>
-			<li><a href="<%= config.Page.Options %>" class="options"><%= config.Page.Options %></a></li>
-			<li><a href="<%= config.Page.Admin %>" class="admin"><%= config.Page.Admin %></a></li>
+			<li>
+				<a href="<%= config.Page.Search %>" class="finder active">
+					<%= config.Page.Search %>
+				</a>
+			</li>
+			<li>
+				<a href="<%= config.Page.Options %>" class="options">
+					<%= config.Page.Options %>
+				</a>
+			</li>
+			<li>
+				<a href="<%= config.Page.Admin %>" class="admin">
+					<%= config.Page.Admin %>
+				</a>
+			</li>
 		</ul>
 	</aside>
 	<div id="maincontent" class="flex-container">

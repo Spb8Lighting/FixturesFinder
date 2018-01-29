@@ -1,47 +1,47 @@
 require('require-rebuild')()
 
-const electron =    require('electron')
-, fs =              require('fs')
-, sqlite3 =         require('sqlite3')
-, ipcMain =         electron.ipcMain
-, app =             electron.app
-, BrowserWindow =   electron.BrowserWindow
-, config =          require('./config')
+const electron = require('electron')
+  , fs = require('fs')
+  , sqlite3 = require('sqlite3')
+  , ipcMain = electron.ipcMain
+  , app = electron.app
+  , BrowserWindow = electron.BrowserWindow
+  , config = require('./config')
 
 let mainWindow
-, modalWindow
+  , modalWindow
 
 app.setName(config.productName)
 
 let WindowManager = {
-  Main :    null,
-  Modal :   null,
-  Create : {
-    Main : () => {
+  Main: null,
+  Modal: null,
+  Create: {
+    Main: () => {
       WindowManager.Main = new BrowserWindow({
-        width	:           900,
-        minWidth :        900,
-        Height :          600,
-        minHeight :       600,
-        frame	:           false,
-        maximized	:       false,
-        center :          true,
-        title :	          'Fixtures Finder',
-        icon :            'dist/img/favicon.ico',
-        titleBarStyle :   'customButtonsOnHover'
+        width: 900,
+        minWidth: 900,
+        Height: 600,
+        minHeight: 600,
+        frame: false,
+        maximized: false,
+        center: true,
+        title: 'Fixtures Finder',
+        icon: 'dist/img/favicon.ico',
+        titleBarStyle: 'customButtonsOnHover'
       })
-    
+
       WindowManager.Main.loadURL(`file://${__dirname}/public/html/index.html`)
-    
+
       //WindowManager.Main.webContents.openDevTools()
-    
+
       WindowManager.Main.on('closed', () => WindowManager.Main = null)
     },
-    Modal : () => {
+    Modal: () => {
       WindowManager.Modal = new BrowserWindow({
-        parent :  WindowManager.Main,
-        modal :   true,
-        show:     false
+        parent: WindowManager.Main,
+        modal: true,
+        show: false
       })
       WindowManager.Modal.loadURL(`file://${__dirname}/public/html/modal_windows.html`)
 
@@ -74,8 +74,8 @@ ipcMain.on('ChannelTemplate', (e, data) => {
     } else {
       HTML = HTML.toString().replace(new RegExp(config.ChangeRegex.Channel, 'g'), data.Channel)
       e.sender.send('ChannelTemplate', {
-        selector : config.Form.Search.BaseName_Channel + data.Channel,
-        template : HTML
+        selector: config.Form.Search.BaseName_Channel + data.Channel,
+        template: HTML
       })
     }
   })
@@ -87,9 +87,9 @@ ipcMain.on('ModalTemplate', (e, data) => {
     } else {
       HTML = HTML.toString().replace(new RegExp(config.ChangeRegex.Modal, 'g'), data.Modal)
       e.sender.send('ModalTemplate', {
-        template : HTML
+        template: HTML
       })
-      if(data.Reboot) {
+      if (data.Reboot) {
         setTimeout(() => {
           app.relaunch()
           app.exit(0)

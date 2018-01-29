@@ -1,22 +1,22 @@
-const gulp = 		require('gulp')
-,	$ = 			require('gulp-load-plugins')()
-,	electron = 		require('electron-connect').server.create()
-,	config =		require('./config')
-,	SourceFullEJS = 'views/**/*.ejs'
-,	SourceEJS = 	['views/template/*.ejs', 'views/index.ejs']
-,	FolderEJS = 	'public/html/*.html'
-,	FolderCSS = 	'public/css/*.css'
-,	FolderIMG = 	'public/img/**/*'
-,	SourceFont = 	'private/*.ttf'
-,	SourceCSS = 	'private/scss/css.scss'
-,	SourceJS = 		'private/js/*.js'
-,	SourceIMG = 	'private/img/**/*'
+const gulp = require('gulp')
+	, $ = require('gulp-load-plugins')()
+	, electron = require('electron-connect').server.create()
+	, config = require('./config')
+	, SourceFullEJS = 'views/**/*.ejs'
+	, SourceEJS = ['views/template/*.ejs', 'views/index.ejs']
+	, FolderEJS = 'public/html/*.html'
+	, FolderCSS = 'public/css/*.css'
+	, FolderIMG = 'public/img/**/*'
+	, SourceFont = 'private/*.ttf'
+	, SourceCSS = 'private/scss/css.scss'
+	, SourceJS = 'private/js/*.js'
+	, SourceIMG = 'private/img/**/*'
 
 // Process IMG files to generate distribuable files
 gulp.task('html', () => {
 	return gulp.src(SourceEJS)
-		.pipe($.ejs({ PageTitle : `Fixtures Finder/Search - v${config.Version}`, config: config}, {}, { ext: '.html' }))
-    	.pipe(gulp.dest('public/html'))
+		.pipe($.ejs({ PageTitle: `Fixtures Finder/Search - v${config.Version}`, config: config }, {}, { ext: '.html' }))
+		.pipe(gulp.dest('public/html'))
 })
 // Process Other files to generate distribuable files
 gulp.task('font', () => {
@@ -26,13 +26,13 @@ gulp.task('font', () => {
 // Process JS files to generate distribuable files
 gulp.task('js', () => {
 	return gulp.src(SourceJS)
-	.pipe($.concatUtil('app.js'))
-	.pipe($.concatUtil.footer('\n'))
-	.pipe($.uglifyes({
-		mangle: false,
-		ecma: 6
-	}))
-	.pipe(gulp.dest('public/js'))
+		.pipe($.concatUtil('app.js'))
+		.pipe($.concatUtil.footer('\n'))
+		.pipe($.uglifyes({
+			mangle: false,
+			ecma: 6
+		}))
+		.pipe(gulp.dest('public/js'))
 })
 // Process SCSS files to generate distribuable files
 gulp.task('css', () => {
@@ -50,8 +50,8 @@ gulp.task('css', () => {
 // Process IMG files to generate distribuable files
 gulp.task('img', () => {
 	return gulp.src(SourceIMG)
-    	.pipe($.image())
-    	.pipe(gulp.dest('public/img'))
+		.pipe($.image())
+		.pipe(gulp.dest('public/img'))
 })
 // On any modification of dist file, sent to update on browser
 gulp.task('watch', () => {

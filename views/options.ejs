@@ -4,13 +4,14 @@
 </div>
 <form class="flex-container" id="<%= config.Form.Option.Form %>" method="post" action="#">
     <div class="bordered">
-		<fieldset>
+        <fieldset>
             <legend>Search Settings</legend>
 
             <p>By settings search options, the result will differ</p>
 
             <label class="label" for="<%= config.Form.Option.SearchMode %>">Mode</label>
-            <select data-option="" data-default="<%= config.Form.Option.SearchMode_OrderExact %>" autocomplete="off" name="<%= config.Form.Option.SearchMode %>" id="<%= config.Form.Option.SearchMode %>">
+            <select data-option="" data-default="<%= config.Form.Option.SearchMode_OrderExact %>" autocomplete="off" name="<%= config.Form.Option.SearchMode %>"
+                id="<%= config.Form.Option.SearchMode %>">
                 <optgroup label="Ordered (with channel order)">
                     <option value="<%= config.Form.Option.SearchMode_OrderExact %>" selected="selected">Exact</option>
                     <option value="<%= config.Form.Option.SearchMode_OrderStart %>">StartWith</option>
@@ -22,7 +23,8 @@
             </select>
 
             <label class="label" for="<%= config.Form.Option.DisplayMode %>">Display</label>
-            <select data-option="" data-default="<%= config.Form.Option.DisplayMode_Full %>" autocomplete="off" name="<%= config.Form.Option.DisplayMode %>" id="<%= config.Form.Option.DisplayMode %>">
+            <select data-option="" data-default="<%= config.Form.Option.DisplayMode_Full %>" autocomplete="off" name="<%= config.Form.Option.DisplayMode %>"
+                id="<%= config.Form.Option.DisplayMode %>">
                 <optgroup label="Full view with DMX Charts">
                     <option value="<%= config.Form.Option.DisplayMode_Full %>" selected="selected">Detailed</option>
                 </optgroup>
@@ -32,7 +34,8 @@
             </select>
 
             <label class="label" for="<%= config.Form.Option.ParameterList %>">Parameter</label>
-            <select data-option="" data-default="<%= config.Form.Option.ParameterList_Common %>" autocomplete="off" name="<%= config.Form.Option.ParameterList %>" id="<%= config.Form.Option.ParameterList %>">
+            <select data-option="" data-default="<%= config.Form.Option.ParameterList_Common %>" autocomplete="off" name="<%= config.Form.Option.ParameterList %>"
+                id="<%= config.Form.Option.ParameterList %>">
                 <optgroup label="Most common Channel Type">
                     <option value="<%= config.Form.Option.ParameterList_Common %>" selected="selected">Restricted</option>
                 </optgroup>
