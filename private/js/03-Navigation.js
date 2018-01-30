@@ -19,5 +19,5 @@ $aLink.forEach(elem => {
         })
         $h1.innerHTML = `Fixtures Finder/${PageName} - v${config.Version}`      // Update Title
         document.activeElement && document.activeElement.blur() 				// Remove :active on link
-    }, {passive: true})
+    })
 })
