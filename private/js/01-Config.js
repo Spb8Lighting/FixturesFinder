@@ -33,7 +33,7 @@ let AddSelectListener = (Selector, callback = false) => {
         if (typeof callback === 'function') {
             callback()
         }
-    })
+    }, {passive: true})
 }
 
 ipcRenderer.on('ModalTemplate', (e, data) => {

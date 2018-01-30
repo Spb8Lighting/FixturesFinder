@@ -1,11 +1,9 @@
-$btn.min.addEventListener('click', e => {
-    e.preventDefault()
+$btn.min.addEventListener('click', () => {
     let window = remote.getCurrentWindow()
     window.minimize()
-})
+}, {passive: true})
 
-$btn.max.addEventListener('click', e => {
-    e.preventDefault()
+$btn.max.addEventListener('click', () => {
     let window = remote.getCurrentWindow()
     if (!window.isMaximized()) {
         window.maximize()
@@ -14,11 +12,10 @@ $btn.max.addEventListener('click', e => {
         window.unmaximize()
         $btn.max.innerHTML = Icon.max
     }
-})
+}, {passive: true})
 
-$btn.close.addEventListener('click', e => {
-    e.preventDefault()
+$btn.close.addEventListener('click', () => {
     let window = remote.getCurrentWindow()
     Table.Close()
     window.close()
-})
+}, {passive: true})
