@@ -36,6 +36,9 @@ let SelectOptions = {
     }
 },
     $SearchSel = {
+        Timer: {
+            Form: false
+        },
         Form: document.getElementById(config.Form.Search.Form),
         DMXChannelCount: document.getElementById(config.Form.Search.DMXChannelCount),
         DMXChannelCount_Btn_Add: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),
@@ -98,7 +101,6 @@ let SelectOptions = {
         */
         AdjustChannelSearch: (event = false) => {
             if (event) {
-                event.preventDefault()
                 $SearchSel.DMXChannelCount.blur()
             }
             let Result = parseInt($SearchSel.DMXChannelCount.value) - this.DMXChannelCount
@@ -122,7 +124,6 @@ let SelectOptions = {
         */
         AddChannelSearch: (event = false) => {
             if (event) {
-                event.preventDefault()
                 $SearchSel.DMXChannelCount_Btn_Add.blur()
             }
             let ChannelNumber = parseInt($SearchSel.DMXChannelCount.value) + 1
@@ -130,6 +131,9 @@ let SelectOptions = {
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 ipcRenderer.send('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
                 DMXChannelSearch.Set(ChannelNumber)
+                if (event) {
+                    $SearchSel.Form.dispatchEvent(new Event('change'))
+                }
             } else {
                 return this
             }
@@ -141,7 +145,6 @@ let SelectOptions = {
          */
         RemChannelSearch: (event = false) => {
             if (event) {
-                event.preventDefault()
                 $SearchSel.DMXChannelCount_Btn_Rem.blur()
             }
             let str = parseInt($SearchSel.DMXChannelCount.value) - 1
@@ -153,6 +156,9 @@ let SelectOptions = {
                     ParentToRemove.remove()
                 }
                 DMXChannelSearch.Set(str)
+                if (event) {
+                    $SearchSel.Form.dispatchEvent(new Event('change'))
+                }
             } else {
                 return this
             }
@@ -195,22 +201,25 @@ let SelectOptions = {
     }
 
 /* Getters */
-$SearchSel.Form.addEventListener('submit change', e => {
-    e.preventDefault()
-})
+$SearchSel.Form.addEventListener('change', e => {
+    clearTimeout($SearchSel.Timer.Form)
+    $SearchSel.Timer.Form = setTimeout(() => {
+        console.log('Form Change or submit')
+    }, 50)
+}, { passive: true })
 
 /* Buttons */
 // Reset
-$SearchSel.Button.Reset.addEventListener('click', DMXChannelSearch.Reset)
+$SearchSel.Button.Reset.addEventListener('click', DMXChannelSearch.Reset, { passive: true })
 
 /* DMX Channel Count */
-$SearchSel.DMXChannelCount.addEventListener('click', $SearchSel.DMXChannelCount.select)
-$SearchSel.DMXChannelCount.addEventListener('change', DMXChannelSearch.AdjustChannelSearch)
+$SearchSel.DMXChannelCount.addEventListener('click', $SearchSel.DMXChannelCount.select, { passive: true })
+$SearchSel.DMXChannelCount.addEventListener('change', DMXChannelSearch.AdjustChannelSearch, { passive: true })
 
 // Button +
-$SearchSel.DMXChannelCount_Btn_Add.addEventListener('click', DMXChannelSearch.AddChannelSearch)
+$SearchSel.DMXChannelCount_Btn_Add.addEventListener('click', DMXChannelSearch.AddChannelSearch, { passive: true })
 // Button -
-$SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', DMXChannelSearch.RemChannelSearch)
+$SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', DMXChannelSearch.RemChannelSearch, { passive: true })
 
 /* Other Criteria */
 
