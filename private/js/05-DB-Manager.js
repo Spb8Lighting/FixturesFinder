@@ -71,9 +71,9 @@ let Table = {
                 , param = {
                     $DMXChannelCount: 1,
                     $DMXChannelCount_Max: 0,
-                    $Manufacturer: config.Default.All,
-                    $FixtureName: config.Default.All,
-                    $DMXChart_Channel: JSON.stringify([{ [config.Form.Search.BaseName_Channel + '1']: config.Default.Any }]),
+                    $Manufacturer: config.Default.All.toLowerCase(),
+                    $FixtureName: config.Default.All.toLowerCase(),
+                    $DMXChart_Channel: JSON.stringify([{ 1: config.Default.Any.toLowerCase() }]),
                     $DMXChart_Slot: JSON.stringify([{}])
                 }
             db.run(sql, param)
@@ -120,12 +120,12 @@ let Table = {
             All: data => {
                 let sql = `UPDATE \`${config.Database.LastSearch}\` SET \`${config.Form.Search.DMXChannelCount}\` = $DMXChannelCount, \`${config.Form.Search.DMXChannelCount_Max}\` = $DMXChannelCount_Max, \`${config.Form.Search.Manufacturer}\` = $Manufacturer, \`${config.Form.Search.FixtureName}\` = $FixtureName, \`${config.Form.Search.DMXChart_Channel}\` = $DMXChart_Channel, \`${config.Form.Search.DMXChart_Slot}\` = $DMXChart_Slot`
                     , param = {
-                        $DMXChannelCount: data.DMXChannelCount,
-                        $DMXChannelCount_Max: data.DMXChannelCount_Max,
-                        $Manufacturer: data.Manufacturer,
-                        $FixtureName: data.FixtureName,
-                        $DMXChart_Channel: data.DMXChart_Channel,
-                        $DMXChart_Slot: data.DMXChart_Slot
+                        $DMXChannelCount: parseInt(data.DMXChannelCount),
+                        $DMXChannelCount_Max: parseInt(data.DMXChannelCount_Max),
+                        $Manufacturer: data.Manufacturer.toLowerCase(),
+                        $FixtureName: data.FixtureName.toLowerCase(),
+                        $DMXChart_Channel: JSON.stringify(data.DMXChart_Channel),
+                        $DMXChart_Slot: JSON.stringify(data.DMXChart_Slot)
                     }
                 Table.LastSearch.Update.Run(sql, param)
             }

@@ -1,1 +1,841 @@
-const electron=require("electron"),config=require("../../config"),remote=electron.remote,ipcRenderer=electron.ipcRenderer,RunMode=void 0===process.env.NODE_ENV,Icon={max:'<svg viewBox="0 0 20 20">\n    <path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />\n</svg>',min:'<svg viewBox="0 0 20 20">\n    <path d="M7 1 V11 H19 V1 H7 z  M19 11 H7 V3 H19 V11 z"/>\n    <path d="M12 12 L12 19 L1 19 L1 9 L6 9 L6 9 L1 9 L1 19 L12 19 L12 19z" />\n    <rect x="1" y="9" width="4.5" height="2" />\n</svg>'},$btn={min:document.getElementById("min-btn"),max:document.getElementById("max-btn"),close:document.getElementById("close-btn")},$aLink=document.querySelectorAll("aside a"),$h1=document.querySelector("h1>span"),$MainContent=document.getElementById("maincontent");let AddSelectListener=(Selector,callback=!1)=>{Selector.addEventListener("change",()=>{Selector.setAttribute("data-option",Selector.querySelector("option:checked").getAttribute("value")),Selector.blur(),"function"==typeof callback&&callback()},{passive:!0})};ipcRenderer.on("ModalTemplate",(e,data)=>{document.body.insertAdjacentHTML("beforeend",data.template)}),$btn.min.addEventListener("click",()=>{remote.getCurrentWindow().minimize()},{passive:!0}),$btn.max.addEventListener("click",()=>{let window=remote.getCurrentWindow();window.isMaximized()?(window.unmaximize(),$btn.max.innerHTML=Icon.max):(window.maximize(),$btn.max.innerHTML=Icon.min)},{passive:!0}),$btn.close.addEventListener("click",()=>{let window=remote.getCurrentWindow();Table.Close(),window.close()},{passive:!0}),$aLink.forEach(elem=>{elem.addEventListener("click",e=>{e.preventDefault();let PageName=elem.getAttribute("href");$aLink.forEach(elem=>{elem.getAttribute("href")==PageName?elem.classList.add("active"):elem.classList.remove("active")}),document.querySelectorAll("#maincontent>div").forEach(elem=>{elem.getAttribute("id")==PageName?elem.classList.remove("hide"):elem.classList.add("hide")}),$h1.innerHTML=`Fixtures Finder/${PageName} - v${config.Version}`,document.activeElement&&document.activeElement.blur()})});const sqlite3=require("sqlite3").verbose(),dblocation=process.env.NODE_ENV?`${__dirname}/../../db.sqlite3`:`${__dirname}/../../../db.sqlite3`,db=new sqlite3.Database(dblocation,err=>{if(err)return console.error(err.message)});let DBSearch,DBLastSearch,DBOption,DBAdmin,Table={LastSearch:{Initialize:(callback=!1)=>(db.serialize(()=>{Table.LastSearch.Create();let sql=`SELECT COUNT(*) AS \`count\` FROM \`${config.Database.LastSearch}\``;db.get(sql,(err,row)=>{if(err)return console.error(err.message);row.count>1?(Table.LastSearch.Delete(),Table.LastSearch.Create(),Table.LastSearch.Fill()):0==row.count&&Table.LastSearch.Fill(),Table.LastSearch.Get(callback)})}),this),Create:()=>{let sql=`CREATE TABLE IF NOT EXISTS \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\` INTEGER, \`${config.Form.Search.DMXChannelCount_Max}\` INTEGER, \`${config.Form.Search.Manufacturer}\` TEXT, \`${config.Form.Search.FixtureName}\` TEXT, \`${config.Form.Search.DMXChart_Channel}\` TEXT, \`${config.Form.Search.DMXChart_Slot}\` TEXT )`;return db.run(sql),this},Delete:()=>{let sql=`DROP TABLE \`${config.Database.LastSearch}\``;return db.run(sql),this},Reset:()=>{Table.LastSearch.Delete(),Table.LastSearch.Create()},Fill:()=>{let sql=`INSERT INTO \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\`) VALUES ($DMXChannelCount, $DMXChannelCount_Max, $Manufacturer, $FixtureName, $DMXChart_Channel, $DMXChart_Slot)`,param={$DMXChannelCount:1,$DMXChannelCount_Max:0,$Manufacturer:config.Default.All,$FixtureName:config.Default.All,$DMXChart_Channel:JSON.stringify([{[config.Form.Search.BaseName_Channel+"1"]:config.Default.Any}]),$DMXChart_Slot:JSON.stringify([{}])};return db.run(sql,param),this},Get:(callback=!1)=>{let sql=`SELECT \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\` FROM \`${config.Database.LastSearch}\``;db.get(sql,(err,data)=>{if(err)return console.error(err.message);(DBLastSearch=data)[config.Form.Search.DMXChart_Channel]=JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Channel]),DBLastSearch[config.Form.Search.DMXChart_Slot]=JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Slot]),"function"==typeof callback&&callback()})},Update:{Run:(sql,param)=>{db.run(sql,param,err=>{if(err)return console.error(err.message);Table.LastSearch.Get()})},All:data=>{let sql=`UPDATE \`${config.Database.LastSearch}\` SET \`${config.Form.Search.DMXChannelCount}\` = $DMXChannelCount, \`${config.Form.Search.DMXChannelCount_Max}\` = $DMXChannelCount_Max, \`${config.Form.Search.Manufacturer}\` = $Manufacturer, \`${config.Form.Search.FixtureName}\` = $FixtureName, \`${config.Form.Search.DMXChart_Channel}\` = $DMXChart_Channel, \`${config.Form.Search.DMXChart_Slot}\` = $DMXChart_Slot`,param={$DMXChannelCount:data.DMXChannelCount,$DMXChannelCount_Max:data.DMXChannelCount_Max,$Manufacturer:data.Manufacturer,$FixtureName:data.FixtureName,$DMXChart_Channel:data.DMXChart_Channel,$DMXChart_Slot:data.DMXChart_Slot};Table.LastSearch.Update.Run(sql,param)}}},Options:{Initialize:(callback=!1)=>(db.serialize(()=>{Table.Options.Create();let sql=`SELECT COUNT(*) AS \`count\` FROM \`${config.Database.Options}\``;db.get(sql,(err,row)=>{if(err)return console.error(err.message);row.count>1?(Table.Options.Delete(),Table.Options.Create(),Table.Options.Fill()):0==row.count&&Table.Options.Fill(),Table.Options.Get(callback)})}),this),Create:()=>{let sql=`CREATE TABLE IF NOT EXISTS \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\` TEXT, \`${config.Form.Option.DisplayMode}\` TEXT, \`${config.Form.Option.ParameterList}\` TEXT )`;return db.run(sql),this},Delete:()=>{let sql=`DROP TABLE \`${config.Database.Options}\``;return db.run(sql),this},Reset:()=>{Table.Options.Update.All({SearchMode:config.Form.Option.SearchMode_OrderExact,DisplayMode:config.Form.Option.DisplayMode_Full,ParameterList:config.Form.Option.ParameterList_Common})},Fill:()=>{let sql=`INSERT INTO \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\`) VALUES ($SearchMode, $DisplayMode, $ParameterList)`,param={$SearchMode:config.Form.Option.SearchMode_OrderExact,$DisplayMode:config.Form.Option.DisplayMode_Full,$ParameterList:config.Form.Option.ParameterList_Common};return db.run(sql,param),this},Get:(callback=!1)=>{let sql=`SELECT \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\` FROM \`${config.Database.Options}\``;return db.get(sql,(err,data)=>{if(err)return console.error(err.message);DBOption=data,DMXChannelMax.CheckDisplay(),SelectOptions.CheckOptions(),RunOption.Reselect(),"function"==typeof callback&&callback()}),this},Update:{Run:(sql,param)=>(db.run(sql,param,err=>{if(err)return console.error(err.message);Table.Options.Get()}),this),All:data=>{let sql=`UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`,param={$SearchMode:data.SearchMode,$DisplayMode:data.DisplayMode,$ParameterList:data.ParameterList};return Table.Options.Update.Run(sql,param),this},SearchMode:data=>{let sql=`UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode`,param={$SearchMode:data.SearchMode};return Table.Options.Update.Run(sql,param),this},DisplayMode:data=>{let sql=`UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.DisplayMode}\` = $DisplayMode`,param={$DisplayMode:data.DisplayMode};return Table.Options.Update.Run(sql,param),this},ParameterList:data=>{let sql=`UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.ParameterList}\` = $ParameterList`,param={$ParameterList:data.ParameterList};return Table.Options.Update.Run(sql,param),this}}},Close:()=>(db.close(err=>{if(err)return console.error(err.message)}),this)},SelectOptions={Options:"",CheckOptions:()=>{switch(DBOption[config.Form.Option.ParameterList]){case config.Form.Option.ParameterList_Common:SelectOptions.SetRestricted();break;case config.Form.Option.ParameterList_Full:SelectOptions.SetFull();break;default:SelectOptions.SetRestricted()}return this},SetRestricted:()=>(SelectOptions.Options=[{id:"any",text:"Any"},{id:"intensity",text:"Intensity"},{id:"intensity fine",text:"Intensity Fine"},{id:"strobe",text:"Strobe"},{id:"shutter",text:"Shutter"},{id:"pan",text:"Pan"},{id:"pan fine",text:"Pan Fine"},{id:"pan rot",text:"Pan Rot"},{id:"tilt",text:"Tilt"},{id:"tilt fine",text:"Tilt Fine"},{id:"tilt rot",text:"Tilt Rot"},{id:"pt speed",text:"PT Speed"},{id:"color",text:"Color"},{id:"color macro",text:"Color Macro"},{id:"red",text:"Red"},{id:"red fine",text:"Red Fine"},{id:"green",text:"Green"},{id:"green fine",text:"Green Fine"},{id:"blue",text:"Blue"},{id:"blue fine",text:"Blue Fine"},{id:"white",text:"White"},{id:"white fine",text:"White Fine"},{id:"amber",text:"Amber"},{id:"amber fine",text:"Amber Fine"},{id:"uv",text:"UV"},{id:"uv fine",text:"UV Fine"},{id:"cyan",text:"Cyan"},{id:"cyan fine",text:"Cyan Fine"},{id:"magenta",text:"Magenta"},{id:"magenta fine",text:"Magenta Fine"},{id:"yellow",text:"Yellow"},{id:"yellow fine",text:"Yellow Fine"},{id:"ctc",text:"CTC"},{id:"ctc fine",text:"CTC Fine"},{id:"cto",text:"CTO"},{id:"cto fine",text:"CTO Fine"},{id:"gobo",text:"Gobo"},{id:"gobo rot",text:"Gobo Rot"},{id:"prism",text:"Prism"},{id:"prism rot",text:"Prism Rot"},{id:"zoom",text:"Zoom"},{id:"focus",text:"Focus"},{id:"frost",text:"Frost"},{id:"iris",text:"Iris"},{id:"macro",text:"Macro"},{id:"chase",text:"Chase"},{id:"fx",text:"FX"},{id:"ctrl",text:"Ctrl"}],this),SetFull:()=>(SelectOptions.Options=[{id:"any",text:"Any"},{id:"access",text:"Access"},{id:"address",text:"Address"},{id:"adjust dn",text:"Adjust Dn"},{id:"adjust up",text:"Adjust Up"},{id:"adv blue high",text:"Adv Blue High"},{id:"adv blue low",text:"Adv Blue Low"},{id:"adv blue mid",text:"Adv Blue Mid"},{id:"adv green high",text:"Adv Green High"},{id:"adv green low",text:"Adv Green Low"},{id:"adv green mid",text:"Adv Green Mid"},{id:"adv red high",text:"Adv Red High"},{id:"adv red low",text:"Adv Red Low"},{id:"adv red mid",text:"Adv Red Mid"},{id:"advance col",text:"Advance Col"},{id:"age",text:"Age"},{id:"align ctrl",text:"Align Ctrl"},{id:"alpha",text:"Alpha"},{id:"amber",text:"Amber"},{id:"amber fine",text:"Amber Fine"},{id:"amberc",text:"AmberC"},{id:"ambience",text:"Ambience"},{id:"ambient",text:"Ambient"},{id:"anchor x",text:"Anchor X"},{id:"anchor y",text:"Anchor Y"},{id:"anchor z",text:"Anchor Z"},{id:"angle",text:"Angle"},{id:"anim",text:"Anim"},{id:"anim 1",text:"Anim 1"},{id:"anim 1 fnc",text:"Anim 1 Fnc"},{id:"anim 1 rot",text:"Anim 1 Rot"},{id:"anim 1 rot fine",text:"Anim 1 Rot Fine"},{id:"anim 2",text:"Anim 2"},{id:"anim 2 fnc",text:"Anim 2 Fnc"},{id:"anim 2 rot",text:"Anim 2 Rot"},{id:"anim 2 rot fine",text:"Anim 2 Rot Fine"},{id:"anim ctrl 1",text:"Anim Ctrl 1"},{id:"anim ctrl 2",text:"Anim Ctrl 2"},{id:"anim fine",text:"Anim Fine"},{id:"anim fnc",text:"Anim Fnc"},{id:"anim ind",text:"Anim Ind"},{id:"anim index",text:"Anim Index"},{id:"anim macro",text:"Anim Macro"},{id:"anim mode",text:"Anim Mode"},{id:"anim phase",text:"Anim Phase"},{id:"anim rot",text:"Anim Rot"},{id:"anim rot 1",text:"Anim Rot 1"},{id:"anim rot 2",text:"Anim Rot 2"},{id:"anim rot fine",text:"Anim Rot Fine"},{id:"anim speed",text:"Anim Speed"},{id:"animated star",text:"Animated Star"},{id:"animation",text:"Animation"},{id:"anti aliasing",text:"Anti Aliasing"},{id:"artnet in",text:"ArtNet In"},{id:"aspect",text:"Aspect"},{id:"aspect fine",text:"Aspect Fine"},{id:"aspect mode",text:"Aspect Mode"},{id:"aspect ratio",text:"Aspect Ratio"},{id:"aspect ratio fine",text:"Aspect Ratio Fine"},{id:"atmosphere",text:"Atmosphere"},{id:"audio",text:"Audio"},{id:"audio file",text:"Audio File"},{id:"audio fine",text:"Audio Fine"},{id:"audio fnc",text:"Audio Fnc"},{id:"audio gain",text:"Audio Gain"},{id:"audio in",text:"Audio In"},{id:"audio l",text:"Audio L"},{id:"audio library",text:"Audio Library"},{id:"audio out",text:"Audio Out"},{id:"audio pan",text:"Audio Pan"},{id:"audio pan fine",text:"Audio Pan Fine"},{id:"audio r",text:"Audio R"},{id:"audio sync",text:"Audio Sync"},{id:"audio volume",text:"Audio Volume"},{id:"audio wav",text:"Audio Wav"},{id:"auto",text:"Auto"},{id:"auto fade",text:"Auto Fade"},{id:"auto focus",text:"Auto Focus"},{id:"auto focus adj",text:"Auto Focus Adj"}],this)},$SearchSel={Timer:{Form:!1,LastSearch:!1},Form:document.getElementById(config.Form.Search.Form),DMXChannelCount:document.getElementById(config.Form.Search.DMXChannelCount),DMXChannelCount_Btn_Add:document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),DMXChannelCount_Btn_Rem:document.getElementById(config.Form.Search.DMXChannelCount_Btn_Rem),FieldSet:document.getElementById(config.Form.Search.DMXChannelCount).closest("fieldset"),DMXChannelCount_Max:document.getElementById(config.Form.Search.DMXChannelCount_Max).closest("div"),DMXChannelCount_Max_Label:document.querySelector('label[for="'+config.Form.Search.DMXChannelCount_Max+'"]'),Manufacturer:document.getElementById(config.Form.Search.Manufacturer),FixtureName:document.getElementById(config.Form.Search.FixtureName),Button:{Reset:document.getElementById(config.Form.Search.Form+config.Form.Button.Reset),QuickSearch:document.getElementById(config.Form.Search.Form+config.Form.Button.Submit)}},DMXChannelSearch={DMXChannelCount:0,Initialize:()=>{DMXChannelSearch.AddChannelSearch(),$SearchSel.DMXChannelCount.value=DBLastSearch[config.Form.Search.DMXChannelCount],DMXChannelSearch.AdjustChannelSearch(),DBLastSearch[config.Form.Search.Manufacturer]!=config.Default.All&&($SearchSel.Manufacturer.querySelector('option[value="'+DBLastSearch[config.Form.Search.Manufacturer].toLowerCase()+'"]').selected=!0),DBLastSearch[config.Form.Search.FixtureName]!=config.Default.All&&($SearchSel.FixtureName.querySelector('option[value="'+DBLastSearch[config.Form.Search.FixtureName].toLowerCase()+'"]').selected=!0),clearTimeout($SearchSel.Timer.LastSearch),$SearchSel.Timer.LastSearch=setTimeout(()=>{DMXChannelSearch.Reselect()},250)},Reselect:()=>{let event=new Event("change");for(let i=0;i<DBLastSearch[config.Form.Search.DMXChannelCount];i++){let obj=DBLastSearch[config.Form.Search.DMXChart_Channel][i];for(let key in obj)if(obj[key]!=config.Default.Any){let select=document.getElementById(key);select.querySelector('option[value="'+obj[key].toLowerCase()+'"]').selected=!0,select.dispatchEvent(event)}}},Reset:()=>{let event=new Event("change"),select=document.getElementById(`${config.Form.Search.BaseName_Channel}1`);select.value=config.Default.Any.toLowerCase(),$SearchSel.DMXChannelCount.value="001",select.dispatchEvent(event),$SearchSel.DMXChannelCount.dispatchEvent(event),$SearchSel.Button.Reset.blur()},Format:val=>("000"+val).substr(-3),Set:val=>((val=parseInt(val))>=1&&val<=512?(this.DMXChannelCount=val,$SearchSel.DMXChannelCount.value=DMXChannelSearch.Format(val)):$SearchSel.DMXChannelCount.value=DMXChannelSearch.Format(this.DMXChannelCount),this),AdjustChannelSearch:(event=!1)=>{event&&"function"!=typeof event&&$SearchSel.DMXChannelCount.blur();let Result=parseInt($SearchSel.DMXChannelCount.value)-this.DMXChannelCount;if($SearchSel.DMXChannelCount.value=this.DMXChannelCount,0!=Result&&Result>0)for(let i=0;i<Result;i++)DMXChannelSearch.AddChannelSearch(event);else{if(!(0!=Result&&Result<0))return DMXChannelSearch.Set(this.DMXChannelCount);for(let i=Result;i<0;i++)DMXChannelSearch.RemChannelSearch(event)}},AddChannelSearch:(event=!1)=>{event&&"function"!=typeof event&&$SearchSel.DMXChannelCount_Btn_Add.blur();let ChannelNumber=parseInt($SearchSel.DMXChannelCount.value)+1;if(!(ChannelNumber>=1&&ChannelNumber<=512))return this;ipcRenderer.send("ChannelTemplate",{Channel:ChannelNumber,ChannelType:""}),DMXChannelSearch.Set(ChannelNumber),event&&"function"!=typeof event&&$SearchSel.Form.dispatchEvent(new Event("change"))},RemChannelSearch:(event=!1)=>{event&&"function"!=typeof event&&$SearchSel.DMXChannelCount_Btn_Rem.blur();let str=parseInt($SearchSel.DMXChannelCount.value)-1;if(!(str>=1&&str<=512))return this;{let ChildToRemove=document.getElementById(config.Form.Search.BaseName_Channel+parseInt($SearchSel.DMXChannelCount.value));if(ChildToRemove)ChildToRemove.closest("div.channelfield.flex-container").remove();DMXChannelSearch.Set(str),event&&"function"!=typeof event&&$SearchSel.Form.dispatchEvent(new Event("change"))}}},DMXChannelMax={CheckDisplay:()=>{switch(DBOption[config.Form.Option.SearchMode]){case config.Form.Option.SearchMode_OrderExact:case config.Form.Option.SearchMode_UnOrderExact:DMXChannelMax.Hide();break;default:DMXChannelMax.Show()}},Show:()=>($SearchSel.DMXChannelCount_Max_Label.classList.remove("hide"),$SearchSel.DMXChannelCount_Max.classList.remove("hide"),this),Hide:()=>($SearchSel.DMXChannelCount_Max_Label.classList.add("hide"),$SearchSel.DMXChannelCount_Max.classList.add("hide"),this)};$SearchSel.Form.addEventListener("change",e=>{clearTimeout($SearchSel.Timer.Form),$SearchSel.Timer.Form=setTimeout(()=>{console.log("Form Change or submit")},50)},{passive:!0}),$SearchSel.Button.Reset.addEventListener("click",DMXChannelSearch.Reset,{passive:!0}),$SearchSel.DMXChannelCount.addEventListener("click",$SearchSel.DMXChannelCount.select,{passive:!0}),$SearchSel.DMXChannelCount.addEventListener("change",DMXChannelSearch.AdjustChannelSearch,{passive:!0}),$SearchSel.DMXChannelCount_Btn_Add.addEventListener("click",DMXChannelSearch.AddChannelSearch,{passive:!0}),$SearchSel.DMXChannelCount_Btn_Rem.addEventListener("click",DMXChannelSearch.RemChannelSearch,{passive:!0}),AddSelectListener($SearchSel.Manufacturer),AddSelectListener($SearchSel.FixtureName),ipcRenderer.on("ChannelTemplate",(e,data)=>{$SearchSel.FieldSet.insertAdjacentHTML("beforeend",data.template);let Select=document.getElementById(data.selector);for(let i=0,len=SelectOptions.Options.length;i<len;i++){let option=document.createElement("option");option.value=SelectOptions.Options[i].id,option.text=SelectOptions.Options[i].text,Select.add(option)}AddSelectListener(Select)});let $OptionsSel={ResetButton:document.getElementById(config.Form.Option.Form+config.Form.Button.Reset),Form:document.getElementById(config.Form.Option.Form),SearchMode:document.getElementById(config.Form.Option.SearchMode),DisplayMode:document.getElementById(config.Form.Option.DisplayMode),ParameterList:document.getElementById(config.Form.Option.ParameterList)},RunOption={Reset:()=>(Table.Options.Reset(),$OptionsSel.ResetButton.blur(),this),Update:{All:()=>{let data={SearchMode:$OptionsSel.SearchMode.value,DisplayMode:$OptionsSel.DisplayMode.value,ParameterList:$OptionsSel.ParameterList.value};return Table.Options.Update.All(data),this},SearchMode:()=>(Table.Options.Update.SearchMode({SearchMode:$OptionsSel.SearchMode.value}),this),DisplayMode:()=>(Table.Options.Update.DisplayMode({DisplayMode:$OptionsSel.DisplayMode.value}),this),ParameterList:()=>(Table.Options.Update.ParameterList({ParameterList:$OptionsSel.ParameterList.value}),this)},Reselect:()=>($OptionsSel.SearchMode.querySelector('option[value="'+DBOption.SearchMode+'"]').selected=!0,$OptionsSel.SearchMode.setAttribute("data-option",DBOption.SearchMode),$OptionsSel.DisplayMode.querySelector('option[value="'+DBOption.DisplayMode+'"]').selected=!0,$OptionsSel.DisplayMode.setAttribute("data-option",DBOption.DisplayMode),$OptionsSel.ParameterList.querySelector('option[value="'+DBOption.ParameterList+'"]').selected=!0,$OptionsSel.ParameterList.setAttribute("data-option",DBOption.ParameterList),this)};$OptionsSel.Form.addEventListener("change",RunOption.Update.All,{passive:!0}),$OptionsSel.ResetButton.addEventListener("click",RunOption.Reset,{passive:!0}),AddSelectListener($OptionsSel.SearchMode,RunOption.Update.SearchMode),AddSelectListener($OptionsSel.DisplayMode,RunOption.Update.DisplayMode),AddSelectListener($OptionsSel.ParameterList,RunOption.Update.ParameterList),Table.Options.Initialize(Table.LastSearch.Initialize(DMXChannelSearch.Initialize));
+const electron = require('electron')
+    , config = require('../../config')
+    , remote = electron.remote
+    , ipcRenderer = electron.ipcRenderer
+    , RunMode = (process.env.NODE_ENV !== undefined) ? false : true
+    , Icon = {
+        max: `<svg viewBox="0 0 20 20">
+    <path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />
+</svg>`,
+        min: `<svg viewBox="0 0 20 20">
+    <path d="M7 1 V11 H19 V1 H7 z  M19 11 H7 V3 H19 V11 z"/>
+    <path d="M12 12 L12 19 L1 19 L1 9 L6 9 L6 9 L1 9 L1 19 L12 19 L12 19z" />
+    <rect x="1" y="9" width="4.5" height="2" />
+</svg>`
+    }
+    , $btn = {
+        min: document.getElementById('min-btn'),
+        max: document.getElementById('max-btn'),
+        close: document.getElementById('close-btn')
+    }
+    , $aLink = document.querySelectorAll('aside a')
+    , $h1 = document.querySelector('h1>span')
+    , $MainContent = document.getElementById('maincontent')
+
+/**
+ * Attach a listener for CSS coloring on new Select
+ * @param {Object} Selector
+ */
+let AddSelectListener = (Selector, callback = false) => {
+    Selector.addEventListener('change', () => {
+        Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+        Selector.blur()
+        if (typeof callback === 'function') {
+            callback()
+        }
+    }, {passive: true})
+}
+
+ipcRenderer.on('ModalTemplate', (e, data) => {
+    document.body.insertAdjacentHTML('beforeend', data.template)
+})
+$btn.min.addEventListener('click', () => {
+    let window = remote.getCurrentWindow()
+    window.minimize()
+}, {passive: true})
+
+$btn.max.addEventListener('click', () => {
+    let window = remote.getCurrentWindow()
+    if (!window.isMaximized()) {
+        window.maximize()
+        $btn.max.innerHTML = Icon.min
+    } else {
+        window.unmaximize()
+        $btn.max.innerHTML = Icon.max
+    }
+}, {passive: true})
+
+$btn.close.addEventListener('click', () => {
+    let window = remote.getCurrentWindow()
+    Table.Close()
+    window.close()
+}, {passive: true})
+$aLink.forEach(elem => {
+    elem.addEventListener('click', e => {
+        e.preventDefault()
+        let PageName = elem.getAttribute('href')
+        //ipcRenderer.send('pageChange', {page : elem.getAttribute('href')})		// Request new page content
+        $aLink.forEach(elem => {                                                // Remove .active on links
+            if (elem.getAttribute('href') == PageName) {
+                elem.classList.add('active')
+            } else {
+                elem.classList.remove('active')
+            }
+        })
+        document.querySelectorAll('#maincontent>div').forEach(elem => {            // Show only the wanted content
+            if (elem.getAttribute('id') == PageName) {
+                elem.classList.remove('hide')
+            } else {
+                elem.classList.add('hide')
+            }
+        })
+        $h1.innerHTML = `Fixtures Finder/${PageName} - v${config.Version}`      // Update Title
+        document.activeElement && document.activeElement.blur() 				// Remove :active on link
+    })
+})
+const sqlite3 = require('sqlite3').verbose()
+const dblocation = process.env.NODE_ENV ? `${__dirname}/../../db.sqlite3` : `${__dirname}/../../../db.sqlite3`
+    , db = new sqlite3.Database(dblocation, err => {
+        if (err) {
+            return console.error(err.message)
+        } else {
+            //console.info('Database Option connection alive')
+        }
+    })
+/* Define Return Object */
+let DBSearch
+    , DBLastSearch
+    , DBOption
+    , DBAdmin
+
+let Table = {
+    /**
+     * "LastSearch" Table getters and setters
+     */
+    LastSearch: {
+        /**
+        * Create the "LastSearch" Table and insert default values
+        * @returns {void}
+        */
+        Initialize: (callback = false) => {
+            db.serialize(() => {
+                /* Create and fill the Database for Options */
+                Table.LastSearch.Create()
+                let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.LastSearch}\``
+                db.get(sql, (err, row) => {
+                    if (err) {
+                        return console.error(err.message)
+                    } else {
+                        if (row.count > 1) {
+                            Table.LastSearch.Delete()
+                            Table.LastSearch.Create()
+                            Table.LastSearch.Fill()
+                        } else if (row.count == 0) {
+                            Table.LastSearch.Fill()
+                        }
+                        /* After check of Database, initialize interface */
+                        Table.LastSearch.Get(callback)
+                    }
+                })
+            })
+            return this
+        },
+        /**
+        * Create "LastSearch" Table
+        * @returns {void}
+        */
+        Create: () => {
+            let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\` INTEGER, \`${config.Form.Search.DMXChannelCount_Max}\` INTEGER, \`${config.Form.Search.Manufacturer}\` TEXT, \`${config.Form.Search.FixtureName}\` TEXT, \`${config.Form.Search.DMXChart_Channel}\` TEXT, \`${config.Form.Search.DMXChart_Slot}\` TEXT )`
+            db.run(sql)
+            return this
+        },
+        /**
+        * Empty "LastSearch" Table
+        * @returns {void}
+        */
+        Delete: () => {
+            let sql = `DROP TABLE \`${config.Database.LastSearch}\``
+            db.run(sql)
+            return this
+        },
+        /**
+        * Restore "LastSearch" Table to default (empty)
+        */
+        Reset: () => {
+            Table.LastSearch.Delete()
+            Table.LastSearch.Create()
+        },
+        /**
+        * Fill with default "LastSearch"
+        * @returns {void}
+        */
+        Fill: () => {
+            /* Reset the options to its default */
+            let sql = `INSERT INTO \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\`) VALUES ($DMXChannelCount, $DMXChannelCount_Max, $Manufacturer, $FixtureName, $DMXChart_Channel, $DMXChart_Slot)`
+                , param = {
+                    $DMXChannelCount: 1,
+                    $DMXChannelCount_Max: 0,
+                    $Manufacturer: config.Default.All.toLowerCase(),
+                    $FixtureName: config.Default.All.toLowerCase(),
+                    $DMXChart_Channel: JSON.stringify([{ 1: config.Default.Any.toLowerCase() }]),
+                    $DMXChart_Slot: JSON.stringify([{}])
+                }
+            db.run(sql, param)
+            return this
+        },
+        /**
+        * Get options from "LastSearch Table"
+        */
+        Get: (callback = false) => {
+            let sql = `SELECT \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\` FROM \`${config.Database.LastSearch}\``
+
+            db.get(sql, (err, data) => {
+                if (err) {
+                    return console.error(err.message)
+                } else {
+                    DBLastSearch = data
+                    DBLastSearch[config.Form.Search.DMXChart_Channel] = JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Channel])
+                    DBLastSearch[config.Form.Search.DMXChart_Slot] = JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Slot])
+                    if (typeof callback === 'function') {
+                        callback()
+                    }
+                }
+            })
+        },
+        Update: {
+            /**
+           * Run Update SQL in "LastSearch Table"
+           * @param {string} sql
+           * @param {{ DMXChannelCount: Int, DMXChannelCount_Max: Int, Manufacturer : String, FixtureName : String, DMXChart_Channel : Object, DMXChart_Slot : Object }} param
+           */
+            Run: (sql, param) => {
+                db.run(sql, param, err => {
+                    if (err) {
+                        return console.error(err.message)
+                    } else {
+                        Table.LastSearch.Get()
+                    }
+                })
+            },
+            /**
+           * Update All in "LastSearch Table"
+           * @param {{ DMXChannelCount: Int, DMXChannelCount_Max: Int, Manufacturer : String, FixtureName : String, DMXChart_Channel : Object, DMXChart_Slot : Object }} data
+           */
+            All: data => {
+                let sql = `UPDATE \`${config.Database.LastSearch}\` SET \`${config.Form.Search.DMXChannelCount}\` = $DMXChannelCount, \`${config.Form.Search.DMXChannelCount_Max}\` = $DMXChannelCount_Max, \`${config.Form.Search.Manufacturer}\` = $Manufacturer, \`${config.Form.Search.FixtureName}\` = $FixtureName, \`${config.Form.Search.DMXChart_Channel}\` = $DMXChart_Channel, \`${config.Form.Search.DMXChart_Slot}\` = $DMXChart_Slot`
+                    , param = {
+                        $DMXChannelCount: parseInt(data.DMXChannelCount),
+                        $DMXChannelCount_Max: parseInt(data.DMXChannelCount_Max),
+                        $Manufacturer: data.Manufacturer.toLowerCase(),
+                        $FixtureName: data.FixtureName.toLowerCase(),
+                        $DMXChart_Channel: JSON.stringify(data.DMXChart_Channel),
+                        $DMXChart_Slot: JSON.stringify(data.DMXChart_Slot)
+                    }
+                Table.LastSearch.Update.Run(sql, param)
+            }
+        }
+    },
+    /**
+    * "Options" Table getters and setters
+    */
+    Options: {
+        /**
+        * Create the "Options" Table and insert default values
+        * @returns {void}
+        */
+        Initialize: (callback = false) => {
+            db.serialize(() => {
+                /* Create and fill the Database for Options */
+                Table.Options.Create()
+                let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.Options}\``
+                db.get(sql, (err, row) => {
+                    if (err) {
+                        return console.error(err.message)
+                    } else {
+                        if (row.count > 1) {
+                            Table.Options.Delete()
+                            Table.Options.Create()
+                            Table.Options.Fill()
+                        } else if (row.count == 0) {
+                            Table.Options.Fill()
+                            //ipcRenderer.send('ModalTemplate', { Reboot : true, Modal : `${config.productName} needs to be reloaded, please wait ...` })
+                        }
+                        /* After check of Database, initialize interface */
+                        Table.Options.Get(callback)
+                    }
+                })
+            })
+            return this
+        },
+        /**
+        * Create "Options" Table
+        * @returns {void}
+        */
+        Create: () => {
+            let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\` TEXT, \`${config.Form.Option.DisplayMode}\` TEXT, \`${config.Form.Option.ParameterList}\` TEXT )`
+            db.run(sql)
+            return this
+        },
+        /**
+        * Empty "Options" Table
+        * @returns {void}
+        */
+        Delete: () => {
+            let sql = `DROP TABLE \`${config.Database.Options}\``
+            db.run(sql)
+            return this
+        },
+        /**
+        * Restore defaults Options in "Options" Table
+        */
+        Reset: () => {
+            Table.Options.Update.All({
+                SearchMode: config.Form.Option.SearchMode_OrderExact,
+                DisplayMode: config.Form.Option.DisplayMode_Full,
+                ParameterList: config.Form.Option.ParameterList_Common
+            })
+        },
+        /**
+        * Fill with default "Options Table"
+        * @returns {void}
+        */
+        Fill: () => {
+            /* Reset the options to its default */
+            let sql = `INSERT INTO \`${config.Database.Options}\` ( \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\`) VALUES ($SearchMode, $DisplayMode, $ParameterList)`
+                , param = {
+                    $SearchMode: config.Form.Option.SearchMode_OrderExact,
+                    $DisplayMode: config.Form.Option.DisplayMode_Full,
+                    $ParameterList: config.Form.Option.ParameterList_Common
+                }
+            db.run(sql, param)
+            return this
+        },
+        /**
+        * Get options from "Options Table"
+        * @returns {void}
+        */
+        Get: (callback = false) => {
+            let sql = `SELECT \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\` FROM \`${config.Database.Options}\``
+
+            db.get(sql, (err, data) => {
+                if (err) {
+                    return console.error(err.message)
+                } else {
+                    DBOption = data
+                    DMXChannelMax.CheckDisplay()
+                    SelectOptions.CheckOptions()
+                    RunOption.Reselect()
+                    if (typeof callback === 'function') {
+                        callback()
+                    }
+                }
+            })
+            return this
+        },
+        Update: {
+            /**
+           * Run Update SQL in "Options Table"
+           * @param {string} sql
+           * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} param
+           * @returns {void}
+           */
+            Run: (sql, param) => {
+                db.run(sql, param, err => {
+                    if (err) {
+                        return console.error(err.message)
+                    } else {
+                        Table.Options.Get()
+                    }
+                })
+                return this
+            },
+            /**
+           * Update All in "Options Table"
+           * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} data
+           * @returns {void}
+           */
+            All: data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                    , param = {
+                        $SearchMode: data.SearchMode,
+                        $DisplayMode: data.DisplayMode,
+                        $ParameterList: data.ParameterList
+                    }
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update SearchMode in "Options Table"
+            * @param {{ SearchMode: String }} data
+            * @returns {void}
+            */
+            SearchMode: data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode`
+                    , param = {
+                        $SearchMode: data.SearchMode,
+                    }
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update DisplayMode in "Options Table"
+            * @param {{ DisplayMode: String }} data
+            * @returns {void}
+            */
+            DisplayMode: data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.DisplayMode}\` = $DisplayMode`
+                    , param = {
+                        $DisplayMode: data.DisplayMode,
+                    }
+                Table.Options.Update.Run(sql, param)
+                return this
+            },
+            /**
+            * Update ParameterList in "Options Table"
+            * @param {{ ParameterList: String }} data
+            * @returns {void}
+            */
+            ParameterList: data => {
+                let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                    , param = {
+                        $ParameterList: data.ParameterList,
+                    }
+                Table.Options.Update.Run(sql, param)
+                return this
+            }
+        }
+    },
+    /**
+    * Close Database
+    * @returns {void}
+    */
+    Close: () => {
+        db.close(err => {
+            if (err) {
+                return console.error(err.message)
+            } else {
+                //console.info('Database connection closed')
+            }
+        })
+        return this
+    }
+}
+let SelectOptions = {
+    Options: '',
+    /**
+    * Based on DBOption, set the "Select Options"
+    * @returns {void}
+    */
+    CheckOptions: () => {
+        switch (DBOption[config.Form.Option.ParameterList]) {
+            case config.Form.Option.ParameterList_Common:
+                SelectOptions.SetRestricted()
+                break
+            case config.Form.Option.ParameterList_Full:
+                SelectOptions.SetFull()
+                break
+            default:
+                SelectOptions.SetRestricted()
+                break
+        }
+        return this
+    },
+    /**
+     * Set Restricted option values
+     * @returns {void}
+     */
+    SetRestricted: () => {
+        SelectOptions.Options = [{ id: 'any', text: 'Any' }, { id: 'intensity', text: 'Intensity' }, { id: 'intensity fine', text: 'Intensity Fine' }, { id: 'strobe', text: 'Strobe' }, { id: 'shutter', text: 'Shutter' }, { id: 'pan', text: 'Pan' }, { id: 'pan fine', text: 'Pan Fine' }, { id: 'pan rot', text: 'Pan Rot' }, { id: 'tilt', text: 'Tilt' }, { id: 'tilt fine', text: 'Tilt Fine' }, { id: 'tilt rot', text: 'Tilt Rot' }, { id: 'pt speed', text: 'PT Speed' }, { id: 'color', text: 'Color' }, { id: 'color macro', text: 'Color Macro' }, { id: 'red', text: 'Red' }, { id: 'red fine', text: 'Red Fine' }, { id: 'green', text: 'Green' }, { id: 'green fine', text: 'Green Fine' }, { id: 'blue', text: 'Blue' }, { id: 'blue fine', text: 'Blue Fine' }, { id: 'white', text: 'White' }, { id: 'white fine', text: 'White Fine' }, { id: 'amber', text: 'Amber' }, { id: 'amber fine', text: 'Amber Fine' }, { id: 'uv', text: 'UV' }, { id: 'uv fine', text: 'UV Fine' }, { id: 'cyan', text: 'Cyan' }, { id: 'cyan fine', text: 'Cyan Fine' }, { id: 'magenta', text: 'Magenta' }, { id: 'magenta fine', text: 'Magenta Fine' }, { id: 'yellow', text: 'Yellow' }, { id: 'yellow fine', text: 'Yellow Fine' }, { id: 'ctc', text: 'CTC' }, { id: 'ctc fine', text: 'CTC Fine' }, { id: 'cto', text: 'CTO' }, { id: 'cto fine', text: 'CTO Fine' }, { id: 'gobo', text: 'Gobo' }, { id: 'gobo rot', text: 'Gobo Rot' }, { id: 'prism', text: 'Prism' }, { id: 'prism rot', text: 'Prism Rot' }, { id: 'zoom', text: 'Zoom' }, { id: 'focus', text: 'Focus' }, { id: 'frost', text: 'Frost' }, { id: 'iris', text: 'Iris' }, { id: 'macro', text: 'Macro' }, { id: 'chase', text: 'Chase' }, { id: 'fx', text: 'FX' }, { id: 'ctrl', text: 'Ctrl' }]
+        return this
+    },
+    /**
+     * Set Full option values
+     * @returns {void}
+     */
+    SetFull: () => {
+        SelectOptions.Options = [{ id: 'any', text: 'Any' }, { id: 'access', text: 'Access' }, { id: 'address', text: 'Address' }, { id: 'adjust dn', text: 'Adjust Dn' }, { id: 'adjust up', text: 'Adjust Up' }, { id: 'adv blue high', text: 'Adv Blue High' }, { id: 'adv blue low', text: 'Adv Blue Low' }, { id: 'adv blue mid', text: 'Adv Blue Mid' }, { id: 'adv green high', text: 'Adv Green High' }, { id: 'adv green low', text: 'Adv Green Low' }, { id: 'adv green mid', text: 'Adv Green Mid' }, { id: 'adv red high', text: 'Adv Red High' }, { id: 'adv red low', text: 'Adv Red Low' }, { id: 'adv red mid', text: 'Adv Red Mid' }, { id: 'advance col', text: 'Advance Col' }, { id: 'age', text: 'Age' }, { id: 'align ctrl', text: 'Align Ctrl' }, { id: 'alpha', text: 'Alpha' }, { id: 'amber', text: 'Amber' }, { id: 'amber fine', text: 'Amber Fine' }, { id: 'amberc', text: 'AmberC' }, { id: 'ambience', text: 'Ambience' }, { id: 'ambient', text: 'Ambient' }, { id: 'anchor x', text: 'Anchor X' }, { id: 'anchor y', text: 'Anchor Y' }, { id: 'anchor z', text: 'Anchor Z' }, { id: 'angle', text: 'Angle' }, { id: 'anim', text: 'Anim' }, { id: 'anim 1', text: 'Anim 1' }, { id: 'anim 1 fnc', text: 'Anim 1 Fnc' }, { id: 'anim 1 rot', text: 'Anim 1 Rot' }, { id: 'anim 1 rot fine', text: 'Anim 1 Rot Fine' }, { id: 'anim 2', text: 'Anim 2' }, { id: 'anim 2 fnc', text: 'Anim 2 Fnc' }, { id: 'anim 2 rot', text: 'Anim 2 Rot' }, { id: 'anim 2 rot fine', text: 'Anim 2 Rot Fine' }, { id: 'anim ctrl 1', text: 'Anim Ctrl 1' }, { id: 'anim ctrl 2', text: 'Anim Ctrl 2' }, { id: 'anim fine', text: 'Anim Fine' }, { id: 'anim fnc', text: 'Anim Fnc' }, { id: 'anim ind', text: 'Anim Ind' }, { id: 'anim index', text: 'Anim Index' }, { id: 'anim macro', text: 'Anim Macro' }, { id: 'anim mode', text: 'Anim Mode' }, { id: 'anim phase', text: 'Anim Phase' }, { id: 'anim rot', text: 'Anim Rot' }, { id: 'anim rot 1', text: 'Anim Rot 1' }, { id: 'anim rot 2', text: 'Anim Rot 2' }, { id: 'anim rot fine', text: 'Anim Rot Fine' }, { id: 'anim speed', text: 'Anim Speed' }, { id: 'animated star', text: 'Animated Star' }, { id: 'animation', text: 'Animation' }, { id: 'anti aliasing', text: 'Anti Aliasing' }, { id: 'artnet in', text: 'ArtNet In' }, { id: 'aspect', text: 'Aspect' }, { id: 'aspect fine', text: 'Aspect Fine' }, { id: 'aspect mode', text: 'Aspect Mode' }, { id: 'aspect ratio', text: 'Aspect Ratio' }, { id: 'aspect ratio fine', text: 'Aspect Ratio Fine' }, { id: 'atmosphere', text: 'Atmosphere' }, { id: 'audio', text: 'Audio' }, { id: 'audio file', text: 'Audio File' }, { id: 'audio fine', text: 'Audio Fine' }, { id: 'audio fnc', text: 'Audio Fnc' }, { id: 'audio gain', text: 'Audio Gain' }, { id: 'audio in', text: 'Audio In' }, { id: 'audio l', text: 'Audio L' }, { id: 'audio library', text: 'Audio Library' }, { id: 'audio out', text: 'Audio Out' }, { id: 'audio pan', text: 'Audio Pan' }, { id: 'audio pan fine', text: 'Audio Pan Fine' }, { id: 'audio r', text: 'Audio R' }, { id: 'audio sync', text: 'Audio Sync' }, { id: 'audio volume', text: 'Audio Volume' }, { id: 'audio wav', text: 'Audio Wav' }, { id: 'auto', text: 'Auto' }, { id: 'auto fade', text: 'Auto Fade' }, { id: 'auto focus', text: 'Auto Focus' }, { id: 'auto focus adj', text: 'Auto Focus Adj' }]
+        return this
+    }
+},
+    $SearchSel = {
+        Status: {
+            SearchInitialize: false
+        },
+        Timer: {
+            Form: false,
+            LastSearch: false,
+            Adjust: false
+        },
+        Form: document.getElementById(config.Form.Search.Form),
+        DMXChannelCount: document.getElementById(config.Form.Search.DMXChannelCount),
+        DMXChannelCount_Btn_Add: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),
+        DMXChannelCount_Btn_Rem: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Rem),
+        FieldSet: document.getElementById(config.Form.Search.DMXChannelCount).closest('fieldset'),
+        DMXChannelCount_Max: document.getElementById(config.Form.Search.DMXChannelCount_Max),
+        DMXChannelCount_Max_Div: document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
+        DMXChannelCount_Max_Label: document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]'),
+        Manufacturer: document.getElementById(config.Form.Search.Manufacturer),
+        FixtureName: document.getElementById(config.Form.Search.FixtureName),
+        Button: {
+            Reset: document.getElementById(config.Form.Search.Form + config.Form.Button.Reset),
+            QuickSearch: document.getElementById(config.Form.Search.Form + config.Form.Button.Submit)
+        }
+    },
+    DMXChannelSearch = {
+        DMXChannelCount: 0,
+        /**
+         * Initialize the form with last search content
+         */
+        Initialize: () => {
+            // Restore previous search
+            $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
+            DMXChannelSearch.AdjustChannelSearch()
+            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase()) {
+                $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]').selected = true
+            }
+            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase()) {
+                $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]').selected = true
+            }
+            DMXChannelSearch.Reselect()
+        },
+        /**
+         * Restore Previous Search
+         */
+        Reselect: () => {
+            clearTimeout($SearchSel.Timer.LastSearch)
+            if (!$SearchSel.Status.SearchInitialize) {
+                $SearchSel.Timer.LastSearch = setTimeout(DMXChannelSearch.Reselect, 50)
+            } else {
+                let event = new Event('change')
+                for (let i = 0; i < DBLastSearch[config.Form.Search.DMXChannelCount]; i++) {
+                    let obj = DBLastSearch[config.Form.Search.DMXChart_Channel][i]
+                    for (let key in obj) {
+                        if (obj[key].toLowerCase() != config.Default.Any.toLowerCase()) {
+                            DMXChannelSearch.SetSelect(key, obj[key])
+                        }
+                    }
+                }
+            }
+        },
+        /**
+         * Set Select value
+         * @param {int} id
+         * @param {string} value
+         */
+        SetSelect: (id, value) => {
+            clearTimeout($SearchSel.Timer[id])
+            let select = document.getElementById(config.Form.Search.BaseName_Channel + id)
+                , NbOption = select.querySelectorAll('option').length
+            if (NbOption != SelectOptions.Options.length) {
+                $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetSelect(id, value), 50)
+            } else {
+                select.querySelector('option[value="' + value.toLowerCase() + '"]').selected = true
+                select.dispatchEvent(new Event('change'))
+            }
+        },
+        /**
+         * Reset the DMX Count value to 1
+         * @returns {void}
+         */
+        Reset: () => {
+            let event = new Event('change')
+                , select = document.getElementById(`${config.Form.Search.BaseName_Channel}1`)
+            // Set the First Channel to "any"
+            select.value = config.Default.Any.toLowerCase()
+            // Reset to 1 the number of channels
+            $SearchSel.DMXChannelCount.value = '001'
+
+            // Reset Manufacturer
+            $SearchSel.Manufacturer.querySelector('option[value="' + config.Default.All.toLowerCase() + '"]').selected = true
+            // Reset Fixture Name
+            $SearchSel.FixtureName.querySelector('option[value="' + config.Default.All.toLowerCase() + '"]').selected = true
+
+            //Fire change event on elements
+            select.dispatchEvent(event)
+            $SearchSel.DMXChannelCount.dispatchEvent(event)
+            $SearchSel.Manufacturer.dispatchEvent(event)
+            $SearchSel.FixtureName.dispatchEvent(event)
+            $SearchSel.Form.dispatchEvent(event)
+            $SearchSel.Button.Reset.blur()
+        },
+        /**
+         * Set value on 3 digits by adding 0 in front of the value
+         * @param {int} val
+         * @returns {string}
+         */
+        Format: val => ('000' + val).substr(-3),
+        /**
+        * Set DMX Channel Count Value
+        * @param {int|string} val
+        * @returns {void}
+        */
+        Set: val => {
+            val = parseInt(val)
+            // If value set is inside the DMX range value (1-512)
+            if (val >= 1 && val <= 512) {
+                DMXChannelSearch.DMXChannelCount = val
+                $SearchSel.DMXChannelCount.value = DMXChannelSearch.Format(val)
+            } else {
+                $SearchSel.DMXChannelCount.value = DMXChannelSearch.Format(DMXChannelSearch.DMXChannelCount)
+            }
+            return this
+        },
+        /**
+        * Adjust the number of DMX Select in the form
+        * @param {Object} [event=false]
+        * @returns {void}
+        */
+        AdjustChannelSearch: (event = false) => {
+            clearTimeout($SearchSel.Timer.Adjust)
+            if (SelectOptions.Options.length == 0) {
+                $SearchSel.Timer.Adjust = setTimeout(DMXChannelSearch.AdjustChannelSearch, 50)
+            } else {
+                $SearchSel.Status.SearchInitialize = false
+                if (event && typeof event !== 'function') {
+                    $SearchSel.DMXChannelCount.blur()
+                }
+                let Result = parseInt($SearchSel.DMXChannelCount.value) - DMXChannelSearch.DMXChannelCount
+                $SearchSel.DMXChannelCount.value = DMXChannelSearch.DMXChannelCount
+                if (Result != 0 && Result > 0) {             // Positive Result
+                    for (let i = 0; i < Result; i++) {
+                        DMXChannelSearch.AddChannelSearch(event)
+                    }
+                    $SearchSel.Status.SearchInitialize = true
+                } else if (Result != 0 && Result < 0) {      // Negative Result
+                    for (let i = Result; i < 0; i++) {
+                        DMXChannelSearch.RemChannelSearch(event)
+                    }
+                    $SearchSel.Status.SearchInitialize = true
+                } else {
+                    $SearchSel.Status.SearchInitialize = true
+                    return DMXChannelSearch.Set(DMXChannelSearch.DMXChannelCount)
+                }
+            }
+        },
+        /**
+        * Add 1 DMX Select in the form
+        * @param {Object} [event=false]
+        * @returns {void}
+        */
+        AddChannelSearch: (event = false) => {
+            if (event && typeof event !== 'function') {
+                $SearchSel.DMXChannelCount_Btn_Add.blur()
+            }
+            let ChannelNumber = parseInt($SearchSel.DMXChannelCount.value) + 1
+            // If value set is inside the DMX range value (1-512)
+            if (ChannelNumber >= 1 && ChannelNumber <= 512) {
+                DMXChannelSearch.Set(ChannelNumber)
+
+                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
+                // Add a new DMX Channel Search
+                $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
+                let Select = document.getElementById(data.selector)
+                for (let i = 0; i < SelectOptions.Options.length; i++) {
+                    let option = document.createElement('option')
+                    option.value = SelectOptions.Options[i].id
+                    option.text = SelectOptions.Options[i].text
+                    Select.add(option)
+                }
+                AddSelectListener(Select)
+                if (event && typeof event !== 'function') {
+                    $SearchSel.Form.dispatchEvent(new Event('change'))
+                }
+            } else {
+                return this
+            }
+        },
+        /**
+         * Remove 1 DMX Select in the form
+         * @param {Object} [event=false]
+         * @returns {void}
+         */
+        RemChannelSearch: (event = false) => {
+            if (event && typeof event !== 'function') {
+                $SearchSel.DMXChannelCount_Btn_Rem.blur()
+            }
+            let str = parseInt($SearchSel.DMXChannelCount.value) - 1
+            // If value set is inside the DMX range value (1>512)
+            if (str >= 1 && str <= 512) {
+                let ChildToRemove = document.getElementById(config.Form.Search.BaseName_Channel + parseInt($SearchSel.DMXChannelCount.value))
+                if (ChildToRemove) {
+                    let ParentToRemove = ChildToRemove.closest('div.channelfield.flex-container')
+                    ParentToRemove.remove()
+                }
+                DMXChannelSearch.Set(str)
+                if (event && typeof event !== 'function') {
+                    $SearchSel.Form.dispatchEvent(new Event('change'))
+                }
+            } else {
+                return this
+            }
+        },
+        Update: {
+            /**
+             * Prepare data for a "LastSearch" Update All
+             * @returns {void}
+             */
+            All: () => {
+                let SelectAllChannels = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
+                    , JsonDMXChart_Channel = []
+                SelectAllChannels.forEach(select => {
+                    JsonDMXChart_Channel.push({
+                        [select.getAttribute('name').replace(config.Form.Search.BaseName_Channel, '')]: select.value
+                    })
+                })
+                let data = {
+                    DMXChannelCount: $SearchSel.DMXChannelCount.value,
+                    DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
+                    Manufacturer: $SearchSel.Manufacturer.value,
+                    FixtureName: $SearchSel.FixtureName.value,
+                    DMXChart_Channel: JsonDMXChart_Channel,
+                    DMXChart_Slot: [{}]
+                }
+                Table.LastSearch.Update.All(data)
+                return this
+            }
+        }
+    },
+    DMXChannelMax = {
+        /**
+        * Following the DBOption status, will adjust the display status "Max DMX Channel"
+        * @returns {void}
+        */
+        CheckDisplay: () => {
+            switch (DBOption[config.Form.Option.SearchMode]) {
+                case config.Form.Option.SearchMode_OrderExact:
+                case config.Form.Option.SearchMode_UnOrderExact:
+                    DMXChannelMax.Hide()
+                    break
+                default:
+                    DMXChannelMax.Show()
+                    break
+            }
+        },
+        /**
+        * Show the "Max DMX Channel"
+        * @returns {void}
+        */
+        Show: () => {
+            $SearchSel.DMXChannelCount_Max_Label.classList.remove('hide')
+            $SearchSel.DMXChannelCount_Max_Div.classList.remove('hide')
+            return this
+        },
+        /**
+        * Hide the "Max DMX Channel"
+        * @returns {void}
+        */
+        Hide: () => {
+            $SearchSel.DMXChannelCount_Max_Label.classList.add('hide')
+            $SearchSel.DMXChannelCount_Max_Div.classList.add('hide')
+            return this
+        }
+    }
+
+/* Getters */
+$SearchSel.Form.addEventListener('change', e => {
+    clearTimeout($SearchSel.Timer.Form)
+    $SearchSel.Timer.Form = setTimeout(DMXChannelSearch.Update.All, 50)
+}, { passive: true })
+
+/* Buttons */
+// Reset
+$SearchSel.Button.Reset.addEventListener('click', DMXChannelSearch.Reset, { passive: true })
+
+/* DMX Channel Count */
+$SearchSel.DMXChannelCount.addEventListener('click', $SearchSel.DMXChannelCount.select, { passive: true })
+$SearchSel.DMXChannelCount.addEventListener('change', DMXChannelSearch.AdjustChannelSearch, { passive: true })
+
+// Button +
+$SearchSel.DMXChannelCount_Btn_Add.addEventListener('click', DMXChannelSearch.AddChannelSearch, { passive: true })
+// Button -
+$SearchSel.DMXChannelCount_Btn_Rem.addEventListener('click', DMXChannelSearch.RemChannelSearch, { passive: true })
+
+/* Other Criteria */
+
+// Manufacturer
+AddSelectListener($SearchSel.Manufacturer)
+
+//Fixture Name
+AddSelectListener($SearchSel.FixtureName)
+let $OptionsSel = {
+    ResetButton: document.getElementById(config.Form.Option.Form + config.Form.Button.Reset),
+    Form: document.getElementById(config.Form.Option.Form),
+    SearchMode: document.getElementById(config.Form.Option.SearchMode),
+    DisplayMode: document.getElementById(config.Form.Option.DisplayMode),
+    ParameterList: document.getElementById(config.Form.Option.ParameterList)
+}
+let RunOption = {
+    /**
+     * Reset the DMX Count value to 1
+     * @returns {void}
+     */
+    Reset: () => {
+        Table.Options.Reset()
+        $OptionsSel.ResetButton.blur()
+        return this
+    },
+    Update: {
+        /**
+         * Prepare data for a "Options Table" Update All
+         * @returns {void}
+         */
+        All: () => {
+            let data = {
+                SearchMode: $OptionsSel.SearchMode.value,
+                DisplayMode: $OptionsSel.DisplayMode.value,
+                ParameterList: $OptionsSel.ParameterList.value
+            }
+            Table.Options.Update.All(data)
+            return this
+        },
+        /**
+         * Prepare data to update SearchMode in "Options Table"
+         * @returns {void}
+         */
+        SearchMode: () => {
+            Table.Options.Update.SearchMode({ SearchMode: $OptionsSel.SearchMode.value })
+            return this
+        },
+        /**
+         * Prepare data to update DisplayMode in "Options Table"
+         * @returns {void}
+         */
+        DisplayMode: () => {
+            Table.Options.Update.DisplayMode({ DisplayMode: $OptionsSel.DisplayMode.value })
+            return this
+        },
+        /**
+        * Prepare data to update ParameterList in "Options Table"
+        * @returns {void}
+        */
+        ParameterList: () => {
+            Table.Options.Update.ParameterList({ ParameterList: $OptionsSel.ParameterList.value })
+            return this
+        }
+    },
+    /**
+     * Select the options based on DB Content
+     * @returns {void}
+     */
+    Reselect: () => {
+        $OptionsSel.SearchMode.querySelector('option[value="' + DBOption.SearchMode + '"]').selected = true
+        $OptionsSel.SearchMode.setAttribute('data-option', DBOption.SearchMode)
+        $OptionsSel.DisplayMode.querySelector('option[value="' + DBOption.DisplayMode + '"]').selected = true
+        $OptionsSel.DisplayMode.setAttribute('data-option', DBOption.DisplayMode)
+        $OptionsSel.ParameterList.querySelector('option[value="' + DBOption.ParameterList + '"]').selected = true
+        $OptionsSel.ParameterList.setAttribute('data-option', DBOption.ParameterList)
+        return this
+    }
+}
+
+$OptionsSel.Form.addEventListener('change', RunOption.Update.All, {passive: true})
+$OptionsSel.ResetButton.addEventListener('click', RunOption.Reset, {passive: true})
+
+/* Other Criteria */
+
+// Search Mode
+AddSelectListener($OptionsSel.SearchMode, RunOption.Update.SearchMode)
+
+// Display Mode
+AddSelectListener($OptionsSel.DisplayMode, RunOption.Update.DisplayMode)
+
+// Parameter List
+AddSelectListener($OptionsSel.ParameterList, RunOption.Update.ParameterList)
+/* Initialize the page content*/
+Table.Options.Initialize(
+    Table.LastSearch.Initialize(
+        DMXChannelSearch.Initialize
+    )
+)
+
+

@@ -36,16 +36,21 @@ let SelectOptions = {
     }
 },
     $SearchSel = {
+        Status: {
+            SearchInitialize: false
+        },
         Timer: {
             Form: false,
-            LastSearch: false
+            LastSearch: false,
+            Adjust: false
         },
         Form: document.getElementById(config.Form.Search.Form),
         DMXChannelCount: document.getElementById(config.Form.Search.DMXChannelCount),
         DMXChannelCount_Btn_Add: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),
         DMXChannelCount_Btn_Rem: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Rem),
         FieldSet: document.getElementById(config.Form.Search.DMXChannelCount).closest('fieldset'),
-        DMXChannelCount_Max: document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
+        DMXChannelCount_Max: document.getElementById(config.Form.Search.DMXChannelCount_Max),
+        DMXChannelCount_Max_Div: document.getElementById(config.Form.Search.DMXChannelCount_Max).closest('div'),
         DMXChannelCount_Max_Label: document.querySelector('label[for="' + config.Form.Search.DMXChannelCount_Max + '"]'),
         Manufacturer: document.getElementById(config.Form.Search.Manufacturer),
         FixtureName: document.getElementById(config.Form.Search.FixtureName),
@@ -61,34 +66,49 @@ let SelectOptions = {
          */
         Initialize: () => {
             // Restore previous search
-            DMXChannelSearch.AddChannelSearch()
             $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
             DMXChannelSearch.AdjustChannelSearch()
-            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All) {
+            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase()) {
                 $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]').selected = true
             }
-            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All) {
+            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase()) {
                 $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]').selected = true
             }
-            clearTimeout($SearchSel.Timer.LastSearch)
-            $SearchSel.Timer.LastSearch = setTimeout(() => {
-                DMXChannelSearch.Reselect()
-            }, 250)
+            DMXChannelSearch.Reselect()
         },
         /**
          * Restore Previous Search
          */
         Reselect: () => {
-            let event = new Event('change')
-            for (let i = 0; i < DBLastSearch[config.Form.Search.DMXChannelCount]; i++) {
-                let obj = DBLastSearch[config.Form.Search.DMXChart_Channel][i]
-                for (let key in obj) {
-                    if (obj[key] != config.Default.Any) {
-                        let select = document.getElementById(key)
-                        select.querySelector('option[value="' + obj[key].toLowerCase() + '"]').selected = true
-                        select.dispatchEvent(event)
+            clearTimeout($SearchSel.Timer.LastSearch)
+            if (!$SearchSel.Status.SearchInitialize) {
+                $SearchSel.Timer.LastSearch = setTimeout(DMXChannelSearch.Reselect, 50)
+            } else {
+                let event = new Event('change')
+                for (let i = 0; i < DBLastSearch[config.Form.Search.DMXChannelCount]; i++) {
+                    let obj = DBLastSearch[config.Form.Search.DMXChart_Channel][i]
+                    for (let key in obj) {
+                        if (obj[key].toLowerCase() != config.Default.Any.toLowerCase()) {
+                            DMXChannelSearch.SetSelect(key, obj[key])
+                        }
                     }
                 }
+            }
+        },
+        /**
+         * Set Select value
+         * @param {int} id
+         * @param {string} value
+         */
+        SetSelect: (id, value) => {
+            clearTimeout($SearchSel.Timer[id])
+            let select = document.getElementById(config.Form.Search.BaseName_Channel + id)
+                , NbOption = select.querySelectorAll('option').length
+            if (NbOption != SelectOptions.Options.length) {
+                $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetSelect(id, value), 50)
+            } else {
+                select.querySelector('option[value="' + value.toLowerCase() + '"]').selected = true
+                select.dispatchEvent(new Event('change'))
             }
         },
         /**
@@ -103,9 +123,17 @@ let SelectOptions = {
             // Reset to 1 the number of channels
             $SearchSel.DMXChannelCount.value = '001'
 
-            //Fire change event on both element
+            // Reset Manufacturer
+            $SearchSel.Manufacturer.querySelector('option[value="' + config.Default.All.toLowerCase() + '"]').selected = true
+            // Reset Fixture Name
+            $SearchSel.FixtureName.querySelector('option[value="' + config.Default.All.toLowerCase() + '"]').selected = true
+
+            //Fire change event on elements
             select.dispatchEvent(event)
             $SearchSel.DMXChannelCount.dispatchEvent(event)
+            $SearchSel.Manufacturer.dispatchEvent(event)
+            $SearchSel.FixtureName.dispatchEvent(event)
+            $SearchSel.Form.dispatchEvent(event)
             $SearchSel.Button.Reset.blur()
         },
         /**
@@ -123,10 +151,10 @@ let SelectOptions = {
             val = parseInt(val)
             // If value set is inside the DMX range value (1-512)
             if (val >= 1 && val <= 512) {
-                this.DMXChannelCount = val
+                DMXChannelSearch.DMXChannelCount = val
                 $SearchSel.DMXChannelCount.value = DMXChannelSearch.Format(val)
             } else {
-                $SearchSel.DMXChannelCount.value = DMXChannelSearch.Format(this.DMXChannelCount)
+                $SearchSel.DMXChannelCount.value = DMXChannelSearch.Format(DMXChannelSearch.DMXChannelCount)
             }
             return this
         },
@@ -136,21 +164,30 @@ let SelectOptions = {
         * @returns {void}
         */
         AdjustChannelSearch: (event = false) => {
-            if (event && typeof event !== 'function') {
-                $SearchSel.DMXChannelCount.blur()
-            }
-            let Result = parseInt($SearchSel.DMXChannelCount.value) - this.DMXChannelCount
-            $SearchSel.DMXChannelCount.value = this.DMXChannelCount
-            if (Result != 0 && Result > 0) {             // Positive Result
-                for (let i = 0; i < Result; i++) {
-                    DMXChannelSearch.AddChannelSearch(event)
-                }
-            } else if (Result != 0 && Result < 0) {      // Negative Result
-                for (let i = Result; i < 0; i++) {
-                    DMXChannelSearch.RemChannelSearch(event)
-                }
+            clearTimeout($SearchSel.Timer.Adjust)
+            if (SelectOptions.Options.length == 0) {
+                $SearchSel.Timer.Adjust = setTimeout(DMXChannelSearch.AdjustChannelSearch, 50)
             } else {
-                return DMXChannelSearch.Set(this.DMXChannelCount)
+                $SearchSel.Status.SearchInitialize = false
+                if (event && typeof event !== 'function') {
+                    $SearchSel.DMXChannelCount.blur()
+                }
+                let Result = parseInt($SearchSel.DMXChannelCount.value) - DMXChannelSearch.DMXChannelCount
+                $SearchSel.DMXChannelCount.value = DMXChannelSearch.DMXChannelCount
+                if (Result != 0 && Result > 0) {             // Positive Result
+                    for (let i = 0; i < Result; i++) {
+                        DMXChannelSearch.AddChannelSearch(event)
+                    }
+                    $SearchSel.Status.SearchInitialize = true
+                } else if (Result != 0 && Result < 0) {      // Negative Result
+                    for (let i = Result; i < 0; i++) {
+                        DMXChannelSearch.RemChannelSearch(event)
+                    }
+                    $SearchSel.Status.SearchInitialize = true
+                } else {
+                    $SearchSel.Status.SearchInitialize = true
+                    return DMXChannelSearch.Set(DMXChannelSearch.DMXChannelCount)
+                }
             }
         },
         /**
@@ -165,8 +202,19 @@ let SelectOptions = {
             let ChannelNumber = parseInt($SearchSel.DMXChannelCount.value) + 1
             // If value set is inside the DMX range value (1-512)
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
-                ipcRenderer.send('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
                 DMXChannelSearch.Set(ChannelNumber)
+
+                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
+                // Add a new DMX Channel Search
+                $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
+                let Select = document.getElementById(data.selector)
+                for (let i = 0; i < SelectOptions.Options.length; i++) {
+                    let option = document.createElement('option')
+                    option.value = SelectOptions.Options[i].id
+                    option.text = SelectOptions.Options[i].text
+                    Select.add(option)
+                }
+                AddSelectListener(Select)
                 if (event && typeof event !== 'function') {
                     $SearchSel.Form.dispatchEvent(new Event('change'))
                 }
@@ -198,6 +246,31 @@ let SelectOptions = {
             } else {
                 return this
             }
+        },
+        Update: {
+            /**
+             * Prepare data for a "LastSearch" Update All
+             * @returns {void}
+             */
+            All: () => {
+                let SelectAllChannels = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
+                    , JsonDMXChart_Channel = []
+                SelectAllChannels.forEach(select => {
+                    JsonDMXChart_Channel.push({
+                        [select.getAttribute('name').replace(config.Form.Search.BaseName_Channel, '')]: select.value
+                    })
+                })
+                let data = {
+                    DMXChannelCount: $SearchSel.DMXChannelCount.value,
+                    DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
+                    Manufacturer: $SearchSel.Manufacturer.value,
+                    FixtureName: $SearchSel.FixtureName.value,
+                    DMXChart_Channel: JsonDMXChart_Channel,
+                    DMXChart_Slot: [{}]
+                }
+                Table.LastSearch.Update.All(data)
+                return this
+            }
         }
     },
     DMXChannelMax = {
@@ -222,7 +295,7 @@ let SelectOptions = {
         */
         Show: () => {
             $SearchSel.DMXChannelCount_Max_Label.classList.remove('hide')
-            $SearchSel.DMXChannelCount_Max.classList.remove('hide')
+            $SearchSel.DMXChannelCount_Max_Div.classList.remove('hide')
             return this
         },
         /**
@@ -231,7 +304,7 @@ let SelectOptions = {
         */
         Hide: () => {
             $SearchSel.DMXChannelCount_Max_Label.classList.add('hide')
-            $SearchSel.DMXChannelCount_Max.classList.add('hide')
+            $SearchSel.DMXChannelCount_Max_Div.classList.add('hide')
             return this
         }
     }
@@ -239,9 +312,7 @@ let SelectOptions = {
 /* Getters */
 $SearchSel.Form.addEventListener('change', e => {
     clearTimeout($SearchSel.Timer.Form)
-    $SearchSel.Timer.Form = setTimeout(() => {
-        console.log('Form Change or submit')
-    }, 50)
+    $SearchSel.Timer.Form = setTimeout(DMXChannelSearch.Update.All, 50)
 }, { passive: true })
 
 /* Buttons */
@@ -264,17 +335,3 @@ AddSelectListener($SearchSel.Manufacturer)
 
 //Fixture Name
 AddSelectListener($SearchSel.FixtureName)
-
-/* Setters */
-// Add a new DMX Channel Search
-ipcRenderer.on('ChannelTemplate', (e, data) => {
-    $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
-    let Select = document.getElementById(data.selector)
-    for (let i = 0, len = SelectOptions.Options.length; i < len; i++) {
-        let option = document.createElement('option')
-        option.value = SelectOptions.Options[i].id
-        option.text = SelectOptions.Options[i].text
-        Select.add(option)
-    }
-    AddSelectListener(Select)
-})
