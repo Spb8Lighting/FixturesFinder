@@ -28,10 +28,10 @@ gulp.task('js', () => {
 	return gulp.src(SourceJS)
 		.pipe($.concatUtil('app.js'))
 		.pipe($.concatUtil.footer('\n'))
-		.pipe($.uglifyes({
+		/*.pipe($.uglifyes({
 			mangle: false,
 			ecma: 6
-		}))
+		}))*/
 		.pipe(gulp.dest('public/js'))
 })
 // Process SCSS files to generate distribuable files

@@ -1,6 +1,6 @@
 module.exports = {
 	// Tool
-	Version: '0.0.7',
+	Version: '0.0.8',
 	productName: 'Fixtures Finder',
 	//Client Parameter
 	HttpPort: '8080',

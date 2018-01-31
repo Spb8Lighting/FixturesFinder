@@ -1,2 +1,7 @@
 /* Initialize the page content*/
-Table.Options.Initialize(DMXChannelSearch.AddChannelSearch)
+Table.Options.Initialize(
+    Table.LastSearch.Initialize(
+        DMXChannelSearch.Initialize
+    )
+)
+

@@ -53,7 +53,7 @@ $AlphaBack : .9;
 select {
     transition: background .5s;
     text-align-last: center;
-    &:not([data-option=any]):not([data-option=All]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
+    &:not([data-option=any]):not([data-option=all]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
         background: linear-gradient(to right, rgba($orange-showcockpit, $AlphaBack), rgba($orange-showcockpit, $AlphaBack), rgba(darken($orange-showcockpit, 15%), $AlphaBack));
         font-weight: bold;

@@ -10,8 +10,7 @@ let RunOption = {
      * Reset the DMX Count value to 1
      * @returns {void}
      */
-    Reset: event => {
-        event.preventDefault()
+    Reset: () => {
         Table.Options.Reset()
         $OptionsSel.ResetButton.blur()
         return this
@@ -21,8 +20,7 @@ let RunOption = {
          * Prepare data for a "Options Table" Update All
          * @returns {void}
          */
-        All: event => {
-            event.preventDefault()
+        All: () => {
             let data = {
                 SearchMode: $OptionsSel.SearchMode.value,
                 DisplayMode: $OptionsSel.DisplayMode.value,
@@ -71,8 +69,8 @@ let RunOption = {
     }
 }
 
-$OptionsSel.Form.addEventListener('submit change', RunOption.Update.All)
-$OptionsSel.ResetButton.addEventListener('click', RunOption.Reset)
+$OptionsSel.Form.addEventListener('change', RunOption.Update.All, {passive: true})
+$OptionsSel.ResetButton.addEventListener('click', RunOption.Reset, {passive: true})
 
 /* Other Criteria */
 
