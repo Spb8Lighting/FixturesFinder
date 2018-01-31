@@ -10,6 +10,33 @@ let Table = {
      */
     LastSearch: {
         /**
+        * Create the "LastSearch" Table and insert default values
+        * @returns {void}
+        */
+        Initialize: (callback = false) => {
+            db.serialize(() => {
+                /* Create and fill the Database for Options */
+                Table.LastSearch.Create()
+                let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.LastSearch}\``
+                db.get(sql, (err, row) => {
+                    if (err) {
+                        return console.error(err.message)
+                    } else {
+                        if (row.count > 1) {
+                            Table.LastSearch.Delete()
+                            Table.LastSearch.Create()
+                            Table.LastSearch.Fill()
+                        } else if (row.count == 0) {
+                            Table.LastSearch.Fill()
+                        }
+                        /* After check of Database, initialize interface */
+                        Table.LastSearch.Get(callback)
+                    }
+                })
+            })
+            return this
+        },
+        /**
         * Create "LastSearch" Table
         * @returns {void}
         */
@@ -35,9 +62,27 @@ let Table = {
             Table.LastSearch.Create()
         },
         /**
+        * Fill with default "LastSearch"
+        * @returns {void}
+        */
+        Fill: () => {
+            /* Reset the options to its default */
+            let sql = `INSERT INTO \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\`) VALUES ($DMXChannelCount, $DMXChannelCount_Max, $Manufacturer, $FixtureName, $DMXChart_Channel, $DMXChart_Slot)`
+                , param = {
+                    $DMXChannelCount: 1,
+                    $DMXChannelCount_Max: 0,
+                    $Manufacturer: config.Default.All,
+                    $FixtureName: config.Default.All,
+                    $DMXChart_Channel: JSON.stringify([{ [config.Form.Search.BaseName_Channel + '1']: config.Default.Any }]),
+                    $DMXChart_Slot: JSON.stringify([{}])
+                }
+            db.run(sql, param)
+            return this
+        },
+        /**
         * Get options from "LastSearch Table"
         */
-        Get: () => {
+        Get: (callback = false) => {
             let sql = `SELECT \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\` FROM \`${config.Database.LastSearch}\``
 
             db.get(sql, (err, data) => {
@@ -45,6 +90,11 @@ let Table = {
                     return console.error(err.message)
                 } else {
                     DBLastSearch = data
+                    DBLastSearch[config.Form.Search.DMXChart_Channel] = JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Channel])
+                    DBLastSearch[config.Form.Search.DMXChart_Slot] = JSON.parse(DBLastSearch[config.Form.Search.DMXChart_Slot])
+                    if (typeof callback === 'function') {
+                        callback()
+                    }
                 }
             })
         },

@@ -37,7 +37,8 @@ let SelectOptions = {
 },
     $SearchSel = {
         Timer: {
-            Form: false
+            Form: false,
+            LastSearch: false
         },
         Form: document.getElementById(config.Form.Search.Form),
         DMXChannelCount: document.getElementById(config.Form.Search.DMXChannelCount),
@@ -55,6 +56,41 @@ let SelectOptions = {
     },
     DMXChannelSearch = {
         DMXChannelCount: 0,
+        /**
+         * Initialize the form with last search content
+         */
+        Initialize: () => {
+            // Restore previous search
+            DMXChannelSearch.AddChannelSearch()
+            $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
+            DMXChannelSearch.AdjustChannelSearch()
+            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All) {
+                $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]').selected = true
+            }
+            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All) {
+                $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]').selected = true
+            }
+            clearTimeout($SearchSel.Timer.LastSearch)
+            $SearchSel.Timer.LastSearch = setTimeout(() => {
+                DMXChannelSearch.Reselect()
+            }, 250)
+        },
+        /**
+         * Restore Previous Search
+         */
+        Reselect: () => {
+            let event = new Event('change')
+            for (let i = 0; i < DBLastSearch[config.Form.Search.DMXChannelCount]; i++) {
+                let obj = DBLastSearch[config.Form.Search.DMXChart_Channel][i]
+                for (let key in obj) {
+                    if (obj[key] != config.Default.Any) {
+                        let select = document.getElementById(key)
+                        select.querySelector('option[value="' + obj[key].toLowerCase() + '"]').selected = true
+                        select.dispatchEvent(event)
+                    }
+                }
+            }
+        },
         /**
          * Reset the DMX Count value to 1
          * @returns {void}
@@ -100,7 +136,7 @@ let SelectOptions = {
         * @returns {void}
         */
         AdjustChannelSearch: (event = false) => {
-            if (event) {
+            if (event && typeof event !== 'function') {
                 $SearchSel.DMXChannelCount.blur()
             }
             let Result = parseInt($SearchSel.DMXChannelCount.value) - this.DMXChannelCount
@@ -123,7 +159,7 @@ let SelectOptions = {
         * @returns {void}
         */
         AddChannelSearch: (event = false) => {
-            if (event) {
+            if (event && typeof event !== 'function') {
                 $SearchSel.DMXChannelCount_Btn_Add.blur()
             }
             let ChannelNumber = parseInt($SearchSel.DMXChannelCount.value) + 1
@@ -131,7 +167,7 @@ let SelectOptions = {
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 ipcRenderer.send('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
                 DMXChannelSearch.Set(ChannelNumber)
-                if (event) {
+                if (event && typeof event !== 'function') {
                     $SearchSel.Form.dispatchEvent(new Event('change'))
                 }
             } else {
@@ -144,7 +180,7 @@ let SelectOptions = {
          * @returns {void}
          */
         RemChannelSearch: (event = false) => {
-            if (event) {
+            if (event && typeof event !== 'function') {
                 $SearchSel.DMXChannelCount_Btn_Rem.blur()
             }
             let str = parseInt($SearchSel.DMXChannelCount.value) - 1
@@ -156,7 +192,7 @@ let SelectOptions = {
                     ParentToRemove.remove()
                 }
                 DMXChannelSearch.Set(str)
-                if (event) {
+                if (event && typeof event !== 'function') {
                     $SearchSel.Form.dispatchEvent(new Event('change'))
                 }
             } else {
