@@ -9,6 +9,9 @@ module.exports = {
 		Options: 'Options',
 		LastSearch: 'LastSearch'
 	},
+	Regex : {
+		Slot : /^(color|gobo|animation) ?([0-9]{1,2})?$/i
+	},
 	// Default Change
 	ChangeRegex: {
 		Channel: '__CHANNEL__',
@@ -42,9 +45,10 @@ module.exports = {
 			Manufacturer: 'Manufacturer',
 			FixtureName: 'FixtureName',
 			BaseName_Channel: 'ch',
-			BaseName_Wheel_Color: 'Color_Slot',
-			BaseName_Wheel_Gobo: 'Gobo_Slot',
-			BaseName_Wheel_Anim: 'Anim_Slot',
+			BaseName_Wheel: 'Slot',
+			BaseName_Wheel_Color: 'Color',
+			BaseName_Wheel_Gobo: 'Gobo',
+			BaseName_Wheel_Anim: 'Anim',
 			DMXChart_Channel: 'DMXChart_Channel',
 			DMXChart_Slot: 'DMXChart_Slot'
 		},

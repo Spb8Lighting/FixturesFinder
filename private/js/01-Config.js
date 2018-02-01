@@ -23,54 +23,6 @@ const electron = require('electron')
     , $MainContent = document.getElementById('maincontent')
     , SlotClass = 'wheelfield'
 
-/**
- * Attach a listener for CSS coloring on new Select
- * @param {Object} Selector
- */
-let AddSelectListener = (Selector, callback = false) => {
-    Selector.addEventListener('change', () => {
-        Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
-        let DIVContainer = Selector.parentNode
-            , SearchInput = DIVContainer.querySelector('input')
-            , Basename_Wheel = false
-            , SelectorValue = Selector.value.toLowerCase()
-        switch (SelectorValue) {
-            case 'color':
-            case 'animation':
-            case 'gobo':
-                switch (SelectorValue) {
-                    case 'color':
-                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Color
-                        break
-                    case 'animation':
-                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Anim
-                        break
-                    case 'gobo':
-                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Gobo
-                        break
-                }
-                if (SearchInput) {
-                    DIVContainer.removeChild(SearchInput)
-                } else {
-                    DIVContainer.classList.add(SlotClass)
-                }
-                let data = ipcRenderer.sendSync('ChannelTemplateSlot', { Channel: Basename_Wheel })
-                DIVContainer.insertAdjacentHTML('beforeend', data.template)
-                break
-            default:
-                if (SearchInput) {
-                    DIVContainer.removeChild(SearchInput)
-                    DIVContainer.classList.remove(SlotClass)
-                }
-                break
-        }
-        Selector.blur()
-        if (typeof callback === 'function') {
-            callback()
-        }
-    }, { passive: true })
-}
-
 ipcRenderer.on('ModalTemplate', (e, data) => {
     document.body.insertAdjacentHTML('beforeend', data.template)
 })
