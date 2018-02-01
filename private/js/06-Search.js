@@ -43,6 +43,7 @@ let SelectOptions = {
         Selector.addEventListener('click', Selector.select, { passive: true })
         Selector.addEventListener('change', () => {
             $SearchSel.Form.dispatchEvent(new Event('change'))
+            Selector.blur()
         })
     },
     /**
@@ -355,17 +356,21 @@ let SelectOptions = {
              * @returns {void}
              */
             All: () => {
-                let SelectAllChannels = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
-                    , InputAllSlot = document.querySelectorAll(`input[name^="${config.Form.Search.BaseName_Wheel}"]`)
-                    , JsonDMXChart_Channel = DMXChannelSearch.Update.ParseForm(SelectAllChannels, config.Form.Search.BaseName_Channel)
-                    , JsonInputSlot = DMXChannelSearch.Update.ParseForm(InputAllSlot, config.Form.Search.BaseName_Wheel)
+                let Selectors = {
+                    SelectDMXChannel: document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`),
+                    InputDMXSlot: document.querySelectorAll(`input[name^="${config.Form.Search.BaseName_Wheel}"]`)
+                },
+                    FormInputs = {
+                        SelectDMXChannel: DMXChannelSearch.Update.ParseForm(Selectors.SelectDMXChannel, config.Form.Search.BaseName_Channel),
+                        InputDMXSlot: DMXChannelSearch.Update.ParseForm(Selectors.InputDMXSlot, config.Form.Search.BaseName_Wheel)
+                    }
                 let data = {
                     DMXChannelCount: $SearchSel.DMXChannelCount.value,
                     DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
                     Manufacturer: $SearchSel.Manufacturer.value,
                     FixtureName: $SearchSel.FixtureName.value,
-                    DMXChart_Channel: JsonDMXChart_Channel,
-                    DMXChart_Slot: JsonInputSlot
+                    DMXChart_Channel: FormInputs.SelectDMXChannel,
+                    DMXChart_Slot: FormInputs.InputDMXSlot
                 }
                 Table.LastSearch.Update.All(data)
                 return this
