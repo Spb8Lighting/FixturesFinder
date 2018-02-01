@@ -759,18 +759,14 @@ let SelectOptions = {
                     SelectDMXChannel: document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`),
                     InputDMXSlot: document.querySelectorAll(`input[name^="${config.Form.Search.BaseName_Wheel}"]`)
                 },
-                    FormInputs = {
-                        SelectDMXChannel: DMXChannelSearch.Update.ParseForm(Selectors.SelectDMXChannel, config.Form.Search.BaseName_Channel),
-                        InputDMXSlot: DMXChannelSearch.Update.ParseForm(Selectors.InputDMXSlot, config.Form.Search.BaseName_Wheel)
+                    data = {
+                        DMXChannelCount: $SearchSel.DMXChannelCount.value,
+                        DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
+                        Manufacturer: $SearchSel.Manufacturer.value,
+                        FixtureName: $SearchSel.FixtureName.value,
+                        DMXChart_Channel: DMXChannelSearch.Update.ParseForm(Selectors.SelectDMXChannel, config.Form.Search.BaseName_Channel),
+                        DMXChart_Slot: DMXChannelSearch.Update.ParseForm(Selectors.InputDMXSlot, config.Form.Search.BaseName_Wheel)
                     }
-                let data = {
-                    DMXChannelCount: $SearchSel.DMXChannelCount.value,
-                    DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
-                    Manufacturer: $SearchSel.Manufacturer.value,
-                    FixtureName: $SearchSel.FixtureName.value,
-                    DMXChart_Channel: FormInputs.SelectDMXChannel,
-                    DMXChart_Slot: FormInputs.InputDMXSlot
-                }
                 Table.LastSearch.Update.All(data)
                 return this
             }
