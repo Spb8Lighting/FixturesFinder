@@ -80,6 +80,18 @@ ipcMain.on('ChannelTemplate', (e, data) => {
     }
   })
 })
+ipcMain.on('ChannelTemplateSlot', (e, data) => {
+  fs.readFile(`${__dirname}/public/html/search_channel_slot.html`, (err, HTML) => {
+    if (err) {
+      return console.error(err)
+    } else {
+      HTML = HTML.toString().replace(new RegExp(config.ChangeRegex.Slot, 'g'), data.Channel)
+      e.returnValue = {
+        template: HTML
+      }
+    }
+  })
+})
 ipcMain.on('ModalTemplate', (e, data) => {
   fs.readFile(`${__dirname}/public/html/modal_window.html`, (err, HTML) => {
     if (err) {

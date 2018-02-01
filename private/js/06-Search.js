@@ -204,7 +204,7 @@ let SelectOptions = {
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 DMXChannelSearch.Set(ChannelNumber)
 
-                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
+                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber })
                 // Add a new DMX Channel Search
                 $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
                 let Select = document.getElementById(data.selector)

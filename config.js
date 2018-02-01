@@ -12,6 +12,7 @@ module.exports = {
 	// Default Change
 	ChangeRegex: {
 		Channel: '__CHANNEL__',
+		Slot: '__SLOT__',
 		Modal: '__MODAL__'
 	},
 	//Client Form Parameter

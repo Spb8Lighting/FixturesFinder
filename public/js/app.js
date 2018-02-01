@@ -21,6 +21,7 @@ const electron = require('electron')
     , $aLink = document.querySelectorAll('aside a')
     , $h1 = document.querySelector('h1>span')
     , $MainContent = document.getElementById('maincontent')
+    , SlotClass = 'wheelfield'
 
 /**
  * Attach a listener for CSS coloring on new Select
@@ -29,11 +30,45 @@ const electron = require('electron')
 let AddSelectListener = (Selector, callback = false) => {
     Selector.addEventListener('change', () => {
         Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+        let DIVContainer = Selector.parentNode
+            , SearchInput = DIVContainer.querySelector('input')
+            , Basename_Wheel = false
+            , SelectorValue = Selector.value.toLowerCase()
+        switch (SelectorValue) {
+            case 'color':
+            case 'animation':
+            case 'gobo':
+                switch (SelectorValue) {
+                    case 'color':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Color
+                        break
+                    case 'animation':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Anim
+                        break
+                    case 'gobo':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Gobo
+                        break
+                }
+                if (SearchInput) {
+                    DIVContainer.removeChild(SearchInput)
+                } else {
+                    DIVContainer.classList.add(SlotClass)
+                }
+                let data = ipcRenderer.sendSync('ChannelTemplateSlot', { Channel: Basename_Wheel })
+                DIVContainer.insertAdjacentHTML('beforeend', data.template)
+                break
+            default:
+                if (SearchInput) {
+                    DIVContainer.removeChild(SearchInput)
+                    DIVContainer.classList.remove(SlotClass)
+                }
+                break
+        }
         Selector.blur()
         if (typeof callback === 'function') {
             callback()
         }
-    }, {passive: true})
+    }, { passive: true })
 }
 
 ipcRenderer.on('ModalTemplate', (e, data) => {
@@ -616,7 +651,7 @@ let SelectOptions = {
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 DMXChannelSearch.Set(ChannelNumber)
 
-                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
+                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber })
                 // Add a new DMX Channel Search
                 $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
                 let Select = document.getElementById(data.selector)
