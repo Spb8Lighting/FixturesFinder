@@ -5,7 +5,7 @@
 	<!-- views/partials/head.ejs -->
 <meta charset="UTF-8">
 <title>
-	Fixtures Finder/Search - v0.0.8
+	Fixtures Finder/Search - v0.0.7.4
 </title>
 <link rel="shortcut icon" href="../img/favicon.ico" />
 <link rel="icon" type="image/icon" href="../img/favicon.ico" />
@@ -33,7 +33,7 @@
 <h1>
 	<img title="Display Menu" src="../img/ShowCockpit.png" />&nbsp;
 	<span>
-		Fixtures Finder/Search - v0.0.8
+		Fixtures Finder/Search - v0.0.7.4
 	</span>
 </h1>
 <div class="flex-container">
@@ -61,7 +61,7 @@
 		<div id="Search">
 			<!-- Form control -->
 <div class="btn-bar-action">
-    <button class="btn" name="submit" id="SearchFormsubmit" type="submit">Quick Actions</button>
+    <!--<button class="btn" name="submit" id="SearchFormsubmit" type="submit">Quick Actions</button>-->
     <button class="btn" name="reset" id="SearchFormreset" type="submit">Reset</button>
 </div>
 
@@ -80,22 +80,6 @@
                     value="000" />
                 <button type="button" class="digitbutton btn" id="DMXChannelCount_Add">+</button>
             </div>
-
-            <!--<div class="channelfield flex-container">
-                <label class="label" for="ch1">#1</label>
-                <select data-default="any" autocomplete="off" name="ch1" id="ch1">
-                    <option value="any" selected="selected">Any</option>
-                </select>
-            </div>
-
-            <div class="channelfield wheelfield flex-container">
-                <label class="label" for="ch3">#3</label>
-                <select data-default="any" autocomplete="off" name="ch3" id="ch3">
-                    <option value="any">Any</option>
-                    <option value="color" selected="selected">Color</option>
-                </select>
-                <input class="digital" autocomplete="off" type="text" id="Color_Slot1" name="Color_Slot1" value="∞">
-            </div>-->
 
         </fieldset>
     </div>
@@ -815,15 +799,6 @@
 			</ul>
 		</fieldset>
 		<fieldset>
-			<legend>Referencing</legend>
-			<ul class="is-unstyled">
-				<li>
-					<input type="checkbox" class="switch" id="RenewSitemap" name="RenewSitemap">
-					<label class="label" for="RenewSitemap">Renew the Sitemap</label>
-				</li>
-			</ul>
-		</fieldset>
-		<fieldset>
 			<legend>Cache Management</legend>
 			<ul class="is-unstyled">
 				<li>
@@ -847,10 +822,6 @@
 				<li>
 					<input type="checkbox" class="checkbox" id="CacheFixture" name="CacheFixture">
 					<label class="label" for="CacheFixture">Clean Fixtures</label>
-				</li>
-				<li>
-					<input type="checkbox" class="checkbox" id="CacheSearch" name="CacheSearch">
-					<label class="label" for="CacheSearch">Clean Fixtures</label>
 				</li>
 			</ul>
 		</fieldset>

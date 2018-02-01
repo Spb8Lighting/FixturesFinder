@@ -21,20 +21,7 @@ const electron = require('electron')
     , $aLink = document.querySelectorAll('aside a')
     , $h1 = document.querySelector('h1>span')
     , $MainContent = document.getElementById('maincontent')
-
-/**
- * Attach a listener for CSS coloring on new Select
- * @param {Object} Selector
- */
-let AddSelectListener = (Selector, callback = false) => {
-    Selector.addEventListener('change', () => {
-        Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
-        Selector.blur()
-        if (typeof callback === 'function') {
-            callback()
-        }
-    }, {passive: true})
-}
+    , SlotClass = 'wheelfield'
 
 ipcRenderer.on('ModalTemplate', (e, data) => {
     document.body.insertAdjacentHTML('beforeend', data.template)

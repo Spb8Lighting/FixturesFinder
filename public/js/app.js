@@ -21,20 +21,7 @@ const electron = require('electron')
     , $aLink = document.querySelectorAll('aside a')
     , $h1 = document.querySelector('h1>span')
     , $MainContent = document.getElementById('maincontent')
-
-/**
- * Attach a listener for CSS coloring on new Select
- * @param {Object} Selector
- */
-let AddSelectListener = (Selector, callback = false) => {
-    Selector.addEventListener('change', () => {
-        Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
-        Selector.blur()
-        if (typeof callback === 'function') {
-            callback()
-        }
-    }, {passive: true})
-}
+    , SlotClass = 'wheelfield'
 
 ipcRenderer.on('ModalTemplate', (e, data) => {
     document.body.insertAdjacentHTML('beforeend', data.template)
@@ -447,6 +434,70 @@ let SelectOptions = {
         return this
     }
 },
+    /**
+     * Attach a listener to input
+     * @param {Object} Selector
+     */
+    AddInputListener = (Selector) => {
+        Selector.addEventListener('click', Selector.select, { passive: true })
+        Selector.addEventListener('change', () => {
+            $SearchSel.Form.dispatchEvent(new Event('change'))
+            Selector.blur()
+        })
+    },
+    /**
+     * Attach a listener for CSS coloring on new Select
+     * @param {Object} Selector
+     */
+    AddSelectListener = (Selector, callback = false) => {
+        Selector.addEventListener('change', () => {
+            // Set the attribute data-option to allow background coloring
+            Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+            // Set some Selectors to allow to add or remove additionnal input for slot
+            let DIVContainer = Selector.parentNode
+                , SearchInput = DIVContainer.querySelector('input')
+                , SelectorValue = Selector.value.toLowerCase()
+            // Check if the DMX Channel is a Wheel
+            if (config.Regex.Slot.test(SelectorValue)) {
+                let SlotInfo = SelectorValue.match(config.Regex.Slot)
+                    , SlotInfoName = SlotInfo[1]
+                    , SlotNumber = (!SlotInfo[2]) ? 1 : SlotInfo[2]
+                    , Basename_Wheel = false
+                console.log(SlotInfo, SlotInfoName, SlotNumber)
+                switch (SlotInfoName) {
+                    case 'color':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Color
+                        break
+                    case 'animation':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Anim
+                        break
+                    case 'gobo':
+                        Basename_Wheel = config.Form.Search.BaseName_Wheel_Gobo
+                        break
+                }
+                // If Input for Slot already exists, remove it, else add the class to the DIV for next input
+                if (SearchInput) {
+                    DIVContainer.removeChild(SearchInput)
+                } else {
+                    DIVContainer.classList.add(SlotClass)
+                }
+                let InputSlodID = config.Form.Search.BaseName_Wheel + Basename_Wheel + SlotNumber
+                data = ipcRenderer.sendSync('ChannelTemplateSlot', { Channel: InputSlodID })
+                DIVContainer.insertAdjacentHTML('beforeend', data.template)
+                AddInputListener(document.getElementById(InputSlodID))
+            } else {
+                // If there was an input in the DIV, remove it and remove the associated class
+                if (SearchInput) {
+                    DIVContainer.removeChild(SearchInput)
+                    DIVContainer.classList.remove(SlotClass)
+                }
+            }
+            Selector.blur()
+            if (typeof callback === 'function') {
+                callback()
+            }
+        }, { passive: true })
+    },
     $SearchSel = {
         Status: {
             SearchInitialize: false
@@ -489,6 +540,22 @@ let SelectOptions = {
             DMXChannelSearch.Reselect()
         },
         /**
+         * Parse saved data and set the value
+         * @param {Object} Data
+         * @param {string} Default
+         * @param {function} Callback
+         */
+        ParseSave: (Data, Default, Callback) => {
+            for (let i = 0; i < Data.length; i++) {
+                let obj = Data[i]
+                for (let key in obj) {
+                    if (obj[key].toLowerCase() != Default.toLowerCase()) {
+                        Callback(key, obj[key])
+                    }
+                }
+            }
+        },
+        /**
          * Restore Previous Search
          */
         Reselect: () => {
@@ -496,15 +563,23 @@ let SelectOptions = {
             if (!$SearchSel.Status.SearchInitialize) {
                 $SearchSel.Timer.LastSearch = setTimeout(DMXChannelSearch.Reselect, 50)
             } else {
-                let event = new Event('change')
-                for (let i = 0; i < DBLastSearch[config.Form.Search.DMXChannelCount]; i++) {
-                    let obj = DBLastSearch[config.Form.Search.DMXChart_Channel][i]
-                    for (let key in obj) {
-                        if (obj[key].toLowerCase() != config.Default.Any.toLowerCase()) {
-                            DMXChannelSearch.SetSelect(key, obj[key])
-                        }
-                    }
-                }
+                DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Channel], config.Default.Any, DMXChannelSearch.SetSelect)
+                DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Slot], config.Default.Infinity, DMXChannelSearch.SetInput)
+            }
+        },
+        /**
+         * Set Input value
+         * @param {int} id
+         * @param {string} value
+         */
+        SetInput: (id, value) => {
+            clearTimeout($SearchSel.Timer[id])
+            let input = document.getElementById(config.Form.Search.BaseName_Wheel + id)
+            if (input.length == 0) {
+                $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetInput(id, value), 50)
+            } else {
+                input.value = value.toLowerCase()
+                input.dispatchEvent(new Event('change'))
             }
         },
         /**
@@ -616,7 +691,7 @@ let SelectOptions = {
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 DMXChannelSearch.Set(ChannelNumber)
 
-                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber, ChannelType: '' })
+                let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber })
                 // Add a new DMX Channel Search
                 $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
                 let Select = document.getElementById(data.selector)
@@ -661,25 +736,37 @@ let SelectOptions = {
         },
         Update: {
             /**
+             * Parse the selectors and return an array with the keys/values without the basename
+             * @param {Object} Selectors
+             * @param {string} Basename
+             * @returns {array}
+             */
+            ParseForm: (Selectors, Basename) => {
+                let Table = []
+                Selectors.forEach(select => {
+                    Table.push({
+                        [select.getAttribute('name').replace(Basename, '')]: select.value
+                    })
+                })
+                return Table
+            },
+            /**
              * Prepare data for a "LastSearch" Update All
              * @returns {void}
              */
             All: () => {
-                let SelectAllChannels = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
-                    , JsonDMXChart_Channel = []
-                SelectAllChannels.forEach(select => {
-                    JsonDMXChart_Channel.push({
-                        [select.getAttribute('name').replace(config.Form.Search.BaseName_Channel, '')]: select.value
-                    })
-                })
-                let data = {
-                    DMXChannelCount: $SearchSel.DMXChannelCount.value,
-                    DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
-                    Manufacturer: $SearchSel.Manufacturer.value,
-                    FixtureName: $SearchSel.FixtureName.value,
-                    DMXChart_Channel: JsonDMXChart_Channel,
-                    DMXChart_Slot: [{}]
-                }
+                let Selectors = {
+                    SelectDMXChannel: document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`),
+                    InputDMXSlot: document.querySelectorAll(`input[name^="${config.Form.Search.BaseName_Wheel}"]`)
+                },
+                    data = {
+                        DMXChannelCount: $SearchSel.DMXChannelCount.value,
+                        DMXChannelCount_Max: $SearchSel.DMXChannelCount_Max.value,
+                        Manufacturer: $SearchSel.Manufacturer.value,
+                        FixtureName: $SearchSel.FixtureName.value,
+                        DMXChart_Channel: DMXChannelSearch.Update.ParseForm(Selectors.SelectDMXChannel, config.Form.Search.BaseName_Channel),
+                        DMXChart_Slot: DMXChannelSearch.Update.ParseForm(Selectors.InputDMXSlot, config.Form.Search.BaseName_Wheel)
+                    }
                 Table.LastSearch.Update.All(data)
                 return this
             }
