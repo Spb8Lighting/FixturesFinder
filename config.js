@@ -7,6 +7,7 @@ module.exports = {
 	//Database Name
 	Database: {
 		Options: 'Options',
+		SearchParameter: 'SearchParameter',
 		LastSearch: 'LastSearch'
 	},
 	Regex : {
@@ -44,6 +45,8 @@ module.exports = {
 			DMXChannelCount_Max_Btn_Rem: 'DMXChannelCount_Max_Rem',
 			Manufacturer: 'Manufacturer',
 			FixtureName: 'FixtureName',
+			SearchParameter_value: 'value',
+			SearchParameter_order: 'order',
 			BaseName_Channel: 'ch',
 			BaseName_Wheel: 'Slot',
 			BaseName_Wheel_Color: 'Color',
