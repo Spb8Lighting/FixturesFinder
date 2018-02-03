@@ -15,15 +15,16 @@ sudo:
   - required
 
 before_install:
-  - sudo add-apt-repository -y ppa:wine/wine-builds && sudo apt-get update && sudo apt-get install -y --install-recommends winehq-devel && sudo apt-get install -y --install-recommends mono-devel
+#  - sudo add-apt-repository -y ppa:wine/wine-builds && sudo apt-get update && sudo apt-get install -y --install-recommends winehq-devel && sudo apt-get install -y --install-recommends mono-devel
 
 install:
   - npm install --unsafe-perm=true --allow-root
-  - npm run rebuild
+#  - npm run rebuild
 
 script:
   - gulp js
-  - npm run build
+  - gulp html
+#  - npm run build
 
 os: 
   - linux
