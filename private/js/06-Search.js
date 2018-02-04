@@ -1,20 +1,39 @@
 let SelectOptions = {
-    Options: '',
+    Options: false,
+    Restricted: false,
+    Full: false,
+    /**
+    * List Parameters
+    * @returns {void}
+    */
+    Initialize: () => {
+        SelectOptions.Full = SelectOptions.SetFull()
+        SelectOptions.Restricted = SelectOptions.SetRestricted()
+        SelectOptions.Options = SelectOptions.Restricted
+    },
     /**
     * Based on DBOption, set the "Select Options"
     * @returns {void}
     */
     CheckOptions: () => {
+        let TMPSelectOptions = false
         switch (DBOption[config.Form.Option.ParameterList]) {
-            case config.Form.Option.ParameterList_Common:
-                SelectOptions.SetRestricted()
-                break
             case config.Form.Option.ParameterList_Full:
-                SelectOptions.SetFull()
+                TMPSelectOptions = SelectOptions.Full
                 break
+            case config.Form.Option.ParameterList_Common:
             default:
-                SelectOptions.SetRestricted()
+                TMPSelectOptions = SelectOptions.Restricted
                 break
+        }
+        if (TMPSelectOptions != SelectOptions.Options) {
+            SelectOptions.Options = TMPSelectOptions
+            let SelectDMXChannel = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
+            if (SelectDMXChannel) {
+                SelectDMXChannel.forEach(Select => Select.closest('div').remove())
+                DMXChannelSearch.DMXChannelCount = 0
+                DMXChannelSearch.Initialize()
+            }
         }
         return this
     },
@@ -23,20 +42,18 @@ let SelectOptions = {
      * @returns {void}
      */
     SetRestricted: () => {
-        SelectOptions.Options = DBSearchParameter
-        SelectOptions.Options.sort((a, b) => {
+        let TMPDBSearchParameter = DBSearchParameter
+        TMPDBSearchParameter.sort((a, b) => {
             return a.order - b.order
         })
-        SelectOptions.Options = SelectOptions.Options.filter(el => el.order !== null)
-        return this
+        return TMPDBSearchParameter.filter(el => el.order !== null)
     },
     /**
      * Set Full option values
      * @returns {void}
      */
     SetFull: () => {
-        SelectOptions.Options = DBSearchParameter
-        return this
+        return DBSearchParameter
     }
 },
     /**
@@ -136,11 +153,13 @@ let SelectOptions = {
             // Restore previous search
             $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
             DMXChannelSearch.AdjustChannelSearch()
-            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase()) {
-                $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]').selected = true
+            let ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
+                ManufacturerOption.selected = true
             }
-            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase()) {
-                $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]').selected = true
+            let FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
+                FixtureNameOption.selected = true
             }
             DMXChannelSearch.Reselect()
         },
@@ -199,8 +218,13 @@ let SelectOptions = {
             if (NbOption != (SelectOptions.Options.length + 1)) {
                 $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetSelect(id, value), 50)
             } else {
-                select.querySelector('option[value="' + value.toLowerCase() + '"]').selected = true
-                select.dispatchEvent(new Event('change'))
+                let OptionToSelect = select.querySelector('option[value="' + value.toLowerCase() + '"]')
+                if (OptionToSelect) {
+                    OptionToSelect.selected = true
+                    select.dispatchEvent(new Event('change'))
+                } else {
+                    //TODO if the option is not found it can comes because the parameter doesn't exists anymore, or because the parameter option is set to restricted instead of "Full"
+                }
             }
         },
         /**
@@ -282,6 +306,23 @@ let SelectOptions = {
                 }
             }
         },
+        AddChannelOptions: Select => {
+            while (Select.hasChildNodes()) {
+                Select.removeChild(Select.lastChild)
+            }
+            // Add first "Any option"
+            let option = document.createElement('option')
+            option.value = config.Default.Any.toLowerCase()
+            option.text = config.Default.Any
+            Select.add(option)
+            // Add other options
+            for (let i = 0; i < SelectOptions.Options.length; i++) {
+                option = document.createElement('option')
+                option.value = SelectOptions.Options[i].value.toLowerCase()
+                option.text = SelectOptions.Options[i].value
+                Select.add(option)
+            }
+        },
         /**
         * Add 1 DMX Select in the form
         * @param {Object} [event=false]
@@ -295,23 +336,11 @@ let SelectOptions = {
             // If value set is inside the DMX range value (1-512)
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 DMXChannelSearch.Set(ChannelNumber)
-
                 let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber })
                 // Add a new DMX Channel Search
                 $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
                 let Select = document.getElementById(data.selector)
-                // Add first "Any option"
-                let option = document.createElement('option')
-                option.value = config.Default.Any.toLowerCase()
-                option.text = config.Default.Any
-                Select.add(option)
-                // Add other options
-                for (let i = 0; i < SelectOptions.Options.length; i++) {
-                    option = document.createElement('option')
-                    option.value = SelectOptions.Options[i].value.toLowerCase()
-                    option.text = SelectOptions.Options[i].value
-                    Select.add(option)
-                }
+                DMXChannelSearch.AddChannelOptions(Select)
                 AddSelectListener(Select)
                 if (event && typeof event !== 'function') {
                     $SearchSel.Form.dispatchEvent(new Event('change'))

@@ -2206,6 +2206,7 @@ let Table = {
                     return console.error(err.message)
                 } else {
                     DBSearchParameter = datas
+                    SelectOptions.Initialize()
                     if (typeof callback === 'function') {
                         callback()
                     }
