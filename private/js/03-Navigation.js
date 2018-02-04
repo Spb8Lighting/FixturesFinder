@@ -2,7 +2,7 @@ $aLink.forEach(elem => {
     elem.addEventListener('click', e => {
         e.preventDefault()
         let PageName = elem.getAttribute('href')
-        //ipcRenderer.send('pageChange', {page : elem.getAttribute('href')})		// Request new page content
+        //ipcRenderer.send('pageChange', {page : elem.getAttribute('href')})    // Request new page content
         $aLink.forEach(elem => {                                                // Remove .active on links
             if (elem.getAttribute('href') == PageName) {
                 elem.classList.add('active')
@@ -18,6 +18,6 @@ $aLink.forEach(elem => {
             }
         })
         $h1.innerHTML = `Fixtures Finder/${PageName} - v${config.Version}`      // Update Title
-        document.activeElement && document.activeElement.blur() 				// Remove :active on link
+        document.activeElement && document.activeElement.blur()                 // Remove :active on link
     })
 })

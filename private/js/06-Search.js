@@ -1,20 +1,39 @@
 let SelectOptions = {
-    Options: '',
+    Options: false,
+    Restricted: false,
+    Full: false,
+    /**
+    * List Parameters
+    * @returns {void}
+    */
+    Initialize: () => {
+        SelectOptions.Full = SelectOptions.SetFull()
+        SelectOptions.Restricted = SelectOptions.SetRestricted()
+        SelectOptions.Options = SelectOptions.Restricted
+    },
     /**
     * Based on DBOption, set the "Select Options"
     * @returns {void}
     */
     CheckOptions: () => {
+        let TMPSelectOptions = false
         switch (DBOption[config.Form.Option.ParameterList]) {
-            case config.Form.Option.ParameterList_Common:
-                SelectOptions.SetRestricted()
-                break
             case config.Form.Option.ParameterList_Full:
-                SelectOptions.SetFull()
+                TMPSelectOptions = SelectOptions.Full
                 break
+            case config.Form.Option.ParameterList_Common:
             default:
-                SelectOptions.SetRestricted()
+                TMPSelectOptions = SelectOptions.Restricted
                 break
+        }
+        if (TMPSelectOptions != SelectOptions.Options) {
+            SelectOptions.Options = TMPSelectOptions
+            let SelectDMXChannel = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
+            if (SelectDMXChannel) {
+                SelectDMXChannel.forEach(Select => Select.closest('div').remove())
+                DMXChannelSearch.DMXChannelCount = 0
+                DMXChannelSearch.Initialize()
+            }
         }
         return this
     },
@@ -23,16 +42,18 @@ let SelectOptions = {
      * @returns {void}
      */
     SetRestricted: () => {
-        SelectOptions.Options = [{ id: 'any', text: 'Any' }, { id: 'intensity', text: 'Intensity' }, { id: 'intensity fine', text: 'Intensity Fine' }, { id: 'strobe', text: 'Strobe' }, { id: 'shutter', text: 'Shutter' }, { id: 'pan', text: 'Pan' }, { id: 'pan fine', text: 'Pan Fine' }, { id: 'pan rot', text: 'Pan Rot' }, { id: 'tilt', text: 'Tilt' }, { id: 'tilt fine', text: 'Tilt Fine' }, { id: 'tilt rot', text: 'Tilt Rot' }, { id: 'pt speed', text: 'PT Speed' }, { id: 'color', text: 'Color' }, { id: 'color macro', text: 'Color Macro' }, { id: 'red', text: 'Red' }, { id: 'red fine', text: 'Red Fine' }, { id: 'green', text: 'Green' }, { id: 'green fine', text: 'Green Fine' }, { id: 'blue', text: 'Blue' }, { id: 'blue fine', text: 'Blue Fine' }, { id: 'white', text: 'White' }, { id: 'white fine', text: 'White Fine' }, { id: 'amber', text: 'Amber' }, { id: 'amber fine', text: 'Amber Fine' }, { id: 'uv', text: 'UV' }, { id: 'uv fine', text: 'UV Fine' }, { id: 'cyan', text: 'Cyan' }, { id: 'cyan fine', text: 'Cyan Fine' }, { id: 'magenta', text: 'Magenta' }, { id: 'magenta fine', text: 'Magenta Fine' }, { id: 'yellow', text: 'Yellow' }, { id: 'yellow fine', text: 'Yellow Fine' }, { id: 'ctc', text: 'CTC' }, { id: 'ctc fine', text: 'CTC Fine' }, { id: 'cto', text: 'CTO' }, { id: 'cto fine', text: 'CTO Fine' }, { id: 'gobo', text: 'Gobo' }, { id: 'gobo rot', text: 'Gobo Rot' }, { id: 'prism', text: 'Prism' }, { id: 'prism rot', text: 'Prism Rot' }, { id: 'zoom', text: 'Zoom' }, { id: 'focus', text: 'Focus' }, { id: 'frost', text: 'Frost' }, { id: 'iris', text: 'Iris' }, { id: 'macro', text: 'Macro' }, { id: 'chase', text: 'Chase' }, { id: 'fx', text: 'FX' }, { id: 'ctrl', text: 'Ctrl' }]
-        return this
+        let TMPDBSearchParameter = DBSearchParameter
+        TMPDBSearchParameter.sort((a, b) => {
+            return a.order - b.order
+        })
+        return TMPDBSearchParameter.filter(el => el.order !== null)
     },
     /**
      * Set Full option values
      * @returns {void}
      */
     SetFull: () => {
-        SelectOptions.Options = [{ id: 'any', text: 'Any' }, { id: 'access', text: 'Access' }, { id: 'address', text: 'Address' }, { id: 'adjust dn', text: 'Adjust Dn' }, { id: 'adjust up', text: 'Adjust Up' }, { id: 'adv blue high', text: 'Adv Blue High' }, { id: 'adv blue low', text: 'Adv Blue Low' }, { id: 'adv blue mid', text: 'Adv Blue Mid' }, { id: 'adv green high', text: 'Adv Green High' }, { id: 'adv green low', text: 'Adv Green Low' }, { id: 'adv green mid', text: 'Adv Green Mid' }, { id: 'adv red high', text: 'Adv Red High' }, { id: 'adv red low', text: 'Adv Red Low' }, { id: 'adv red mid', text: 'Adv Red Mid' }, { id: 'advance col', text: 'Advance Col' }, { id: 'age', text: 'Age' }, { id: 'align ctrl', text: 'Align Ctrl' }, { id: 'alpha', text: 'Alpha' }, { id: 'amber', text: 'Amber' }, { id: 'amber fine', text: 'Amber Fine' }, { id: 'amberc', text: 'AmberC' }, { id: 'ambience', text: 'Ambience' }, { id: 'ambient', text: 'Ambient' }, { id: 'anchor x', text: 'Anchor X' }, { id: 'anchor y', text: 'Anchor Y' }, { id: 'anchor z', text: 'Anchor Z' }, { id: 'angle', text: 'Angle' }, { id: 'anim', text: 'Anim' }, { id: 'anim 1', text: 'Anim 1' }, { id: 'anim 1 fnc', text: 'Anim 1 Fnc' }, { id: 'anim 1 rot', text: 'Anim 1 Rot' }, { id: 'anim 1 rot fine', text: 'Anim 1 Rot Fine' }, { id: 'anim 2', text: 'Anim 2' }, { id: 'anim 2 fnc', text: 'Anim 2 Fnc' }, { id: 'anim 2 rot', text: 'Anim 2 Rot' }, { id: 'anim 2 rot fine', text: 'Anim 2 Rot Fine' }, { id: 'anim ctrl 1', text: 'Anim Ctrl 1' }, { id: 'anim ctrl 2', text: 'Anim Ctrl 2' }, { id: 'anim fine', text: 'Anim Fine' }, { id: 'anim fnc', text: 'Anim Fnc' }, { id: 'anim ind', text: 'Anim Ind' }, { id: 'anim index', text: 'Anim Index' }, { id: 'anim macro', text: 'Anim Macro' }, { id: 'anim mode', text: 'Anim Mode' }, { id: 'anim phase', text: 'Anim Phase' }, { id: 'anim rot', text: 'Anim Rot' }, { id: 'anim rot 1', text: 'Anim Rot 1' }, { id: 'anim rot 2', text: 'Anim Rot 2' }, { id: 'anim rot fine', text: 'Anim Rot Fine' }, { id: 'anim speed', text: 'Anim Speed' }, { id: 'animated star', text: 'Animated Star' }, { id: 'animation', text: 'Animation' }, { id: 'anti aliasing', text: 'Anti Aliasing' }, { id: 'artnet in', text: 'ArtNet In' }, { id: 'aspect', text: 'Aspect' }, { id: 'aspect fine', text: 'Aspect Fine' }, { id: 'aspect mode', text: 'Aspect Mode' }, { id: 'aspect ratio', text: 'Aspect Ratio' }, { id: 'aspect ratio fine', text: 'Aspect Ratio Fine' }, { id: 'atmosphere', text: 'Atmosphere' }, { id: 'audio', text: 'Audio' }, { id: 'audio file', text: 'Audio File' }, { id: 'audio fine', text: 'Audio Fine' }, { id: 'audio fnc', text: 'Audio Fnc' }, { id: 'audio gain', text: 'Audio Gain' }, { id: 'audio in', text: 'Audio In' }, { id: 'audio l', text: 'Audio L' }, { id: 'audio library', text: 'Audio Library' }, { id: 'audio out', text: 'Audio Out' }, { id: 'audio pan', text: 'Audio Pan' }, { id: 'audio pan fine', text: 'Audio Pan Fine' }, { id: 'audio r', text: 'Audio R' }, { id: 'audio sync', text: 'Audio Sync' }, { id: 'audio volume', text: 'Audio Volume' }, { id: 'audio wav', text: 'Audio Wav' }, { id: 'auto', text: 'Auto' }, { id: 'auto fade', text: 'Auto Fade' }, { id: 'auto focus', text: 'Auto Focus' }, { id: 'auto focus adj', text: 'Auto Focus Adj' }]
-        return this
+        return DBSearchParameter
     }
 },
     /**
@@ -132,11 +153,13 @@ let SelectOptions = {
             // Restore previous search
             $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
             DMXChannelSearch.AdjustChannelSearch()
-            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase()) {
-                $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]').selected = true
+            let ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
+                ManufacturerOption.selected = true
             }
-            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase()) {
-                $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]').selected = true
+            let FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
+                FixtureNameOption.selected = true
             }
             DMXChannelSearch.Reselect()
         },
@@ -176,7 +199,7 @@ let SelectOptions = {
         SetInput: (id, value) => {
             clearTimeout($SearchSel.Timer[id])
             let input = document.getElementById(config.Form.Search.BaseName_Wheel + id)
-            if (input.length == 0) {
+            if (input == null) {
                 $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetInput(id, value), 50)
             } else {
                 input.value = value.toLowerCase()
@@ -192,11 +215,16 @@ let SelectOptions = {
             clearTimeout($SearchSel.Timer[id])
             let select = document.getElementById(config.Form.Search.BaseName_Channel + id)
                 , NbOption = select.querySelectorAll('option').length
-            if (NbOption != SelectOptions.Options.length) {
+            if (NbOption != (SelectOptions.Options.length + 1)) {
                 $SearchSel.Timer[id] = setTimeout(() => DMXChannelSearch.SetSelect(id, value), 50)
             } else {
-                select.querySelector('option[value="' + value.toLowerCase() + '"]').selected = true
-                select.dispatchEvent(new Event('change'))
+                let OptionToSelect = select.querySelector('option[value="' + value.toLowerCase() + '"]')
+                if (OptionToSelect) {
+                    OptionToSelect.selected = true
+                    select.dispatchEvent(new Event('change'))
+                } else {
+                    //TODO if the option is not found it can comes because the parameter doesn't exists anymore, or because the parameter option is set to restricted instead of "Full"
+                }
             }
         },
         /**
@@ -278,6 +306,23 @@ let SelectOptions = {
                 }
             }
         },
+        AddChannelOptions: Select => {
+            while (Select.hasChildNodes()) {
+                Select.removeChild(Select.lastChild)
+            }
+            // Add first "Any option"
+            let option = document.createElement('option')
+            option.value = config.Default.Any.toLowerCase()
+            option.text = config.Default.Any
+            Select.add(option)
+            // Add other options
+            for (let i = 0; i < SelectOptions.Options.length; i++) {
+                option = document.createElement('option')
+                option.value = SelectOptions.Options[i].value.toLowerCase()
+                option.text = SelectOptions.Options[i].value
+                Select.add(option)
+            }
+        },
         /**
         * Add 1 DMX Select in the form
         * @param {Object} [event=false]
@@ -291,17 +336,11 @@ let SelectOptions = {
             // If value set is inside the DMX range value (1-512)
             if (ChannelNumber >= 1 && ChannelNumber <= 512) {
                 DMXChannelSearch.Set(ChannelNumber)
-
                 let data = ipcRenderer.sendSync('ChannelTemplate', { Channel: ChannelNumber })
                 // Add a new DMX Channel Search
                 $SearchSel.FieldSet.insertAdjacentHTML('beforeend', data.template)
                 let Select = document.getElementById(data.selector)
-                for (let i = 0; i < SelectOptions.Options.length; i++) {
-                    let option = document.createElement('option')
-                    option.value = SelectOptions.Options[i].id
-                    option.text = SelectOptions.Options[i].text
-                    Select.add(option)
-                }
+                DMXChannelSearch.AddChannelOptions(Select)
                 AddSelectListener(Select)
                 if (event && typeof event !== 'function') {
                     $SearchSel.Form.dispatchEvent(new Event('change'))
