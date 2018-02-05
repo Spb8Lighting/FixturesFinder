@@ -85,7 +85,6 @@ let SelectOptions = {
                     , SlotInfoName = SlotInfo[1]
                     , SlotNumber = (!SlotInfo[2]) ? 1 : SlotInfo[2]
                     , Basename_Wheel = false
-                console.log(SlotInfo, SlotInfoName, SlotNumber)
                 switch (SlotInfoName) {
                     case 'color':
                         Basename_Wheel = config.Form.Search.BaseName_Wheel_Color
