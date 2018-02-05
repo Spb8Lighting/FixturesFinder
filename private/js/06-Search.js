@@ -65,7 +65,7 @@ let SelectOptions = {
         Selector.addEventListener('change', () => {
             $SearchSel.Form.dispatchEvent(new Event('change'))
             Selector.blur()
-        })
+        }, { passive: true })
     },
     /**
      * Attach a listener for CSS coloring on new Select
@@ -223,7 +223,27 @@ let SelectOptions = {
                     OptionToSelect.selected = true
                     select.dispatchEvent(new Event('change'))
                 } else {
-                    //TODO if the option is not found it can comes because the parameter doesn't exists anymore, or because the parameter option is set to restricted instead of "Full"
+                    let ActivePage = document.querySelector('aside a.active')
+                    , DIVParent = select.closest('div')
+                    , ErrorNotification = new Notification('Parameter display', {
+                        body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
+                        
+                        Click this notification to restore previous option`
+                    })
+                    //Redirect to the Search Page if not already the case
+                    if(ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
+                        document.querySelector(`a[href="${config.Page.Search}"]`).dispatchEvent(new Event('click'))
+                    }
+                    DIVParent.classList.add('error')
+                    ErrorNotification.onclick = () => {
+                        DBOption.ParameterList = (DBOption.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common 
+                        RunOption.Reselect()
+                        RunOption.Update.ParameterList()
+                        DIVParent.classList.remove('error')
+                        ErrorNotification.close()
+                    }
+                    ErrorNotification.onclose = () => DIVParent.classList.remove('error')
+                    $SearchSel.Timer[id] = setTimeout(() => DIVParent.classList.remove('error'), 5000)
                 }
             }
         },

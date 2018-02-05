@@ -47,11 +47,12 @@ $btn.close.addEventListener('click', () => {
     Table.Close()
     window.close()
 }, {passive: true})
+let AllDivs = document.querySelectorAll('#maincontent>div')
+
 $aLink.forEach(elem => {
     elem.addEventListener('click', e => {
         e.preventDefault()
         let PageName = elem.getAttribute('href')
-        //ipcRenderer.send('pageChange', {page : elem.getAttribute('href')})    // Request new page content
         $aLink.forEach(elem => {                                                // Remove .active on links
             if (elem.getAttribute('href') == PageName) {
                 elem.classList.add('active')
@@ -59,7 +60,7 @@ $aLink.forEach(elem => {
                 elem.classList.remove('active')
             }
         })
-        document.querySelectorAll('#maincontent>div').forEach(elem => {            // Show only the wanted content
+        AllDivs.forEach(elem => {            // Show only the wanted content
             if (elem.getAttribute('id') == PageName) {
                 elem.classList.remove('hide')
             } else {
@@ -67,8 +68,8 @@ $aLink.forEach(elem => {
             }
         })
         $h1.innerHTML = `Fixtures Finder/${PageName} - v${config.Version}`      // Update Title
-        document.activeElement && document.activeElement.blur()                 // Remove :active on link
-    })
+        elem.blur()                 // Remove :active on link
+    }, { passive: false })
 })
 const sqlite3 = require('sqlite3').verbose()
 const dblocation = process.env.NODE_ENV ? `${__dirname}/../../db.sqlite3` : `${__dirname}/../../../db.sqlite3`
@@ -2673,7 +2674,7 @@ let SelectOptions = {
         Selector.addEventListener('change', () => {
             $SearchSel.Form.dispatchEvent(new Event('change'))
             Selector.blur()
-        })
+        }, { passive: true })
     },
     /**
      * Attach a listener for CSS coloring on new Select
@@ -2831,7 +2832,27 @@ let SelectOptions = {
                     OptionToSelect.selected = true
                     select.dispatchEvent(new Event('change'))
                 } else {
-                    //TODO if the option is not found it can comes because the parameter doesn't exists anymore, or because the parameter option is set to restricted instead of "Full"
+                    let ActivePage = document.querySelector('aside a.active')
+                    , DIVParent = select.closest('div')
+                    , ErrorNotification = new Notification('Parameter display', {
+                        body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
+                        
+                        Click this notification to restore previous option`
+                    })
+                    //Redirect to the Search Page if not already the case
+                    if(ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
+                        document.querySelector(`a[href="${config.Page.Search}"]`).dispatchEvent(new Event('click'))
+                    }
+                    DIVParent.classList.add('error')
+                    ErrorNotification.onclick = () => {
+                        DBOption.ParameterList = (DBOption.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common 
+                        RunOption.Reselect()
+                        RunOption.Update.ParameterList()
+                        DIVParent.classList.remove('error')
+                        ErrorNotification.close()
+                    }
+                    ErrorNotification.onclose = () => DIVParent.classList.remove('error')
+                    $SearchSel.Timer[id] = setTimeout(() => DIVParent.classList.remove('error'), 5000)
                 }
             }
         },

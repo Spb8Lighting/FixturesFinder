@@ -66,6 +66,9 @@ body {
 }
 
 /* Other */
+.error, .error * {
+    background-color: $color-danger;
+}
 .hide {
     display: none;
 }
