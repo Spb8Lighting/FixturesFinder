@@ -632,16 +632,27 @@ let SelectOptions = {
          */
         Initialize: () => {
             // Restore previous search
+            let event = new Event('change')
+                , ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+                , FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+
+            // Restore previous DMX Channel Count then adjust the number of select to be displayed
             $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
             DMXChannelSearch.AdjustChannelSearch()
-            let ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+
+            // Set Manufacturer
             if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
                 ManufacturerOption.selected = true
+                $SearchSel.Manufacturer.dispatchEvent(event)
             }
-            let FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+
+            // Set FixtureName
             if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
                 FixtureNameOption.selected = true
+                $SearchSel.FixtureName.dispatchEvent(event)
             }
+
+            //Reselect previous searchs values of DMX Channel
             DMXChannelSearch.Reselect()
         },
         /**
@@ -705,19 +716,19 @@ let SelectOptions = {
                     select.dispatchEvent(new Event('change'))
                 } else {
                     let ActivePage = document.querySelector('aside a.active')
-                    , DIVParent = select.closest('div')
-                    , ErrorNotification = new Notification('Parameter display', {
-                        body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
+                        , DIVParent = select.closest('div')
+                        , ErrorNotification = new Notification('Parameter display', {
+                            body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
                         
                         Click this notification to restore previous option`
-                    })
+                        })
                     //Redirect to the Search Page if not already the case
-                    if(ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
+                    if (ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
                         document.querySelector(`a[href="${config.Page.Search}"]`).dispatchEvent(new Event('click'))
                     }
                     DIVParent.classList.add('error')
                     ErrorNotification.onclick = () => {
-                        DBOption.ParameterList = (DBOption.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common 
+                        DBOption.ParameterList = (DBOption.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
                         RunOption.Reselect()
                         RunOption.Update.ParameterList()
                         DIVParent.classList.remove('error')
