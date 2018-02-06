@@ -39,7 +39,7 @@
                 <label class="label" for="<%= config.Form.Search.Manufacturer %>">Manufacturer</label>
                 <select data-option="" data-default="<%= config.Default.All.toLowerCase() %>" autocomplete="off" name="<%= config.Form.Search.Manufacturer %>"
                     id="<%= config.Form.Search.Manufacturer %>">
-                    <option value="<%= config.Default.All.toLowerCase() %>" selected="selected">
+                    <option value="<%= config.Default.All.toLowerCase() %>">
                         <%= config.Default.All %>
                     </option>
                 </select>
@@ -48,11 +48,9 @@
                 <label class="label" for="<%= config.Form.Search.FixtureName %>">Fixture Name</label>
                 <select data-option="" data-default="<%= config.Default.All.toLowerCase() %>" autocomplete="off" name="<%= config.Form.Search.FixtureName %>"
                     id="<%= config.Form.Search.FixtureName %>">
-                    <optgroup label="A">
-                        <option value="<%= config.Default.All.toLowerCase() %>" selected="selected">
-                            <%= config.Default.All %>
-                        </option>
-                    </optgroup>
+                    <option value="<%= config.Default.All.toLowerCase() %>">
+                        <%= config.Default.All %>
+                    </option>
                 </select>
             </div>
         </fieldset>

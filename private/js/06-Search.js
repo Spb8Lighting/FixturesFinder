@@ -16,7 +16,7 @@ let SelectOptions = {
     * @returns {void}
     */
     CheckOptions: () => {
-        let TMPSelectOptions = false
+        let TMPSelectOptions = 0
         switch (DBOption[config.Form.Option.ParameterList]) {
             case config.Form.Option.ParameterList_Full:
                 TMPSelectOptions = SelectOptions.Full
@@ -26,7 +26,7 @@ let SelectOptions = {
                 TMPSelectOptions = SelectOptions.Restricted
                 break
         }
-        if (TMPSelectOptions != SelectOptions.Options) {
+        if (TMPSelectOptions.length != SelectOptions.Options.length) {
             SelectOptions.Options = TMPSelectOptions
             let SelectDMXChannel = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
             if (SelectDMXChannel) {
@@ -149,29 +149,34 @@ let SelectOptions = {
          * Initialize the form with last search content
          */
         Initialize: () => {
-            // Restore previous search
-            let event = new Event('change')
-                , ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
-                , FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+            clearTimeout($SearchSel.Timer.LastSearch['DBSearch'])
+            if (DBLastSearch === undefined) {
+                $SearchSel.Timer.LastSearch['DBSearch'] = setTimeout(DMXChannelSearch.Initialize, 50)
+            } else {
+                // Restore previous search
+                let event = new Event('change')
+                    , ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+                    , FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
 
-            // Restore previous DMX Channel Count then adjust the number of select to be displayed
-            $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
-            DMXChannelSearch.AdjustChannelSearch()
+                // Restore previous DMX Channel Count then adjust the number of select to be displayed
+                $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
+                DMXChannelSearch.AdjustChannelSearch()
 
-            // Set Manufacturer
-            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
-                ManufacturerOption.selected = true
-                $SearchSel.Manufacturer.dispatchEvent(event)
+                // Set Manufacturer
+                if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
+                    ManufacturerOption.selected = true
+                    $SearchSel.Manufacturer.dispatchEvent(event)
+                }
+
+                // Set FixtureName
+                if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
+                    FixtureNameOption.selected = true
+                    $SearchSel.FixtureName.dispatchEvent(event)
+                }
+
+                //Reselect previous searchs values of DMX Channel
+                DMXChannelSearch.Reselect()
             }
-
-            // Set FixtureName
-            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
-                FixtureNameOption.selected = true
-                $SearchSel.FixtureName.dispatchEvent(event)
-            }
-
-            //Reselect previous searchs values of DMX Channel
-            DMXChannelSearch.Reselect()
         },
         /**
          * Parse saved data and set the value
@@ -193,9 +198,9 @@ let SelectOptions = {
          * Restore Previous Search
          */
         Reselect: () => {
-            clearTimeout($SearchSel.Timer.LastSearch)
+            clearTimeout($SearchSel.Timer.LastSearch['reselect'])
             if (!$SearchSel.Status.SearchInitialize) {
-                $SearchSel.Timer.LastSearch = setTimeout(DMXChannelSearch.Reselect, 50)
+                $SearchSel.Timer.LastSearch['reselect'] = setTimeout(DMXChannelSearch.Reselect, 50)
             } else {
                 DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Channel], config.Default.Any, DMXChannelSearch.SetSelect)
                 DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Slot], config.Default.Infinity, DMXChannelSearch.SetInput)
