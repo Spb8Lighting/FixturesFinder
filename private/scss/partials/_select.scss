@@ -1,25 +1,61 @@
 $AlphaBack : .9;
 @mixin SelectDataOption($list, $angle: 'to right') {
     @if (type-of($list) == 'list') {
-        background: linear-gradient(#{$angle}, #{to-string($list, ',')}), url($Select_Arrow)!important;
+        background:
+            none,
+            linear-gradient(#{$angle}, #{to-string($list, ',')}), 
+            url($Select_Arrow)!important;
+        &[data-option~=fine] {
+            background:
+                url('../img/svg/fine.svg'),
+                linear-gradient(#{$angle}, #{to-string($list, ',')}),
+                url($Select_Arrow)!important;  
+        }
     } @else {
-        background: linear-gradient(#{$angle}, $list, darken($list, 10%), $list), url($Select_Arrow)!important;
+        background:
+            none,
+            linear-gradient(#{$angle}, $list, darken($list, 10%), $list),
+            url($Select_Arrow)!important;
+        &[data-option~=fine] {
+            background:
+                url('../img/svg/fine.svg'),
+                linear-gradient(#{$angle}, $list, darken($list, 10%), $list),
+                url($Select_Arrow)!important;
+        }
     }
     text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black;
 }
 @mixin SelectDataOptionSVG($svg) {
-    background: url('../img/svg/#{$svg}.svg'), url($Select_Arrow)!important;
+    background:
+        none,
+        url('../img/svg/#{$svg}.svg'),
+        url($Select_Arrow)!important;
+    &[data-option~=fine] {
+        background:
+            url('../img/svg/fine.svg'),
+            url('../img/svg/#{$svg}.svg'),
+            url($Select_Arrow)!important;   
+    }
 }
 select {
     transition: background .5s;
     text-align-last: center;
     &:not([data-option=any]):not([data-option=all]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
-        background: linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%), url($Select_Arrow);
+        background:
+            none,
+            linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%),
+            url($Select_Arrow);
+        &[data-option~=fine] {
+            background:
+                url('../img/svg/fine.svg'),
+                linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%),
+                url($Select_Arrow); 
+        }
         font-weight: bold;
-        background-position: left center, right .6rem center!important;
-        background-size: 32px 32px, 1.2rem!important;
-        background-repeat: no-repeat, no-repeat!important;
+        background-position: left center, left center, right .6rem center!important;
+        background-size: 32px 32px, 32px 32px, 1.2rem!important;
+        background-repeat: no-repeat, no-repeat, no-repeat!important;
         text-align-last: left;
         padding-left: 40px;
         & optgroup {
@@ -29,14 +65,8 @@ select {
     &[data-option^=pan] {
         @include SelectDataOptionSVG('pan');
     }
-    &[data-option^="pan fine"] {
-        @include SelectDataOptionSVG('pan-fine');
-    }
     &[data-option^=tilt] {
         @include SelectDataOptionSVG('tilt');
-    }
-    &[data-option^="tilt fine"] {
-        @include SelectDataOptionSVG('tilt-fine');
     }
     &[data-option^=strobe] {
         @include SelectDataOptionSVG('strobe');
