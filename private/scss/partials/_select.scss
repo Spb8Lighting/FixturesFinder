@@ -2,39 +2,47 @@ $AlphaBack : .9;
 @mixin SelectDataOption($list, $angle: 'to right') {
     @if (type-of($list) == 'list') {
         background:
-            none,
             linear-gradient(#{$angle}, #{to-string($list, ',')}), 
             url($Select_Arrow)!important;
-        &[data-option~=fine] {
-            background:
-                url('../img/svg/fine.svg'),
-                linear-gradient(#{$angle}, #{to-string($list, ',')}),
-                url($Select_Arrow)!important;  
-        }
     } @else {
         background:
-            none,
             linear-gradient(#{$angle}, $list, darken($list, 10%), $list),
             url($Select_Arrow)!important;
-        &[data-option~=fine] {
-            background:
-                url('../img/svg/fine.svg'),
-                linear-gradient(#{$angle}, $list, darken($list, 10%), $list),
-                url($Select_Arrow)!important;
-        }
     }
     text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black;
 }
 @mixin SelectDataOptionSVG($svg) {
     background:
-        none,
         url('../img/svg/#{$svg}.svg'),
         url($Select_Arrow)!important;
+}
+div[data-option] {
+    background-color:
+        $orange-showcockpit,
+        $orange-showcockpit;
+    background-position:
+        0 30px,
+        18px 27px;
+    background-size:
+        18px 13px,
+        18px 18px;
+    background-repeat:
+        no-repeat,
+        no-repeat;
     &[data-option~=fine] {
-        background:
-            url('../img/svg/fine.svg'),
-            url('../img/svg/#{$svg}.svg'),
-            url($Select_Arrow)!important;   
+        background-image:
+            none,
+            url('../img/svg/fine.svg');
+        &[data-option~=rot] {
+            background-image:
+                url('../img/svg/rotation.svg'),
+                url('../img/svg/fine.svg');
+        }
+    }
+    &[data-option~=rot] {
+        background-image:
+            url('../img/svg/rotation.svg'),
+            none;
     }
 }
 select {
@@ -43,19 +51,18 @@ select {
     &:not([data-option=any]):not([data-option=all]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
         background:
-            none,
             linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%),
             url($Select_Arrow);
-        &[data-option~=fine] {
-            background:
-                url('../img/svg/fine.svg'),
-                linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%),
-                url($Select_Arrow); 
-        }
         font-weight: bold;
-        background-position: left center, left center, right .6rem center!important;
-        background-size: 32px 32px, 32px 32px, 1.2rem!important;
-        background-repeat: no-repeat, no-repeat, no-repeat!important;
+        background-position:
+            left center,
+            right .6rem center!important;
+        background-size:
+            32px 32px,
+            1.2rem!important;
+        background-repeat:
+            no-repeat,
+            no-repeat!important;
         text-align-last: left;
         padding-left: 40px;
         & optgroup {
@@ -70,6 +77,12 @@ select {
     }
     &[data-option^=strobe] {
         @include SelectDataOptionSVG('strobe');
+    }
+    &[data-option^=gobo] {
+        @include SelectDataOptionSVG('wheel');
+    }
+    &[data-option^=prism] {
+        @include SelectDataOptionSVG('prism');
     }
     &[data-option^=red] {
         @include SelectDataOption(rgba(#ff0000, $AlphaBack));

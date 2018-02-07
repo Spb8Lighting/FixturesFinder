@@ -78,8 +78,7 @@ $digital-size-rem : 4rem;
     width: calc(100% - 2 * #{$digital-size-rem});
 }
 .channelfield {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    padding: 1rem 0;
     border-top: 0.5px solid $border-color-showcockpit;
     &>select {
         width: 82%;

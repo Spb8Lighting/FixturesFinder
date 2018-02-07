@@ -556,7 +556,9 @@ let SelectOptions = {
     AddSelectListener = (Selector, callback = false) => {
         Selector.addEventListener('change', () => {
             // Set the attribute data-option to allow background coloring
-            Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+            let DataOptionValue = Selector.querySelector('option:checked').value
+            Selector.setAttribute('data-option', DataOptionValue)
+            Selector.closest('div').setAttribute('data-option', DataOptionValue)
             // Set some Selectors to allow to add or remove additionnal input for slot
             let DIVContainer = Selector.parentNode
                 , SearchInput = DIVContainer.querySelector('input')
