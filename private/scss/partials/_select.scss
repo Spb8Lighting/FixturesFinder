@@ -1,65 +1,88 @@
-/*select {
-    &:has(option:checked) {
-	    background: linear-gradient(to right, #6b1816, #6b1816, #511210);
-        font-weight: bolder;
-    }
-    &:has(option[value^=red]:checked) {
-        background: linear-gradient(to right, red, darkred, red);
-    }
-    &:has(option[value^=green]:checked) {
-        background: linear-gradient(to right, green, darkgreen, green);
-    }
-    &:has(option[value^=blue]:checked) {
-        background: linear-gradient(to right, blue, darkblue, blue);
-    }
-    &:has(option[value^=white]:checked) {
-        background: linear-gradient(to right, white, GhostWhite, white);
-    }
-    &:has(option[value^=amber]:checked) {
-        background: linear-gradient(to right, Gold, GoldenRod , Gold);
-    }
-    &:has(option[value^=uv]:checked) {
-        background: linear-gradient(to right, Navy, MidnightBlue , Navy);
-    }
-    &:has(option[value^=cyan]:checked) {
-        background: linear-gradient(to right, cyan, darkcyan, cyan);
-    }
-    &:has(option[value^=magenta]:checked) {
-        background: linear-gradient(to right, magenta, darkmagenta, magenta);
-    }
-    &:has(option[value^=yellow]:checked) {
-        background: linear-gradient(to right, yellow, #cccc00, yellow);
-    }
-    &:has(option[value^=color]:checked) {
-        background: linear-gradient(to left,red,orange,yellow,green,blue,cyan,indigo,violet);
-    }
-    &:has(option[value^=intensity]:checked) {
-        background: linear-gradient(175deg, black 0%,black 50%,white 50%,white 100%);
-    }
-    &:has(option[value^=jem]:checked),
-    &:has(option[value^=martin]:checked) {
-        background: linear-gradient(to right, #A25800, #A25800, #612D06);
-    }
-}*/
 $AlphaBack : .9;
 @mixin SelectDataOption($list, $angle: 'to right') {
     @if (type-of($list) == 'list') {
-        background: linear-gradient(#{$angle}, #{to-string($list, ',')})!important;
+        background:
+            linear-gradient(#{$angle}, #{to-string($list, ',')}), 
+            url($Select_Arrow)!important;
     } @else {
-        background: linear-gradient(#{$angle}, $list, $list, darken($list, 15%))!important;
+        background:
+            linear-gradient(#{$angle}, $list, darken($list, 10%), $list),
+            url($Select_Arrow)!important;
     }
     text-shadow: 2px 2px 1rem $black, -2px -2px 1rem $black;
+}
+@mixin SelectDataOptionSVG($svg) {
+    background:
+        url('../img/svg/#{$svg}.svg'),
+        url($Select_Arrow)!important;
+}
+div[data-option] {
+    background-color:
+        $orange-showcockpit,
+        $orange-showcockpit;
+    background-position:
+        0 30px,
+        18px 27px;
+    background-size:
+        18px 13px,
+        18px 18px;
+    background-repeat:
+        no-repeat,
+        no-repeat;
+    &[data-option~=fine] {
+        background-image:
+            none,
+            url('../img/svg/fine.svg');
+        &[data-option~=rot] {
+            background-image:
+                url('../img/svg/rotation.svg'),
+                url('../img/svg/fine.svg');
+        }
+    }
+    &[data-option~=rot] {
+        background-image:
+            url('../img/svg/rotation.svg'),
+            none;
+    }
 }
 select {
     transition: background .5s;
     text-align-last: center;
     &:not([data-option=any]):not([data-option=all]):not([data-option=SearchMode_Order_Exact]):not([data-option=DisplayMode_Full]):not([data-option=ParameterList_Common]):not([data-option=""]) {
         text-shadow: 2px 2px .2rem $black, -2px -2px .2rem $black, 2px -2px .2rem $black, -2px 2px .2rem $black;
-        background: linear-gradient(to right, rgba($orange-showcockpit, $AlphaBack), rgba($orange-showcockpit, $AlphaBack), rgba(darken($orange-showcockpit, 15%), $AlphaBack));
+        background:
+            linear-gradient(to right, $orange-showcockpit 0%, $orange-showcockpit 15%, transparent 15%, transparent 100%),
+            url($Select_Arrow);
         font-weight: bold;
+        background-position:
+            left center,
+            right .6rem center!important;
+        background-size:
+            32px 32px,
+            1.2rem!important;
+        background-repeat:
+            no-repeat,
+            no-repeat!important;
+        text-align-last: left;
+        padding-left: 40px;
         & optgroup {
             font-weight: lighter;
         }
+    }
+    &[data-option^=pan] {
+        @include SelectDataOptionSVG('pan');
+    }
+    &[data-option^=tilt] {
+        @include SelectDataOptionSVG('tilt');
+    }
+    &[data-option^=strobe] {
+        @include SelectDataOptionSVG('strobe');
+    }
+    &[data-option^=gobo] {
+        @include SelectDataOptionSVG('wheel');
+    }
+    &[data-option^=prism] {
+        @include SelectDataOptionSVG('prism');
     }
     &[data-option^=red] {
         @include SelectDataOption(rgba(#ff0000, $AlphaBack));
@@ -93,11 +116,13 @@ select {
         @include SelectDataOption($list, 'to right');
     }
     &[data-option^=intensity] {
-        $list : 'black 0%','black 50%','white 50%','white 100%';
-        @include SelectDataOption($list, '175deg');
+        @include SelectDataOptionSVG('intensity');
     }
     &[data-option^=jem],
     &[data-option^=martin] {
         @include SelectDataOption(#cf7c00);
+    }
+    &[data-option~=speed] {
+        @include SelectDataOptionSVG('speed');
     }
 }

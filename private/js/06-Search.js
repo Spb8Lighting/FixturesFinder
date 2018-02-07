@@ -16,7 +16,7 @@ let SelectOptions = {
     * @returns {void}
     */
     CheckOptions: () => {
-        let TMPSelectOptions = false
+        let TMPSelectOptions = 0
         switch (DBOption[config.Form.Option.ParameterList]) {
             case config.Form.Option.ParameterList_Full:
                 TMPSelectOptions = SelectOptions.Full
@@ -26,7 +26,7 @@ let SelectOptions = {
                 TMPSelectOptions = SelectOptions.Restricted
                 break
         }
-        if (TMPSelectOptions != SelectOptions.Options) {
+        if (TMPSelectOptions.length != SelectOptions.Options.length) {
             SelectOptions.Options = TMPSelectOptions
             let SelectDMXChannel = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
             if (SelectDMXChannel) {
@@ -65,7 +65,7 @@ let SelectOptions = {
         Selector.addEventListener('change', () => {
             $SearchSel.Form.dispatchEvent(new Event('change'))
             Selector.blur()
-        })
+        }, { passive: true })
     },
     /**
      * Attach a listener for CSS coloring on new Select
@@ -74,7 +74,9 @@ let SelectOptions = {
     AddSelectListener = (Selector, callback = false) => {
         Selector.addEventListener('change', () => {
             // Set the attribute data-option to allow background coloring
-            Selector.setAttribute('data-option', Selector.querySelector('option:checked').getAttribute('value'))
+            let DataOptionValue = Selector.querySelector('option:checked').value
+            Selector.setAttribute('data-option', DataOptionValue)
+            Selector.closest('div').setAttribute('data-option', DataOptionValue)
             // Set some Selectors to allow to add or remove additionnal input for slot
             let DIVContainer = Selector.parentNode
                 , SearchInput = DIVContainer.querySelector('input')
@@ -85,7 +87,6 @@ let SelectOptions = {
                     , SlotInfoName = SlotInfo[1]
                     , SlotNumber = (!SlotInfo[2]) ? 1 : SlotInfo[2]
                     , Basename_Wheel = false
-                console.log(SlotInfo, SlotInfoName, SlotNumber)
                 switch (SlotInfoName) {
                     case 'color':
                         Basename_Wheel = config.Form.Search.BaseName_Wheel_Color
@@ -150,18 +151,34 @@ let SelectOptions = {
          * Initialize the form with last search content
          */
         Initialize: () => {
-            // Restore previous search
-            $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
-            DMXChannelSearch.AdjustChannelSearch()
-            let ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
-            if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
-                ManufacturerOption.selected = true
+            clearTimeout($SearchSel.Timer.LastSearch['DBSearch'])
+            if (DBLastSearch === undefined) {
+                $SearchSel.Timer.LastSearch['DBSearch'] = setTimeout(DMXChannelSearch.Initialize, 50)
+            } else {
+                // Restore previous search
+                let event = new Event('change')
+                    , ManufacturerOption = $SearchSel.Manufacturer.querySelector('option[value="' + DBLastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+                    , FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
+
+                // Restore previous DMX Channel Count then adjust the number of select to be displayed
+                $SearchSel.DMXChannelCount.value = DBLastSearch[config.Form.Search.DMXChannelCount]
+                DMXChannelSearch.AdjustChannelSearch()
+
+                // Set Manufacturer
+                if (DBLastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
+                    ManufacturerOption.selected = true
+                    $SearchSel.Manufacturer.dispatchEvent(event)
+                }
+
+                // Set FixtureName
+                if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
+                    FixtureNameOption.selected = true
+                    $SearchSel.FixtureName.dispatchEvent(event)
+                }
+
+                //Reselect previous searchs values of DMX Channel
+                DMXChannelSearch.Reselect()
             }
-            let FixtureNameOption = $SearchSel.FixtureName.querySelector('option[value="' + DBLastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
-            if (DBLastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
-                FixtureNameOption.selected = true
-            }
-            DMXChannelSearch.Reselect()
         },
         /**
          * Parse saved data and set the value
@@ -183,9 +200,9 @@ let SelectOptions = {
          * Restore Previous Search
          */
         Reselect: () => {
-            clearTimeout($SearchSel.Timer.LastSearch)
+            clearTimeout($SearchSel.Timer.LastSearch['reselect'])
             if (!$SearchSel.Status.SearchInitialize) {
-                $SearchSel.Timer.LastSearch = setTimeout(DMXChannelSearch.Reselect, 50)
+                $SearchSel.Timer.LastSearch['reselect'] = setTimeout(DMXChannelSearch.Reselect, 50)
             } else {
                 DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Channel], config.Default.Any, DMXChannelSearch.SetSelect)
                 DMXChannelSearch.ParseSave(DBLastSearch[config.Form.Search.DMXChart_Slot], config.Default.Infinity, DMXChannelSearch.SetInput)
@@ -223,7 +240,27 @@ let SelectOptions = {
                     OptionToSelect.selected = true
                     select.dispatchEvent(new Event('change'))
                 } else {
-                    //TODO if the option is not found it can comes because the parameter doesn't exists anymore, or because the parameter option is set to restricted instead of "Full"
+                    let ActivePage = document.querySelector('aside a.active')
+                        , DIVParent = select.closest('div')
+                        , ErrorNotification = new Notification('Parameter display', {
+                            body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
+                        
+                        Click this notification to restore previous option`
+                        })
+                    //Redirect to the Search Page if not already the case
+                    if (ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
+                        document.querySelector(`a[href="${config.Page.Search}"]`).dispatchEvent(new Event('click'))
+                    }
+                    DIVParent.classList.add('error')
+                    ErrorNotification.onclick = () => {
+                        DBOption.ParameterList = (DBOption.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
+                        RunOption.Reselect()
+                        RunOption.Update.ParameterList()
+                        DIVParent.classList.remove('error')
+                        ErrorNotification.close()
+                    }
+                    ErrorNotification.onclose = () => DIVParent.classList.remove('error')
+                    $SearchSel.Timer[id] = setTimeout(() => DIVParent.classList.remove('error'), 5000)
                 }
             }
         },
