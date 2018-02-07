@@ -6,7 +6,7 @@ const electron = require('electron')
   , ipcMain = electron.ipcMain
   , app = electron.app
   , BrowserWindow = electron.BrowserWindow
-  , config = require('./config')
+  , config = require('./middlewares/config')
 
 let mainWindow
   , modalWindow

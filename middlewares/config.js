@@ -30,6 +30,11 @@ module.exports = {
 		Options: 'Options',
 		Admin: 'Admin'
 	},
+	WindowButtons: {
+		min: 'min-btn',
+		max: 'max-btn',
+		close: 'close-btn'
+	},
 	Form: {
 		Button: {
 			Reset: 'reset',

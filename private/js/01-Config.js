@@ -1,5 +1,5 @@
 const electron = require('electron')
-    , config = require('../../config')
+    , config = require('../../middlewares/config')
     , ipcRenderer = electron.ipcRenderer
     , RunMode = (process.env.NODE_ENV !== undefined) ? false : true
     , $aLink = document.querySelectorAll('aside a')

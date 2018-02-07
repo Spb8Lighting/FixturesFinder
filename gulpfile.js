@@ -1,7 +1,7 @@
 const gulp = require('gulp')
 	, $ = require('gulp-load-plugins')()
 	, electron = require('electron-connect').server.create()
-	, config = require('./config')
+	, config = require('./middlewares/config')
 	, SourceFullEJS = 'views/**/*.ejs'
 	, SourceEJS = ['views/template/*.ejs', 'views/index.ejs']
 	, FolderEJS = 'public/html/*.html'

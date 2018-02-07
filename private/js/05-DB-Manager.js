@@ -24,7 +24,7 @@ let Table = {
                         return console.error(err.message)
                     } else {
                         if (row.count == 0) {
-                            Table.SearchParameter.Fill(require('../../temporary-until-ingestion.ParameterDMX'))
+                            Table.SearchParameter.Fill(require('../../middlewares/temporary-until-ingestion.ParameterDMX'))
                         }
                         /* After check of Database, initialize interface */
                         Table.SearchParameter.Get(callback)
