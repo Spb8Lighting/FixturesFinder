@@ -12,8 +12,7 @@ let $Listener = require('./listener')
         SelectOptions: require('./app.SelectOptions')
     }
     , $DB = {
-        LastSearch: require('./database.table.LastSearch'),
-        Options: require('./database.table.Options')
+        LastSearch: require('./database.table.LastSearch')
     }
 
 global.DB.DMXChannelCount = 0
