@@ -69,7 +69,6 @@ let Get = (callback = false) => {
         if (err) {
             return console.error(err.message)
         } else {
-            console.log(datas)
             global.DB.SearchParameter = datas
             $App.SelectOptions.Initialize()
             if (typeof callback === 'function') {

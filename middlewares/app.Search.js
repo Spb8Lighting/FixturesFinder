@@ -187,7 +187,6 @@ let SetValue = val => {
 */
 let AdjustChannelSearch = (event = false) => {
     clearTimeout($Sel.Search.Timer.Adjust)
-    console.log(global.DB.SelectParameter)
     if (global.DB.SelectParameter === undefined || global.DB.SelectParameter.length == 0) {
         $Sel.Search.Timer.Adjust = setTimeout(AdjustChannelSearch, 50)
     } else {

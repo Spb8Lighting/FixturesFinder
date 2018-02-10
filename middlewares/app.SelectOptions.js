@@ -2,27 +2,18 @@ let config = require('./config')
     , $App = {
         Search: require('./app.Search')
     }
-    , $DB = {
-        SearchParameter: require('./database.table.SearchParameter'),
-        Options: require('./database.table.Options')
-    }
 
-/**
-* List Values
-*/
-let Values = {
-    Options: false,
-    Restricted: false,
-    Full: false
-}
+global.DB.SelectParameterVal = {}
+
+
 /**
 * List Parameters
 */
 let Initialize = () => {
-    Values.Full = global.DB.SearchParameter
-    Values.Restricted = SetRestricted()
-    Values.Options = Values.Restricted
-    global.DB.SelectParameter = Values.Options
+    global.DB.SelectParameterVal.Full = global.DB.SearchParameter
+    global.DB.SelectParameterVal.Restricted = SetRestricted()
+    global.DB.SelectParameterVal.Options = global.DB.SelectParameterVal.Restricted
+    global.DB.SelectParameter = global.DB.SelectParameterVal.Options
 }
 
 /**
@@ -32,14 +23,14 @@ let CheckOptions = () => {
     let TMP = 0
     switch (global.DB.Options[config.Form.Option.ParameterList]) {
         case config.Form.Option.ParameterList_Full:
-            TMP = Values.Full
+            TMP = global.DB.SelectParameterVal.Full
             break
         case config.Form.Option.ParameterList_Common:
         default:
-            TMP = Values.Restricted
+            TMP = global.DB.SelectParameterVal.Restricted
             break
     }
-    if (TMP.length != Values.Options.length) {
+    if (TMP.length != global.DB.SelectParameterVal.Options.length) {
         Values.Options = TMP
         global.DB.SelectParameter = TMP
         let SelectDMXChannel = document.querySelectorAll(`select[name^="${config.Form.Search.BaseName_Channel}"]`)
