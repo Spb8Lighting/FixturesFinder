@@ -30,6 +30,9 @@ module.exports = {
 		Options: 'Options',
 		Admin: 'Admin'
 	},
+	SpecClass: {
+		Slot: 'wheelfield'
+	},
 	WindowButtons: {
 		min: 'min-btn',
 		max: 'max-btn',

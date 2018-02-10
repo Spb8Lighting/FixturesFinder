@@ -1,4 +1,9 @@
-let AllDivs = document.querySelectorAll('#maincontent>div')
+const config = require('./config')
+
+/* Selectors */
+const $AllDivs = document.querySelectorAll('#maincontent>div')
+    , $aLink = document.querySelectorAll('aside a')
+    , $h1 = document.querySelector('h1>span')
 
 $aLink.forEach(elem => {
     elem.addEventListener('click', e => {
@@ -12,7 +17,7 @@ $aLink.forEach(elem => {
                 elem.classList.remove('active')
             }
         })
-        AllDivs.forEach(elem => {
+        $AllDivs.forEach(elem => {
             // Show only the wanted content
             if (elem.id == PageName) {
                 elem.classList.remove('hide')
@@ -26,3 +31,5 @@ $aLink.forEach(elem => {
         elem.blur()
     }, { passive: false })
 })
+
+module.exports = false
