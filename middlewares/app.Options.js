@@ -48,12 +48,12 @@ let Update = {
  * Select the options based on DB Content
  */
 let Reselect = () => {
-    $Sel.Options.SearchMode.querySelector('option[value="' + global.DB.Options.Values.SearchMode + '"]').selected = true
-    $Sel.Options.SearchMode.setAttribute('data-option', global.DB.Options.Values.SearchMode)
-    $Sel.Options.DisplayMode.querySelector('option[value="' + global.DB.Options.Values.DisplayMode + '"]').selected = true
-    $Sel.Options.DisplayMode.setAttribute('data-option', global.DB.Options.Values.DisplayMode)
-    $Sel.Options.ParameterList.querySelector('option[value="' + global.DB.Options.Values.ParameterList + '"]').selected = true
-    $Sel.Options.ParameterList.setAttribute('data-option', global.DB.Options.Values.ParameterList)
+    $Sel.Options.SearchMode.querySelector('option[value="' + global.DB.Options.SearchMode + '"]').selected = true
+    $Sel.Options.SearchMode.setAttribute('data-option', global.DB.Options.SearchMode)
+    $Sel.Options.DisplayMode.querySelector('option[value="' + global.DB.Options.DisplayMode + '"]').selected = true
+    $Sel.Options.DisplayMode.setAttribute('data-option', global.DB.Options.DisplayMode)
+    $Sel.Options.ParameterList.querySelector('option[value="' + global.DB.Options.ParameterList + '"]').selected = true
+    $Sel.Options.ParameterList.setAttribute('data-option', global.DB.Options.ParameterList)
 }
 
 module.exports = {

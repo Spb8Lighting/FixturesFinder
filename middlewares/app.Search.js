@@ -7,10 +7,9 @@ let $Listener = require('./listener')
         Search: require('./selectors.Search'),
         Options: require('./selectors.Options')
     }
-    , $App = {
-        Options: require('./app.Options'),
-        SelectOptions: require('./app.SelectOptions')
-    }
+    /*, $App = {
+        Options: require('./app.Options')
+    }*/
     , $DB = {
         LastSearch: require('./database.table.LastSearch')
     }
@@ -112,9 +111,7 @@ let SetSelect = (id, value) => {
             let ActivePage = document.querySelector('aside a.active')
                 , DIVParent = select.closest('div')
                 , ErrorNotification = new Notification('Parameter display', {
-                    body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.
-                        
-                        Click this notification to restore previous option`
+                    body: `#${id} DMX Channel used "${value}" parameter which is not available with this option.`
                 })
             //Redirect to the Search Page if not already the case
             if (ActivePage.href.toLowerCase() != config.Page.Search.toLowerCase()) {
@@ -122,9 +119,9 @@ let SetSelect = (id, value) => {
             }
             DIVParent.classList.add('error')
             ErrorNotification.onclick = () => {
-                global.DB.Options.ParameterList = (global.DB.Options.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
+                /*global.DB.Options.ParameterList = (global.DB.Options.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
                 $App.Options.Reselect()
-                $App.Options.Update.ParameterList()
+                $App.Options.Update.ParameterList()*/
                 DIVParent.classList.remove('error')
                 ErrorNotification.close()
             }
