@@ -21,7 +21,6 @@ let Initialize = () => {
 */
 let CheckOptions = () => {
     let TMP = []
-    console.log(global.DB.Options[config.Form.Option.ParameterList])
     switch (global.DB.Options[config.Form.Option.ParameterList]) {
         case config.Form.Option.ParameterList_Full:
             TMP = global.DB.SelectParameterVal.Full
@@ -31,7 +30,6 @@ let CheckOptions = () => {
             TMP = global.DB.SelectParameterVal.Restricted
             break
     }
-    console.log(TMP)
     if (TMP.length != global.DB.SelectParameterVal.Options.length) {
         Values.Options = TMP
         global.DB.SelectParameter = TMP
