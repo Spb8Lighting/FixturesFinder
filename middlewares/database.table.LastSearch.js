@@ -1,92 +1,135 @@
-let db = require('./database.init')
+const db = require('./database.init')
     , config = require('./config')
 
 /**
 * Create the "LastSearch" Table and insert default values
 */
-let Initialize = (callback = false) => {
-    db.serialize(() => {
+let Initialize = () => {
+    return new Promise((resolve, reject) => {
         /* Create and fill the Database for Options */
         Create()
-        let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.LastSearch}\``
-        db.get(sql, (err, row) => {
-            if (err) {
-                return console.error(err.message)
-            } else {
-                if (row.count > 1) {
+            .then(response => {
+                // Create Answer
+                return Count()
+            })
+            .then(response => {
+                // Count Answer
+                if (response.count > 1) {
                     Delete()
-                    Create()
+                        .then(response => {
+                            // Delete Answer
+                            return Create()
+                        })
+                        .then(response => {
+                            // Create Answer
+                            return Fill()
+                        })
+                        .then(response => {
+                            // Fill Answer
+                            return Get()
+                        })
+                        .then(response => {
+                            // Get Answer
+                            resolve(response)
+                        })
+                } else if (response.count == 0) {
                     Fill()
-                } else if (row.count == 0) {
-                    Fill()
+                        .then(response => {
+                            // Fill Answer
+                            return Get()
+                        })
+                        .then(response => {
+                            // Get Answer
+                            resolve(response)
+                        })
+                } else {
+                    Get()
+                        .then(response => {
+                            // Get Answer
+                            resolve(response)
+                        })
                 }
-                /* After check of Database, initialize interface */
-                Get(callback)
-            }
-        })
+            })
+    })
+}
+/**
+* Returns "LastSearch" Table count rows
+*/
+let Count = () => {
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.LastSearch}\``
+        db.get(sql, (err, response) => err ? reject(err.message) : resolve(response))
     })
 }
 
 /**
 * Create "LastSearch" Table
-* @returns {void}
 */
 let Create = () => {
-    let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\` INTEGER, \`${config.Form.Search.DMXChannelCount_Max}\` INTEGER, \`${config.Form.Search.Manufacturer}\` TEXT, \`${config.Form.Search.FixtureName}\` TEXT, \`${config.Form.Search.DMXChart_Channel}\` TEXT, \`${config.Form.Search.DMXChart_Slot}\` TEXT )`
-    return db.run(sql)
+    return new Promise((resolve, reject) => {
+        let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\` INTEGER, \`${config.Form.Search.DMXChannelCount_Max}\` INTEGER, \`${config.Form.Search.Manufacturer}\` TEXT, \`${config.Form.Search.FixtureName}\` TEXT, \`${config.Form.Search.DMXChart_Channel}\` TEXT, \`${config.Form.Search.DMXChart_Slot}\` TEXT )`
+        db.run(sql, err => err ? reject(err.message) : resolve(sql))
+    })
 }
 
 /**
 * Empty "LastSearch" Table
-* @returns {void}
 */
 let Delete = () => {
-    let sql = `DROP TABLE \`${config.Database.LastSearch}\``
-    return db.run(sql)
+    return new Promise((resolve, reject) => {
+        let sql = `DROP TABLE \`${config.Database.LastSearch}\``
+        db.run(sql, err => err ? reject(err.message) : resolve(sql))
+    })
 }
 
 /**
 * Restore "LastSearch" Table to default (empty)
 */
 let Reset = () => {
-    Delete()
-    Create()
+    return new Promise((resolve, reject) => {
+        Delete()
+            .then(response => {
+                return Create()
+            })
+            .then(response => {
+                resolve(response)
+            })
+    })
 }
 /**
 * Fill with default "LastSearch"
-* @returns {void}
 */
 let Fill = () => {
-    /* Reset the options to its default */
-    let sql = `INSERT INTO \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\`) VALUES ($DMXChannelCount, $DMXChannelCount_Max, $Manufacturer, $FixtureName, $DMXChart_Channel, $DMXChart_Slot)`
-        , param = {
-            $DMXChannelCount: 1,
-            $DMXChannelCount_Max: 0,
-            $Manufacturer: config.Default.All.toLowerCase(),
-            $FixtureName: config.Default.All.toLowerCase(),
-            $DMXChart_Channel: JSON.stringify([{ 1: config.Default.Any.toLowerCase() }]),
-            $DMXChart_Slot: JSON.stringify([{}])
-        }
-    return db.run(sql, param)
+    return new Promise((resolve, reject) => {
+        /* Reset the options to its default */
+        let sql = `INSERT INTO \`${config.Database.LastSearch}\` ( \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\`) VALUES ($DMXChannelCount, $DMXChannelCount_Max, $Manufacturer, $FixtureName, $DMXChart_Channel, $DMXChart_Slot)`
+            , param = {
+                $DMXChannelCount: 1,
+                $DMXChannelCount_Max: 0,
+                $Manufacturer: config.Default.All.toLowerCase(),
+                $FixtureName: config.Default.All.toLowerCase(),
+                $DMXChart_Channel: JSON.stringify([{ 1: config.Default.Any.toLowerCase() }]),
+                $DMXChart_Slot: JSON.stringify([{}])
+            }
+        db.run(sql, param, err => err ? reject(err.message) : resolve(sql))
+    })
 }
 
 /**
 * Get options from "LastSearch Table"
 */
 let Get = (callback = false) => {
-    let sql = `SELECT \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\` FROM \`${config.Database.LastSearch}\``
-
-    db.get(sql, (err, data) => {
-        if (err) {
-            return console.error(err.message)
-        } else {
-            global.DB.LastSearch = data
-            global.DB.LastSearch[config.Form.Search.DMXChart_Channel] = JSON.parse(global.DB.LastSearch[config.Form.Search.DMXChart_Channel])
-            global.DB.LastSearch[config.Form.Search.DMXChart_Slot] = JSON.parse(global.DB.LastSearch[config.Form.Search.DMXChart_Slot])
-            if (typeof callback === 'function') {
-                callback()
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT \`${config.Form.Search.DMXChannelCount}\`, \`${config.Form.Search.DMXChannelCount_Max}\`, \`${config.Form.Search.Manufacturer}\`, \`${config.Form.Search.FixtureName}\`, \`${config.Form.Search.DMXChart_Channel}\`, \`${config.Form.Search.DMXChart_Slot}\` FROM \`${config.Database.LastSearch}\``
+        db.get(sql, (err, response) => {
+            if(err) {
+                reject(err.message)
+            } else {
+                response[config.Form.Search.DMXChart_Channel] = JSON.parse(response[config.Form.Search.DMXChart_Channel])
+                response[config.Form.Search.DMXChart_Slot] = JSON.parse(response[config.Form.Search.DMXChart_Slot])
+                resolve(response)
             }
-        }
+        })
     })
 }
 

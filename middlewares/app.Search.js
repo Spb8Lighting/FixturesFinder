@@ -7,9 +7,9 @@ let $Listener = require('./listener')
         Search: require('./selectors.Search'),
         Options: require('./selectors.Options')
     }
-    /*, $App = {
+    , $App = {
         Options: require('./app.Options')
-    }*/
+    }
     , $DB = {
         LastSearch: require('./database.table.LastSearch')
     }
@@ -19,34 +19,34 @@ global.DB.DMXChannelCount = 0
  * Initialize the form with last search content
  */
 let Initialize = () => {
-    clearTimeout($Sel.Search.Timer.LastSearch['DBSearch'])
-    if (global.DB.LastSearch === undefined) {
-        $Sel.Search.Timer.LastSearch['DBSearch'] = setTimeout(Initialize, 50)
-    } else {
-        // Restore previous search
-        let event = new Event('change')
-            , ManufacturerOption = $Sel.Search.Manufacturer.querySelector('option[value="' + global.DB.LastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
-            , FixtureNameOption = $Sel.Search.FixtureName.querySelector('option[value="' + global.DB.LastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
-
-        // Restore previous DMX Channel Count then adjust the number of select to be displayed
+    return new Promise((resolve, reject) => {
         $Sel.Search.DMXChannelCount.value = global.DB.LastSearch[config.Form.Search.DMXChannelCount]
-        AdjustChannelSearch()
+        return AdjustChannelSearch().then(response => {
+            // Restore previous search
+            let event = new Event('change')
+                , ManufacturerOption = $Sel.Search.Manufacturer.querySelector('option[value="' + global.DB.LastSearch[config.Form.Search.Manufacturer].toLowerCase() + '"]')
+                , FixtureNameOption = $Sel.Search.FixtureName.querySelector('option[value="' + global.DB.LastSearch[config.Form.Search.FixtureName].toLowerCase() + '"]')
 
-        // Set Manufacturer
-        if (global.DB.LastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
-            ManufacturerOption.selected = true
-            $Sel.Search.Manufacturer.dispatchEvent(event)
-        }
+            // Restore previous DMX Channel Count then adjust the number of select to be displayed
+            $Sel.Search.DMXChannelCount.value = global.DB.LastSearch[config.Form.Search.DMXChannelCount]
+            // Set Manufacturer
+            if (global.DB.LastSearch[config.Form.Search.Manufacturer] != config.Default.All.toLowerCase() && ManufacturerOption) {
+                ManufacturerOption.selected = true
+                $Sel.Search.Manufacturer.dispatchEvent(event)
+            }
 
-        // Set FixtureName
-        if (global.DB.LastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
-            FixtureNameOption.selected = true
-            $Sel.Search.FixtureName.dispatchEvent(event)
-        }
+            // Set FixtureName
+            if (global.DB.LastSearch[config.Form.Search.FixtureName] != config.Default.All.toLowerCase() && FixtureNameOption) {
+                FixtureNameOption.selected = true
+                $Sel.Search.FixtureName.dispatchEvent(event)
+            }
 
-        //Reselect previous searchs values of DMX Channel
-        Reselect()
-    }
+            //Reselect previous searchs values of DMX Channel
+            return Reselect().then(response => {
+                resolve(response)
+            })
+        })
+    })
 }
 /**
  * Parse saved data and set the value
@@ -55,26 +55,29 @@ let Initialize = () => {
  * @param {function} Callback
  */
 let ParseSave = (Data, Default, Callback) => {
-    for (let i = 0; i < Data.length; i++) {
-        let obj = Data[i]
-        for (let key in obj) {
-            if (obj[key].toLowerCase() != Default.toLowerCase()) {
-                Callback(key, obj[key])
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < Data.length; i++) {
+            let obj = Data[i]
+            for (let key in obj) {
+                if (obj[key].toLowerCase() != Default.toLowerCase()) {
+                    Callback(key, obj[key])
+                }
             }
         }
-    }
+        resolve('Parse Saved data done')
+    })
 }
 /**
  * Restore Previous Search
  */
 let Reselect = () => {
-    clearTimeout($Sel.Search.Timer.LastSearch['reselect'])
-    if (!$Sel.Search.Status.SearchInitialize) {
-        $Sel.Search.Timer.LastSearch['reselect'] = setTimeout(Reselect, 50)
-    } else {
-        ParseSave(global.DB.LastSearch[config.Form.Search.DMXChart_Channel], config.Default.Any, SetSelect)
-        ParseSave(global.DB.LastSearch[config.Form.Search.DMXChart_Slot], config.Default.Infinity, SetInput)
-    }
+    return new Promise((resolve, reject) => {
+        return ParseSave(global.DB.LastSearch[config.Form.Search.DMXChart_Channel], config.Default.Any, SetSelect).then(response => {
+            return ParseSave(global.DB.LastSearch[config.Form.Search.DMXChart_Slot], config.Default.Infinity, SetInput).then(response => {
+                resolve(response)
+            })
+        })
+    })
 }
 /**
  * Set Input value
@@ -82,14 +85,9 @@ let Reselect = () => {
  * @param {string} value
  */
 let SetInput = (id, value) => {
-    clearTimeout($Sel.Search.Timer[id])
-    let input = document.getElementById(config.Form.Search.BaseName_Wheel + id)
-    if (input == null) {
-        $Sel.Search.Timer[id] = setTimeout(() => SetInput(id, value), 50)
-    } else {
+        let input = document.getElementById(config.Form.Search.BaseName_Wheel + id)
         input.value = value.toLowerCase()
         input.dispatchEvent(new Event('change'))
-    }
 }
 /**
  * Set Select value
@@ -97,13 +95,8 @@ let SetInput = (id, value) => {
  * @param {string} value
  */
 let SetSelect = (id, value) => {
-    clearTimeout($Sel.Search.Timer[id])
-    let select = document.getElementById(config.Form.Search.BaseName_Channel + id)
-        , NbOption = select.querySelectorAll('option').length
-    if (NbOption != (global.DB.SelectParameter.length + 1)) {
-        $Sel.Search.Timer[id] = setTimeout(() => SetSelect(id, value), 50)
-    } else {
-        let OptionToSelect = select.querySelector('option[value="' + value.toLowerCase() + '"]')
+        let select = document.getElementById(config.Form.Search.BaseName_Channel + id)
+            , OptionToSelect = select.querySelector('option[value="' + value.toLowerCase() + '"]')
         if (OptionToSelect) {
             OptionToSelect.selected = true
             select.dispatchEvent(new Event('change'))
@@ -119,16 +112,15 @@ let SetSelect = (id, value) => {
             }
             DIVParent.classList.add('error')
             ErrorNotification.onclick = () => {
-                /*global.DB.Options.ParameterList = (global.DB.Options.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
+                global.DB.Options.ParameterList = (global.DB.Options.ParameterList == config.Form.Option.ParameterList_Common) ? config.Form.Option.ParameterList_Full : config.Form.Option.ParameterList_Common
                 $App.Options.Reselect()
-                $App.Options.Update.ParameterList()*/
+                $App.Options.Update.ParameterList()
                 DIVParent.classList.remove('error')
                 ErrorNotification.close()
             }
             ErrorNotification.onclose = () => DIVParent.classList.remove('error')
             $Sel.Search.Timer[id] = setTimeout(() => DIVParent.classList.remove('error'), 5000)
         }
-    }
 }
 /**
  * Reset the DMX Count value to 1
@@ -166,15 +158,17 @@ let Format = val => ('000' + val).substr(-3)
 * @returns {void}
 */
 let SetValue = val => {
-    val = parseInt(val)
-    // If value set is inside the DMX range value (1-512)
-    if (val >= 1 && val <= 512) {
-        global.DB.DMXChannelCount = val
-        $Sel.Search.DMXChannelCount.value = Format(val)
-    } else {
-        $Sel.Search.DMXChannelCount.value = Format(global.DB.DMXChannelCount)
-    }
-    return this
+    return new Promise((resolve, reject) => {
+        val = parseInt(val)
+        // If value set is inside the DMX range value (1-512)
+        if (val >= 1 && val <= 512) {
+            global.DB.DMXChannelCount = val
+            $Sel.Search.DMXChannelCount.value = Format(val)
+        } else {
+            $Sel.Search.DMXChannelCount.value = Format(global.DB.DMXChannelCount)
+        }
+        resolve(`Value set to ${Format(val)}`)
+    })
 }
 /**
 * Adjust the number of DMX Select in the form
@@ -182,11 +176,7 @@ let SetValue = val => {
 * @returns {void}
 */
 let AdjustChannelSearch = (event = false) => {
-    clearTimeout($Sel.Search.Timer.Adjust)
-    if (global.DB.SelectParameter === undefined || global.DB.SelectParameter.length == 0) {
-        $Sel.Search.Timer.Adjust = setTimeout(AdjustChannelSearch, 50)
-    } else {
-        $Sel.Search.Status.SearchInitialize = false
+    return new Promise((resolve, reject) => {
         if (event && typeof event !== 'function') {
             $Sel.Search.DMXChannelCount.blur()
         }
@@ -196,17 +186,18 @@ let AdjustChannelSearch = (event = false) => {
             for (let i = 0; i < Result; i++) {
                 AddChannelSearch(event)
             }
-            $Sel.Search.Status.SearchInitialize = true
+            resolve(`Add ${Result} channel(s)`)
         } else if (Result != 0 && Result < 0) {      // Negative Result
             for (let i = Result; i < 0; i++) {
                 RemChannelSearch(event)
             }
-            $Sel.Search.Status.SearchInitialize = true
+            resolve(`Remove ${Result} channel(s)`)
         } else {
-            $Sel.Search.Status.SearchInitialize = true
-            return SetValue(global.DB.DMXChannelCount)
+            return SetValue($Sel.Search.DMXChannelCount.value).then(response => {
+                resolve(response)
+            })
         }
-    }
+    })
 }
 /**
 * Add OPTIONS in a SELECT
@@ -223,17 +214,16 @@ let AddChannelOptions = Select => {
     option.text = config.Default.Any
     Select.add(option)
     // Add other options
-    for (let i = 0; i < global.DB.SelectParameter.length; i++) {
+    for (let i = 0; i < global.DB.SearchParameter.Options.length; i++) {
         option = document.createElement('option')
-        option.value = global.DB.SelectParameter[i].value.toLowerCase()
-        option.text = global.DB.SelectParameter[i].value
+        option.value = global.DB.SearchParameter.Options[i].value.toLowerCase()
+        option.text = global.DB.SearchParameter.Options[i].value
         Select.add(option)
     }
 }
 /**
 * Add 1 DMX Select in the form
 * @param {Object} [event=false]
-* @returns {void}
 */
 let AddChannelSearch = (event = false) => {
     if (event && typeof event !== 'function') {
@@ -252,14 +242,11 @@ let AddChannelSearch = (event = false) => {
         if (event && typeof event !== 'function') {
             $Sel.Search.Form.dispatchEvent(new Event('change'))
         }
-    } else {
-        return this
     }
 }
 /**
  * Remove 1 DMX Select in the form
  * @param {Object} [event=false]
- * @returns {void}
  */
 let RemChannelSearch = (event = false) => {
     if (event && typeof event !== 'function') {
@@ -277,8 +264,6 @@ let RemChannelSearch = (event = false) => {
         if (event && typeof event !== 'function') {
             $Sel.Search.Form.dispatchEvent(new Event('change'))
         }
-    } else {
-        return this
     }
 }
 let Update = {

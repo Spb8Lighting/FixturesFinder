@@ -61,6 +61,8 @@ let $Sel = {
 /* Load needed Application */
 /* ###################################### */
 let $App = {
+    DMXMaxChannel: require('../../middlewares/app.DMXMaxChannel'),
+    SelectOptions: require('../../middlewares/app.SelectOptions'),
     Search: require('../../middlewares/app.Search'),
     Options: require('../../middlewares/app.Options')
 }
@@ -127,12 +129,48 @@ $Listener.SELECTChange($Sel.Options.ParameterList, $App.Options.Update.Parameter
 /* ###################################### */
 
 /* Initialize the page content*/
-$DB.SearchParameter.Initialize(
-    $DB.Options.Initialize(
-        $DB.LastSearch.Initialize(
-            $App.Search.Initialize
-        )
-    )
-)
+$DB.SearchParameter.Initialize().then(response => {
+    // Get SearchParameter answer
+    global.DB.SearchParameter = response
+    console.log('Database Select Parameter Ready', global.DB.SearchParameter)
+    return $App.SelectOptions.Initialize()
+        .then(response => {
+            global.DB.SearchParameter = response
+            console.log('Parameter for Select Ready', global.DB.SearchParameter)
+            return $DB.Options.Initialize()
+                .then(response => {
+                    global.DB.Options = response
+                    console.log('Database Options Ready', global.DB.Options)
+                    return $App.Options.Reselect()
+                        .then(response => {
+                            console.log('Restore previous options', response)
+                            return $App.DMXMaxChannel.CheckDisplay()
+                                .then(response => {
+                                    console.log('Restore DMXMaxChannel visibility compare to option', response)
+                                    return $DB.LastSearch.Initialize()
+                                        .then(response => {
+                                            global.DB.LastSearch = response
+                                            console.log('Database LastSearch Ready', global.DB.LastSearch)
+                                            return $App.Search.Initialize()
+                                                .then(response => {
+                                                    console.log('Rebuild the search form', response)
+                                                    return $App.SelectOptions.CheckOptions()
+                                                        .then(response => {
+                                                            console.log('Restore Select Content', response)
+                                                            if (response == 'Please Initialize Again') {
+                                                                return $App.Search.Initialize()
+                                                            } else {
+                                                                resolve(response)
+                                                            }
+                                                        })
+                                                })
+                                        })
+                                })
+                        })
+                })
+        })
+}).catch(e => {
+    console.error(e)
+})
 
 //$DB.SearchParameter.Fill(ParamDMX)

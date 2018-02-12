@@ -1,38 +1,51 @@
-let db = require('./database.init')
+const db = require('./database.init')
     , config = require('./config')
-    , $App = {
-        SelectOptions: require('./app.SelectOptions')
-    }
-    , TMPDatas = require('./temporary-until-ingestion.ParameterDMX')
 
 /**
 * Create the "SearchParameter" Table and insert default values
 */
-let Initialize = (callback = false) => {
-    db.serialize(() => {
+let Initialize = () => {
+    return new Promise((resolve, reject) => {
         /* Create and fill the Database for Options */
-        Create()
-        let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.SearchParameter}\``
-        db.get(sql, (err, row) => {
-            if (err) {
-                return console.error(err.message)
-            } else {
-                if (row.count == 0) {
-                    Fill(TMPDatas)
+        Create().then(response => {
+            // Create() Answer
+            return Count().then(response => {
+                // Count() Answer
+                if (response.count == 0) {
+                    return Fill(require('./temporary-until-ingestion.ParameterDMX')).then(response => {
+                        // Fill() Answer
+                        return Get().then(response => {
+                            // Get Answer
+                            resolve(response)
+                        })
+                    })
+                } else {
+                    return Get().then(response => {
+                        // Get Answer
+                        resolve(response)
+                    })
                 }
-                /* After check of Database, initialize interface */
-                Get(callback)
-            }
+            })
         })
     })
 }
 /**
+* Returns "SearchParameter" Table count rows
+*/
+let Count = () => {
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT COUNT(*) AS \`count\` FROM \`${config.Database.SearchParameter}\``
+        db.get(sql, (err, response) => err ? reject(err.message) : resolve(response))
+    })
+}
+/**
 * Create "SearchParameter" Table
-* @returns {void}
 */
 let Create = () => {
-    let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.SearchParameter}\` ( \`${config.Form.Search.SearchParameter_order}\` INTEGER, \`${config.Form.Search.SearchParameter_value}\` TEXT UNIQUE)`
-    return db.run(sql)
+    return new Promise((resolve, reject) => {
+        let sql = `CREATE TABLE IF NOT EXISTS \`${config.Database.SearchParameter}\` ( \`${config.Form.Search.SearchParameter_order}\` INTEGER, \`${config.Form.Search.SearchParameter_value}\` TEXT UNIQUE)`
+        db.run(sql, err => err ? reject(err.message) : resolve(sql))
+    })
 }
 
 /**
@@ -55,26 +68,19 @@ let Reset = () => {
 * @returns {void}
 */
 let Fill = (data = false) => {
-    let placeholders = data.map(el => `(${(el.order) ? el.order : null}, '${el.value}')`).join(', ')
-        , sql = `INSERT OR IGNORE INTO \`${config.Database.SearchParameter}\` ( \`${config.Form.Search.SearchParameter_order}\`, \`${config.Form.Search.SearchParameter_value}\`) VALUES ${placeholders}`
-    return db.run(sql)
+    return new Promise((resolve, reject) => {
+        let placeholders = data.map(el => `(${(el.order) ? el.order : null}, '${el.value}')`).join(', ')
+            , sql = `INSERT OR IGNORE INTO \`${config.Database.SearchParameter}\` ( \`${config.Form.Search.SearchParameter_order}\`, \`${config.Form.Search.SearchParameter_value}\`) VALUES ${placeholders}`
+        db.run(sql, err => err ? reject(err.message) : resolve())
+    })
 }
 /**
 * Get "SearchParameter Table"
 */
-let Get = (callback = false) => {
-    let sql = `SELECT \`rowid\`, \`${config.Form.Search.SearchParameter_order}\`, \`${config.Form.Search.SearchParameter_value}\` FROM \`${config.Database.SearchParameter}\` ORDER BY \`${config.Form.Search.SearchParameter_value}\``
-
-    db.all(sql, (err, datas) => {
-        if (err) {
-            return console.error(err.message)
-        } else {
-            global.DB.SearchParameter = datas
-            $App.SelectOptions.Initialize()
-            if (typeof callback === 'function') {
-                callback()
-            }
-        }
+let Get = () => {
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT \`rowid\`, \`${config.Form.Search.SearchParameter_order}\`, \`${config.Form.Search.SearchParameter_value}\` FROM \`${config.Database.SearchParameter}\` ORDER BY \`${config.Form.Search.SearchParameter_value}\``
+        db.all(sql, (err, response) => err ? reject(err.message) : resolve(response))
     })
 }
 module.exports = {
