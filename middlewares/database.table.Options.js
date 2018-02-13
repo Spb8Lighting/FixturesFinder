@@ -76,10 +76,12 @@ let Delete = () => {
 * Restore defaults Options in "Options" Table
 */
 let Reset = () => {
-    Update.All({
-        SearchMode: config.Form.Option.SearchMode_OrderExact,
-        DisplayMode: config.Form.Option.DisplayMode_Full,
-        ParameterList: config.Form.Option.ParameterList_Common
+    return new Promise((resolve, reject) => {
+        return Update.All({
+            SearchMode: config.Form.Option.SearchMode_OrderExact,
+            DisplayMode: config.Form.Option.DisplayMode_Full,
+            ParameterList: config.Form.Option.ParameterList_Common
+        })
     })
 }
 
@@ -105,7 +107,7 @@ let Fill = () => {
 let Get = () => {
     return new Promise((resolve, reject) => {
         let sql = `SELECT \`${config.Form.Option.SearchMode}\`, \`${config.Form.Option.DisplayMode}\`, \`${config.Form.Option.ParameterList}\` FROM \`${config.Database.Options}\``
-        return db.get(sql, (err, response) => err ? reject(err.message) : resolve(response))
+        db.get(sql, (err, response) => err ? reject(err.message) : resolve(response))
     })
 }
 
@@ -116,12 +118,8 @@ let Update = {
     * @param {{ SearchMode: String, DisplayMode: String, ParameterList : String }} param
     */
     Run: (sql, param) => {
-        db.run(sql, param, err => {
-            if (err) {
-                return console.error(err.message)
-            } else {
-                Get()
-            }
+        return new Promise((resolve, reject) => {
+            return db.run(sql, param, (err, response) => err ? reject(err.message) : Get())
         })
     },
     /**
@@ -130,13 +128,15 @@ let Update = {
     * @returns {void}
     */
     All: data => {
-        let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
-            , param = {
-                $SearchMode: data.SearchMode,
-                $DisplayMode: data.DisplayMode,
-                $ParameterList: data.ParameterList
-            }
-        return Update.Run(sql, param)
+        return new Promise((resolve, reject) => {
+            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                , param = {
+                    $SearchMode: data.SearchMode,
+                    $DisplayMode: data.DisplayMode,
+                    $ParameterList: data.ParameterList
+                }
+            return Update.Run(sql, param)
+        })
     },
     /**
     * Update SearchMode in "Options Table"
@@ -144,11 +144,13 @@ let Update = {
     * @returns {void}
     */
     SearchMode: data => {
-        let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode`
-            , param = {
-                $SearchMode: data.SearchMode,
-            }
-        return Update.Run(sql, param)
+        return new Promise((resolve, reject) => {
+            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode`
+                , param = {
+                    $SearchMode: data.SearchMode,
+                }
+            return Update.Run(sql, param)
+        })
     },
     /**
     * Update DisplayMode in "Options Table"
@@ -156,11 +158,13 @@ let Update = {
     * @returns {void}
     */
     DisplayMode: data => {
-        let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.DisplayMode}\` = $DisplayMode`
-            , param = {
-                $DisplayMode: data.DisplayMode,
-            }
-        return Update.Run(sql, param)
+        return new Promise((resolve, reject) => {
+            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.DisplayMode}\` = $DisplayMode`
+                , param = {
+                    $DisplayMode: data.DisplayMode,
+                }
+            return Update.Run(sql, param)
+        })
     },
     /**
     * Update ParameterList in "Options Table"
@@ -168,11 +172,13 @@ let Update = {
     * @returns {void}
     */
     ParameterList: data => {
-        let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.ParameterList}\` = $ParameterList`
-            , param = {
-                $ParameterList: data.ParameterList,
-            }
-        return Update.Run(sql, param)
+        return new Promise((resolve, reject) => {
+            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.ParameterList}\` = $ParameterList`
+                , param = {
+                    $ParameterList: data.ParameterList,
+                }
+            return Update.Run(sql, param)
+        })
     }
 }
 

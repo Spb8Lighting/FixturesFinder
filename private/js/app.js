@@ -115,11 +115,28 @@ $Sel.Options.Form.addEventListener('change', $App.Options.Update.All, { passive:
 $Sel.Options.ResetButton.addEventListener('click', $App.Options.Reset, { passive: true })
 
 // Search Mode
-$Listener.SELECTChange($Sel.Options.SearchMode, $App.Options.Update.SearchMode)
+$Listener.SELECTChange($Sel.Options.SearchMode, () => {
+    $App.Options.Update.SearchMode()
+    $DB.Options.Initialize()
+        .then(response => {
+            global.DB.Options = response
+            return $App.DMXMaxChannel.CheckDisplay()
+        })
+})
 // Display Mode
 $Listener.SELECTChange($Sel.Options.DisplayMode, $App.Options.Update.DisplayMode)
 // Parameter List
-$Listener.SELECTChange($Sel.Options.ParameterList, $App.Options.Update.ParameterList)
+$Listener.SELECTChange($Sel.Options.ParameterList, () => {
+    $App.Options.Update.ParameterList()
+    $DB.Options.Initialize()
+        .then(response => {
+            global.DB.Options = response
+            return $App.SelectOptions.CheckOptions()
+                .then(response => {
+                    return $App.Search.Initialize()
+                })
+        })
+})
 
 
 

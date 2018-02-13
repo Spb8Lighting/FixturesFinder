@@ -18,30 +18,38 @@ let Update = {
      * Prepare data for a "Options Table" Update All
      */
     All: () => {
-        let data = {
-            SearchMode: $Sel.Options.SearchMode.value,
-            DisplayMode: $Sel.Options.DisplayMode.value,
-            ParameterList: $Sel.Options.ParameterList.value
-        }
-        $DB.Options.Update.All(data)
+        return new Promise((resolve, reject) => {
+            let data = {
+                SearchMode: $Sel.Options.SearchMode.value,
+                DisplayMode: $Sel.Options.DisplayMode.value,
+                ParameterList: $Sel.Options.ParameterList.value
+            }
+            return $DB.Options.Update.All(data)
+        })
     },
     /**
      * Prepare data to update SearchMode in "Options Table"
      */
     SearchMode: () => {
-        $DB.Options.Update.SearchMode({ SearchMode: $Sel.Options.SearchMode.value })
+        return new Promise((resolve, reject) => {
+            return $DB.Options.Update.SearchMode({ SearchMode: $Sel.Options.SearchMode.value })
+        })
     },
     /**
      * Prepare data to update DisplayMode in "Options Table"
      */
     DisplayMode: () => {
-        $DB.Options.Update.DisplayMode({ DisplayMode: $Sel.Options.DisplayMode.value })
+        return new Promise((resolve, reject) => {
+            return $DB.Options.Update.DisplayMode({ DisplayMode: $Sel.Options.DisplayMode.value })
+        })
     },
     /**
     * Prepare data to update ParameterList in "Options Table"
     */
     ParameterList: () => {
-        $DB.Options.Update.ParameterList({ ParameterList: $Sel.Options.ParameterList.value })
+        return new Promise((resolve, reject) => {
+            return $DB.Options.Update.ParameterList({ ParameterList: $Sel.Options.ParameterList.value })
+        })
     }
 }
 /**
