@@ -10,8 +10,8 @@ module.exports = {
 		SearchParameter: 'SearchParameter',
 		LastSearch: 'LastSearch'
 	},
-	Regex : {
-		Slot : /^(color|gobo|animation) ?([0-9]{1,2})?$/i
+	Regex: {
+		Slot: /^(color|gobo|animation) ?([0-9]{1,2})?$/i
 	},
 	// Default Change
 	ChangeRegex: {
@@ -37,6 +37,12 @@ module.exports = {
 		min: 'min-btn',
 		max: 'max-btn',
 		close: 'close-btn'
+	},
+	WindowButtonsImg: {
+		min: '<svg viewBox="0 0 20 20"><path d="M 4 19 H16 z" /></svg>',
+		max: '<svg viewBox="0 0 20 20"><path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" /></svg>',
+		restore: '<svg viewBox="0 0 20 20"><path d="M7 1 V11 H19 V1 H7 z  M19 11 H7 V3 H19 V11 z"/><path d="M12 12 L12 19 L1 19 L1 9 L6 9 L6 9 L1 9 L1 19 L12 19 L12 19z" /><rect x="1" y="9" width="4.5" height="2" /></svg>',
+		close: '<svg viewBox="0 0 20 20"><path d="M 1 1 L 19 19 M 1 19 L 19 1" /></svg>'
 	},
 	Form: {
 		Button: {

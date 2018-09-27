@@ -112,7 +112,14 @@ $Listener.SELECTChange($Sel.Search.FixtureName)
 $Sel.Options.Form.addEventListener('change', $App.Options.Update.All, { passive: true })
 
 // Reset Button => Reset Options
-$Sel.Options.ResetButton.addEventListener('click', $App.Options.Reset, { passive: true })
+$Sel.Options.ResetButton.addEventListener('click', () => {
+    console.log('clic on reset', $App.Options.Reset())
+    $App.Options.Reset()
+        .then(response => {
+            global.DB.Options = response
+            return $App.Options.Reselect()
+        })
+}, { passive: true })
 
 // Search Mode
 $Listener.SELECTChange($Sel.Options.SearchMode, () => {

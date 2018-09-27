@@ -10,8 +10,10 @@ let config = require('./config')
  * Reset the DMX Count value to 1
  */
 let Reset = () => {
-    $DB.Options.Reset()
-    $Sel.Options.ResetButton.blur()
+    return new Promise((resolve, reject) => {
+        $Sel.Options.ResetButton.blur()
+        return $DB.Options.Reset()
+    })
 }
 let Update = {
     /**
@@ -68,6 +70,7 @@ let Reselect = () => {
 }
 
 module.exports = {
+    Reset: Reset,
     Update: Update,
     Reselect: Reselect
 }

@@ -4,11 +4,6 @@ module.exports = {
     Status: {
         SearchInitialize: false
     },
-    Timer: {
-        Form: false,
-        LastSearch: false,
-        Adjust: false
-    },
     Form: document.getElementById(config.Form.Search.Form),
     DMXChannelCount: document.getElementById(config.Form.Search.DMXChannelCount),
     DMXChannelCount_Btn_Add: document.getElementById(config.Form.Search.DMXChannelCount_Btn_Add),

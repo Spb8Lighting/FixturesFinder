@@ -76,12 +76,10 @@ let Delete = () => {
 * Restore defaults Options in "Options" Table
 */
 let Reset = () => {
-    return new Promise((resolve, reject) => {
-        return Update.All({
-            SearchMode: config.Form.Option.SearchMode_OrderExact,
-            DisplayMode: config.Form.Option.DisplayMode_Full,
-            ParameterList: config.Form.Option.ParameterList_Common
-        })
+    return Update.All({
+        SearchMode: config.Form.Option.SearchMode_OrderExact,
+        DisplayMode: config.Form.Option.DisplayMode_Full,
+        ParameterList: config.Form.Option.ParameterList_Common
     })
 }
 
@@ -119,7 +117,13 @@ let Update = {
     */
     Run: (sql, param) => {
         return new Promise((resolve, reject) => {
-            return db.run(sql, param, (err, response) => err ? reject(err.message) : Get())
+            db.run(sql, param, (err, response) => {
+                if (err) {
+                    reject(err.message)
+                } else {
+                    return Get()
+                }
+            })
         })
     },
     /**
@@ -128,15 +132,14 @@ let Update = {
     * @returns {void}
     */
     All: data => {
-        return new Promise((resolve, reject) => {
-            let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
-                , param = {
-                    $SearchMode: data.SearchMode,
-                    $DisplayMode: data.DisplayMode,
-                    $ParameterList: data.ParameterList
-                }
-            return Update.Run(sql, param)
-        })
+        let sql = `UPDATE \`${config.Database.Options}\` SET \`${config.Form.Option.SearchMode}\` = $SearchMode, \`${config.Form.Option.DisplayMode}\` = $DisplayMode, \`${config.Form.Option.ParameterList}\` = $ParameterList`
+            , param = {
+                $SearchMode: data.SearchMode,
+                $DisplayMode: data.DisplayMode,
+                $ParameterList: data.ParameterList
+            }
+        console.log(Update.Run(sql, param))
+        return Update.Run(sql, param)
     },
     /**
     * Update SearchMode in "Options Table"

@@ -1,18 +1,13 @@
 <div id="ApplicationWindowControl" class="grid-3">
 	<a id="min-btn" href="#minimise">
-		<svg viewBox="0 0 20 20">
-			<path d="M 4 19 H16 z" />
-		</svg>
-		<a id="max-btn" href="#maximise">
-			<svg viewBox="0 0 20 20">
-				<path d="M 1 1 V19 H19 V1 H1 z M19 19 H1 V4 H19 V19 z" />
-			</svg>
-		</a>
-		<a id="close-btn" href="#close">
-			<svg viewBox="0 0 20 20">
-				<path d="M 1 1 L 19 19 M 1 19 L 19 1" />
-			</svg>
-		</a>
+		<%= config.WindowButtonsImg.min %>
+	</a>
+	<a id="max-btn" href="#maximise">
+		<%= config.WindowButtonsImg.max %>
+	</a>
+	<a id="close-btn" href="#close">
+		<%= config.WindowButtonsImg.close %>
+	</a>
 </div>
 <h1>
 	<img title="Display Menu" src="../img/ShowCockpit.png" />&nbsp;
